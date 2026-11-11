@@ -1,0 +1,315 @@
+/* Inochi Pulso: colores de marca (navy-900, pulse-strong, surface). */
+.inochi-pulso {
+	--ip-navy: #0e1b33;
+	--ip-pulse: #0a9e80;
+	--ip-surface: #f2f4f8;
+	--ip-muted: #4b5670;
+	--ip-line: #c5cbd8;
+	max-width: 1200px;
+}
+.inochi-pulso .ip-title {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	color: var(--ip-navy);
+}
+.inochi-pulso .ip-mark {
+	color: var(--ip-pulse);
+	display: inline-flex;
+}
+.inochi-pulso .ip-lead {
+	font-size: 14px;
+	max-width: 760px;
+	color: var(--ip-muted);
+}
+.inochi-pulso .ip-card {
+	background: #fff;
+	border: 1px solid var(--ip-line);
+	border-radius: 14px;
+	padding: 20px 24px;
+	margin: 16px 0 24px;
+}
+.inochi-pulso .ip-summary {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 16px;
+	flex-wrap: wrap;
+}
+.inochi-pulso .ip-summary h2 {
+	margin: 0 0 4px;
+}
+.inochi-pulso .ip-summary p {
+	margin: 0;
+	color: var(--ip-muted);
+}
+.inochi-pulso .ip-progress {
+	margin-top: 16px;
+}
+.inochi-pulso .ip-bar {
+	height: 10px;
+	background: var(--ip-surface);
+	border-radius: 6px;
+	overflow: hidden;
+}
+.inochi-pulso .ip-bar span {
+	display: block;
+	height: 100%;
+	background: var(--ip-pulse);
+	transition: width 0.3s ease;
+}
+.inochi-pulso .ip-log {
+	margin: 8px 0 0;
+	font-size: 12px;
+	color: var(--ip-muted);
+}
+.inochi-pulso .ip-log .ip-log-err {
+	color: #8a1c1c;
+}
+.inochi-pulso .ip-counts {
+	display: flex;
+	gap: 24px;
+	flex-wrap: wrap;
+	margin: 0 0 16px;
+	padding: 0;
+	list-style: none;
+}
+.inochi-pulso .ip-counts strong {
+	font-size: 20px;
+	color: var(--ip-navy);
+	margin-right: 4px;
+}
+.inochi-pulso .ip-table td,
+.inochi-pulso .ip-table th {
+	vertical-align: top;
+}
+.inochi-pulso .ip-area th {
+	background: var(--ip-navy);
+	color: #fff;
+	font-weight: 600;
+}
+.inochi-pulso .ip-findings details {
+	margin-top: 4px;
+}
+.inochi-pulso .ip-findings pre {
+	white-space: pre-wrap;
+	max-height: 260px;
+	overflow: auto;
+	background: var(--ip-surface);
+	padding: 8px;
+	border-radius: 6px;
+	font-size: 11px;
+}
+.inochi-pulso .ip-state {
+	display: inline-block;
+	min-width: 48px;
+	text-align: center;
+	padding: 1px 8px;
+	border-radius: 6px;
+	font-weight: 600;
+	font-size: 12px;
+}
+.inochi-pulso .ip-ok {
+	background: #d3f2ea;
+	color: #0b4d3f;
+}
+.inochi-pulso .ip-aviso {
+	background: #fbe9c6;
+	color: #6b4a00;
+}
+.inochi-pulso .ip-fallo {
+	background: #f6d5d5;
+	color: #8a1c1c;
+}
+.inochi-pulso .ip-na,
+.inochi-pulso .ip-empty {
+	background: var(--ip-surface);
+	color: var(--ip-muted);
+}
+.inochi-pulso .ip-delete {
+	margin-top: 24px;
+}
+.inochi-pulso .ip-findings td:first-child code {
+	white-space: nowrap;
+}
+.inochi-pulso .ip-mode {
+	font-size: 12px;
+	font-weight: 600;
+	background: var(--ip-surface);
+	color: var(--ip-muted);
+	border-radius: 6px;
+	padding: 2px 8px;
+	margin-left: 6px;
+}
+.inochi-pulso .ip-tabs {
+	margin-bottom: 16px;
+}
+.inochi-pulso .ip-grid2 {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+	gap: 16px;
+}
+.inochi-pulso .ip-grid2 .ip-card {
+	margin: 0;
+}
+.inochi-pulso .ip-code textarea {
+	font-size: 13px;
+}
+.inochi-pulso .ip-score {
+	text-align: center;
+}
+.inochi-pulso .ip-score span,
+.inochi-pulso .ip-score em {
+	display: block;
+	font-size: 11px;
+	color: var(--ip-muted);
+	font-style: normal;
+}
+.inochi-pulso .ip-score strong {
+	display: block;
+	font-size: 32px;
+	line-height: 1.1;
+	color: var(--ip-navy);
+}
+.inochi-pulso .ip-steps {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin: 0 0 16px;
+}
+.inochi-pulso .ip-steps a {
+	text-decoration: none;
+	padding: 8px 14px;
+	border-radius: 8px;
+	background: #fff;
+	border: 1px solid var(--ip-line);
+	color: var(--ip-navy);
+}
+.inochi-pulso .ip-steps a.is-active {
+	background: var(--ip-navy);
+	border-color: var(--ip-navy);
+	color: #fff;
+}
+.inochi-pulso .ip-area-title {
+	margin: 24px 0 8px;
+	padding: 6px 10px;
+	background: var(--ip-navy);
+	color: #fff;
+	border-radius: 6px;
+	font-size: 13px;
+}
+.inochi-pulso .ip-check,
+.inochi-pulso .ip-finding {
+	border: 1px solid var(--ip-line);
+	border-radius: 10px;
+	padding: 12px 14px;
+	margin: 0 0 10px;
+	background: #fff;
+}
+.inochi-pulso .ip-check.is-pending {
+	border-left: 4px solid #f0b13a;
+}
+.inochi-pulso .ip-place-resumen {
+	border-left: 4px solid var(--ip-pulse);
+}
+.inochi-pulso .ip-place-no {
+	opacity: 0.75;
+}
+.inochi-pulso .ip-check-head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+.inochi-pulso .ip-sev,
+.inochi-pulso .ip-src {
+	font-size: 11px;
+	color: var(--ip-muted);
+	border: 1px solid var(--ip-line);
+	border-radius: 6px;
+	padding: 0 6px;
+}
+.inochi-pulso .ip-thr {
+	margin: 4px 0;
+	font-size: 12px;
+	color: var(--ip-muted);
+}
+.inochi-pulso .ip-write {
+	margin: 4px 0 6px;
+	font-size: 12px;
+	background: var(--ip-surface);
+	border-left: 3px solid var(--ip-pulse);
+	padding: 6px 10px;
+}
+.inochi-pulso .ip-write code {
+	font-size: 12px;
+	background: transparent;
+	padding: 0;
+}
+.inochi-pulso .ip-legend {
+	background: var(--ip-surface);
+	border: 1px solid var(--ip-line);
+	border-radius: 8px;
+	padding: 10px 14px;
+	margin: 0 0 16px;
+	font-size: 13px;
+}
+.inochi-pulso .ip-legend dl {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	gap: 4px 12px;
+	margin: 8px 0;
+}
+.inochi-pulso .ip-legend dt {
+	font-weight: 600;
+}
+.inochi-pulso .ip-legend dd {
+	margin: 0;
+}
+.inochi-pulso .ip-check-fields {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin: 8px 0;
+}
+.inochi-pulso .ip-check label,
+.inochi-pulso .ip-finding label {
+	display: block;
+	margin: 6px 0;
+	font-weight: 600;
+	font-size: 12px;
+}
+.inochi-pulso .ip-check-fields label {
+	display: inline-block;
+}
+.inochi-pulso .ip-check .ip-check-fields label:first-child {
+	flex: 1 1 420px;
+}
+.inochi-pulso .ip-check .ip-check-fields label:first-child input {
+	width: 100%;
+}
+.inochi-pulso .ip-check input,
+.inochi-pulso .ip-check select,
+.inochi-pulso .ip-check textarea,
+.inochi-pulso .ip-finding input,
+.inochi-pulso .ip-finding select,
+.inochi-pulso .ip-finding textarea {
+	font-weight: 400;
+	display: block;
+	margin-top: 2px;
+}
+.inochi-pulso .ip-sticky {
+	position: sticky;
+	bottom: 0;
+	background: #fff;
+	padding: 10px 0;
+	border-top: 1px solid var(--ip-line);
+	margin-bottom: 0;
+}
+.inochi-pulso .ip-guide ol li {
+	margin-bottom: 6px;
+}
+.inochi-pulso .ip-ok-msg {
+	color: #0b4d3f;
+	font-weight: 600;
+}

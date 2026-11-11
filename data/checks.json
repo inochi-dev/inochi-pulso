@@ -1,0 +1,264 @@
+{
+ "version": "1.0",
+ "catalog": [
+  {
+   "code": "REN-01",
+   "area": "Rendimiento",
+   "name": "Tiempo de respuesta del servidor (TTFB)",
+   "threshold": "OK < 0,6 s · Aviso 0,6–1,2 s · Fallo > 1,2 s",
+   "severity": "Alta"
+  },
+  {
+   "code": "REN-05",
+   "area": "Rendimiento",
+   "name": "Caché de página",
+   "threshold": "OK HIT en la 2.ª petición · Fallo sin caché",
+   "severity": "Alta"
+  },
+  {
+   "code": "REN-06",
+   "area": "Rendimiento",
+   "name": "Caché de objetos persistente",
+   "threshold": "OK activa · Aviso no hay (sitio pequeño) · Fallo no hay en tienda grande",
+   "severity": "Media"
+  },
+  {
+   "code": "REN-07",
+   "area": "Rendimiento",
+   "name": "Tamaño total del autoload",
+   "threshold": "OK < 0,8 MB · Aviso 0,8–2 MB · Fallo > 2 MB",
+   "severity": "Alta"
+  },
+  {
+   "code": "REN-08",
+   "area": "Rendimiento",
+   "name": "Autoload huérfano (plugins desactivados o borrados)",
+   "threshold": "OK < 100 KB · Aviso 100–500 KB · Fallo > 500 KB",
+   "severity": "Media"
+  },
+  {
+   "code": "REN-09",
+   "area": "Rendimiento",
+   "name": "Tablas más grandes (registros, sesiones, restos)",
+   "threshold": "OK < 100 MB · Aviso 100–500 MB · Fallo > 500 MB o > 30 % de la BD",
+   "severity": "Media"
+  },
+  {
+   "code": "REN-10",
+   "area": "Rendimiento",
+   "name": "Transients caducados",
+   "threshold": "OK < 500 · Aviso 500–5.000 · Fallo > 5.000",
+   "severity": "Baja"
+  },
+  {
+   "code": "REN-11",
+   "area": "Rendimiento",
+   "name": "Revisiones de entradas",
+   "threshold": "OK < 5.000 o con límite · Aviso 5.000–50.000 · Fallo > 50.000",
+   "severity": "Baja"
+  },
+  {
+   "code": "REN-12",
+   "area": "Rendimiento",
+   "name": "Cron: eventos atrasados y huérfanos",
+   "threshold": "OK ninguno · Aviso huérfanos · Fallo atrasados > 1 h o sin cron real",
+   "severity": "Media"
+  },
+  {
+   "code": "REN-14",
+   "area": "Rendimiento",
+   "name": "Configuración de PHP (memory_limit, OPcache)",
+   "threshold": "OK ≥ 256M y OPcache · Aviso falla uno · Fallo < 128M o sin OPcache en tienda",
+   "severity": "Media"
+  },
+  {
+   "code": "REN-16",
+   "area": "Rendimiento",
+   "name": "Número de plugins activos",
+   "threshold": "OK ≤ 40 · Aviso 41–60 · Fallo > 60",
+   "severity": "Baja"
+  },
+  {
+   "code": "SEG-01",
+   "area": "Seguridad",
+   "name": "Actualizaciones pendientes",
+   "threshold": "OK al día · Aviso menores · Fallo mayores o > 90 días",
+   "severity": "Alta"
+  },
+  {
+   "code": "SEG-03",
+   "area": "Seguridad",
+   "name": "Plugins abandonados o cerrados en WordPress.org",
+   "threshold": "OK ninguno · Aviso > 2 años sin actualizar · Fallo cerrado",
+   "severity": "Alta"
+  },
+  {
+   "code": "SEG-04",
+   "area": "Seguridad",
+   "name": "Plugins y temas de fuera del repositorio",
+   "threshold": "OK con licencia y actualizaciones · Aviso sin licencia · Fallo pirata o a medida sin mantener",
+   "severity": "Alta"
+  },
+  {
+   "code": "SEG-06",
+   "area": "Seguridad",
+   "name": "Versión de PHP con soporte",
+   "threshold": "OK 8.3+ · Aviso 8.2 · Fallo 8.1 o inferior",
+   "severity": "Alta"
+  },
+  {
+   "code": "SEG-07",
+   "area": "Seguridad",
+   "name": "HTTPS (redirección, certificado, HSTS, contenido mixto)",
+   "threshold": "OK todo correcto · Aviso sin HSTS · Fallo sin redirección, caducado o mixto en pago",
+   "severity": "Alta"
+  },
+  {
+   "code": "SEG-08",
+   "area": "Seguridad",
+   "name": "Cabeceras de seguridad",
+   "threshold": "OK las 3 básicas · Aviso falta alguna · Fallo ninguna",
+   "severity": "Baja"
+  },
+  {
+   "code": "SEG-09",
+   "area": "Seguridad",
+   "name": "Depuración expuesta (errores en pantalla, debug.log)",
+   "threshold": "OK oculta · Fallo errores visibles o debug.log descargable",
+   "severity": "Alta"
+  },
+  {
+   "code": "SEG-10",
+   "area": "Seguridad",
+   "name": "Editor de archivos del escritorio",
+   "threshold": "OK desactivado · Aviso activo",
+   "severity": "Media"
+  },
+  {
+   "code": "SEG-11",
+   "area": "Seguridad",
+   "name": "Cuentas de administrador",
+   "threshold": "OK ≤ 3, sin «admin», con 2FA · Aviso sin 2FA · Fallo «admin» o cuentas sin dueño",
+   "severity": "Alta"
+  },
+  {
+   "code": "SEG-12",
+   "area": "Seguridad",
+   "name": "Enumeración de usuarios",
+   "threshold": "OK no devuelve nombres · Aviso los devuelve",
+   "severity": "Baja"
+  },
+  {
+   "code": "SEG-13",
+   "area": "Seguridad",
+   "name": "XML-RPC",
+   "threshold": "OK bloqueado o protegido · Aviso abierto sin uso",
+   "severity": "Baja"
+  },
+  {
+   "code": "SEG-14",
+   "area": "Seguridad",
+   "name": "Permisos de archivos",
+   "threshold": "OK wp-config 600/640 · Aviso wp-config 644 · Fallo 777/666",
+   "severity": "Alta"
+  },
+  {
+   "code": "SEG-15",
+   "area": "Seguridad",
+   "name": "Archivos sobrantes accesibles (.sql, .zip, info.php)",
+   "threshold": "OK ninguno · Aviso no accesibles · Fallo descargable",
+   "severity": "Crítica"
+  },
+  {
+   "code": "SEG-16",
+   "area": "Seguridad",
+   "name": "Protección del acceso y WAF",
+   "threshold": "OK WAF y límite de intentos · Aviso uno de los dos · Fallo ninguno",
+   "severity": "Media"
+  },
+  {
+   "code": "WOO-01",
+   "area": "WooCommerce",
+   "name": "Versión de WooCommerce y plantillas sobrescritas",
+   "threshold": "OK al día · Aviso plantillas obsoletas · Fallo ≥ 2 versiones mayores atrás",
+   "severity": "Media"
+  },
+  {
+   "code": "WOO-02",
+   "area": "WooCommerce",
+   "name": "HPOS y sincronización",
+   "threshold": "OK HPOS sin pendientes · Aviso desactivado o pendiente",
+   "severity": "Baja"
+  },
+  {
+   "code": "WOO-03",
+   "area": "WooCommerce",
+   "name": "Páginas de WooCommerce asignadas",
+   "threshold": "OK las 4 asignadas · Fallo falta alguna",
+   "severity": "Alta"
+  },
+  {
+   "code": "WOO-04",
+   "area": "WooCommerce",
+   "name": "Pasarelas de pago",
+   "threshold": "OK activas en modo real · Aviso activas sin uso · Fallo modo pruebas en producción",
+   "severity": "Alta"
+  },
+  {
+   "code": "WOO-05",
+   "area": "WooCommerce",
+   "name": "Webhooks con fallos",
+   "threshold": "OK sin fallos · Aviso con fallos activo · Fallo desactivado por fallos",
+   "severity": "Alta"
+  },
+  {
+   "code": "WOO-06",
+   "area": "WooCommerce",
+   "name": "Pedidos atascados (procesando / en espera > 7 días)",
+   "threshold": "OK 0 · Aviso 1–10 · Fallo > 10",
+   "severity": "Media"
+  },
+  {
+   "code": "WOO-07",
+   "area": "WooCommerce",
+   "name": "Acciones programadas fallidas (30 días)",
+   "threshold": "OK < 10 · Aviso 10–100 · Fallo > 100 o en stock/pagos/envíos",
+   "severity": "Alta"
+  },
+  {
+   "code": "WOO-08",
+   "area": "WooCommerce",
+   "name": "Acciones programadas atrasadas > 1 h",
+   "threshold": "OK < 10 · Aviso 10–100 · Fallo > 100",
+   "severity": "Alta"
+  },
+  {
+   "code": "WOO-09",
+   "area": "WooCommerce",
+   "name": "Sesiones caducadas",
+   "threshold": "OK < 10.000 · Aviso 10.000–100.000 · Fallo > 100.000 o > 200 MB",
+   "severity": "Baja"
+  },
+  {
+   "code": "MAN-01",
+   "area": "Mantenimiento",
+   "name": "Sistema de copias de seguridad",
+   "threshold": "OK diarias y fuera del servidor · Aviso solo en el servidor · Fallo sin copias",
+   "severity": "Alta"
+  },
+  {
+   "code": "MAN-06",
+   "area": "Mantenimiento",
+   "name": "Actualizaciones automáticas y procedimiento",
+   "threshold": "OK con procedimiento · Aviso sin revisión o nadie actualiza",
+   "severity": "Baja"
+  },
+  {
+   "code": "MAN-07",
+   "area": "Mantenimiento",
+   "name": "Errores de PHP recurrentes (7 días)",
+   "threshold": "OK sin fatales · Aviso warnings repetidos · Fallo errores fatales",
+   "severity": "Alta"
+  }
+ ]
+}
