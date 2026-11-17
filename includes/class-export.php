@@ -191,7 +191,7 @@ class Inochi_Pulso_Export {
 	 * @param array $d Data.
 	 */
 	public static function cost_note( array $d ) {
-		$note = __( 'Each item is attributed by its registered callback, by searching its name in the installed code or by the table naming rules of a few well-known plugins. When several plugins could own it, it goes to "Unattributed": Pulso does not guess. Core content tables (posts, users, orders…) are not counted.', 'inochi-pulso' );
+		$note = __( 'Each item is attributed by its registered callback, by searching its name in the installed code or by the naming rules of a few well-known plugins. When several plugins could own it, it goes to "Unattributed": Pulso does not guess. Core content tables (posts, users, orders…) are not counted.', 'inochi-pulso' );
 		if ( ! $d['cost_complete'] ) {
 			$note .= ' ' . __( 'The code search stopped at its time or size limit: items without a match are in "Unattributed".', 'inochi-pulso' );
 		}

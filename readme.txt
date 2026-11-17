@@ -19,7 +19,7 @@ Run one scan from Tools → Inochi Pulso. Pulso reads your site without changing
 = What makes it different =
 
 * **Cost per plugin, in one scan.** One row per plugin — active, inactive or already deleted — with its autoloaded data, its own database tables, its cron events (orphaned ones included) and its failed or late scheduled actions. No need to browse for days before you get numbers.
-* **No guessing in the attribution.** Every item is attributed by the callback registered for it, by finding its name in the installed code, or by the table naming rules of a few well-known plugins (WooCommerce, WPML, Yoast SEO, Wordfence). When more than one plugin could own it, it goes to "Unattributed" instead of being pinned on the wrong plugin.
+* **No guessing in the attribution.** Every item is attributed by the callback registered for it, by finding its name in the installed code, or by the table and option naming rules of a few well-known plugins (WooCommerce, WPML, Yoast SEO, Wordfence). When more than one plugin could own it, it goes to "Unattributed" instead of being pinned on the wrong plugin.
 * **WordPress and WooCommerce operations in the same report.** Store pages, failing webhooks, stuck orders, failed and late scheduled actions, expired sessions and HPOS status.
 * **No invented results.** A check that cannot run shows "No data" and does not count towards the score. Every finding shows its evidence. Severity is fixed per rule.
 * **Read-only and leaves no trace.** Install, scan, export, uninstall. Uninstalling removes the plugin's tables and options.

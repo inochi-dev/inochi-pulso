@@ -48,6 +48,16 @@ class Inochi_Pulso_Checks_Cost extends Inochi_Pulso_Checks_Base {
 	);
 
 	/**
+	 * Option name rules of well-known plugins (pattern => plugin folders). Same use as KNOWN_TABLES:
+	 * several add-ons of these plugins contain the same names, so the code search leaves them unclear.
+	 */
+	const KNOWN_OPTIONS = array(
+		'/^(?:_?icl_|wpml|otgs|wp_installer_settings$)/i' => array( 'sitepress-multilingual-cms' ),
+		'/^_?wcml/'                                      => array( 'woocommerce-multilingual' ),
+		'/^wpseo/'                                       => array( 'wordpress-seo', 'wordpress-seo-premium' ),
+	);
+
+	/**
 	 * WordPress core tables (without prefix). Content tables: their size is not a plugin cost.
 	 */
 	const CORE_TABLES = array( 'posts', 'postmeta', 'comments', 'commentmeta', 'terms', 'termmeta', 'term_taxonomy', 'term_relationships', 'options', 'links', 'users', 'usermeta', 'blogs', 'blogmeta', 'site', 'sitemeta', 'signups', 'registration_log', 'blog_versions' );
@@ -108,8 +118,8 @@ class Inochi_Pulso_Checks_Cost extends Inochi_Pulso_Checks_Base {
 				$items[ $i ]['owner'] = $complete ? self::KEY_LEFTOVERS : self::KEY_UNATTRIBUTED;
 				$items[ $i ]['how']   = $complete ? 'none' : 'incomplete';
 			}
-			if ( 'table' === $item['type'] && in_array( $items[ $i ]['owner'], array( self::KEY_UNATTRIBUTED, self::KEY_LEFTOVERS ), true ) ) {
-				$known = self::known_table_owner( $item['needle'], $plugins );
+			if ( in_array( $item['type'], array( 'table', 'option' ), true ) && in_array( $items[ $i ]['owner'], array( self::KEY_UNATTRIBUTED, self::KEY_LEFTOVERS ), true ) ) {
+				$known = self::known_owner( 'table' === $item['type'] ? self::KNOWN_TABLES : self::KNOWN_OPTIONS, $item['needle'], $plugins );
 				if ( '' !== $known ) {
 					$items[ $i ]['owner'] = $known;
 					$items[ $i ]['how']   = 'known';
@@ -422,15 +432,16 @@ class Inochi_Pulso_Checks_Cost extends Inochi_Pulso_Checks_Base {
 	}
 
 	/**
-	 * Owner of a table by the naming rule of a well-known plugin, if that plugin is installed.
+	 * Owner of a table or option by the naming rule of a well-known plugin, if that plugin is installed.
 	 *
-	 * @param string $short   Table name without prefix.
+	 * @param array  $rules   Pattern => plugin folders.
+	 * @param string $name    Table name without prefix, or option name.
 	 * @param array  $plugins Installed plugins.
 	 */
-	private static function known_table_owner( $short, array $plugins ) {
-		$short = strtolower( (string) $short );
-		foreach ( self::KNOWN_TABLES as $pattern => $slugs ) {
-			if ( preg_match( $pattern, $short ) ) {
+	private static function known_owner( array $rules, $name, array $plugins ) {
+		$name = (string) $name;
+		foreach ( $rules as $pattern => $slugs ) {
+			if ( preg_match( $pattern, strtolower( $name ) ) || preg_match( $pattern, $name ) ) {
 				foreach ( $slugs as $slug ) {
 					if ( isset( $plugins[ $slug ] ) ) {
 						return 'plugin:' . $slug;
@@ -953,7 +964,7 @@ class Inochi_Pulso_Checks_Cost extends Inochi_Pulso_Checks_Base {
 			'widget'     => __( 'registered widget', 'inochi-pulso' ),
 			'group'      => __( 'action group named like the plugin', 'inochi-pulso' ),
 			'shared'     => __( 'Action Scheduler table, shared by several plugins', 'inochi-pulso' ),
-			'known'      => __( 'table name rule of the plugin', 'inochi-pulso' ),
+			'known'      => __( 'naming rule of the plugin', 'inochi-pulso' ),
 			'none'       => __( 'not found in the installed code', 'inochi-pulso' ),
 			'incomplete' => __( 'search stopped at the limit', 'inochi-pulso' ),
 		);

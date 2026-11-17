@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-17T15:57:25+00:00\n"
+"POT-Creation-Date: 2026-11-17T16:23:09+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: inochi-pulso\n"
@@ -36,7 +36,7 @@ msgid "Inochi"
 msgstr ""
 
 #. translators: 1: plugin or group name, 2: size, 3: number of options.
-#: includes/checks/class-checks-cost.php:838
+#: includes/checks/class-checks-cost.php:849
 #, php-format
 msgid "%1$s: %2$s in %3$d option"
 msgid_plural "%1$s: %2$s in %3$d options"
@@ -44,151 +44,151 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: size in KB.
-#: includes/checks/class-checks-cost.php:843
+#: includes/checks/class-checks-cost.php:854
 #, php-format
 msgid "%s KB from inactive or deleted plugins"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:844
+#: includes/checks/class-checks-cost.php:855
 msgid "Every autoloaded option, attributed by searching its name in the installed code. Details in the cost per plugin table."
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:844
+#: includes/checks/class-checks-cost.php:855
 msgid "None."
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:846
+#: includes/checks/class-checks-cost.php:857
 msgid "The code search stopped at the time or size limit: options without a match are listed as unattributed, not as leftovers."
 msgstr ""
 
 #. translators: 1: events, 2: late events, 3: orphaned events, 4: WP-Cron status.
-#: includes/checks/class-checks-cost.php:878
+#: includes/checks/class-checks-cost.php:889
 #, php-format
 msgid "%1$d events · %2$d late > 1 h · %3$d orphaned · WP-Cron %4$s"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:882
+#: includes/checks/class-checks-cost.php:893
 msgid "disabled (system cron)"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:882
+#: includes/checks/class-checks-cost.php:893
 #: includes/checks/class-checks-runtime.php:97
 #: includes/checks/class-checks-woocommerce.php:197
 msgid "active"
 msgstr ""
 
 #. translators: 1: hook, 2: hours.
-#: includes/checks/class-checks-cost.php:887
+#: includes/checks/class-checks-cost.php:898
 #, php-format
 msgid "Late: %1$s (%2$s h)"
 msgstr ""
 
 #. translators: %s: hook.
-#: includes/checks/class-checks-cost.php:891
+#: includes/checks/class-checks-cost.php:902
 #, php-format
 msgid "Orphaned (only an inactive or deleted plugin uses it): %s"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:894
+#: includes/checks/class-checks-cost.php:905
 msgid "DISABLE_WP_CRON is true: check that the server has a task that calls wp-cron.php."
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:896
+#: includes/checks/class-checks-cost.php:907
 msgid "A hook counts as orphaned only when no callback is registered and no active code uses its name."
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:908
+#: includes/checks/class-checks-cost.php:919
 msgid "Leftovers (no installed code uses them)"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:910
+#: includes/checks/class-checks-cost.php:921
 msgid "Unattributed"
 msgstr ""
 
 #. translators: %s: theme name.
-#: includes/checks/class-checks-cost.php:913
+#: includes/checks/class-checks-cost.php:924
 #, php-format
 msgid "Theme: %s"
 msgstr ""
 
 #. translators: %s: file or folder in mu-plugins.
-#: includes/checks/class-checks-cost.php:916
+#: includes/checks/class-checks-cost.php:927
 #, php-format
 msgid "Must-use: %s"
 msgstr ""
 
 #. translators: %s: library name.
-#: includes/checks/class-checks-cost.php:919
+#: includes/checks/class-checks-cost.php:930
 #, php-format
 msgid "%s (shared library)"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:931
+#: includes/checks/class-checks-cost.php:942
 #: includes/checks/class-checks-runtime.php:61
 msgid "Active"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:932
+#: includes/checks/class-checks-cost.php:943
 msgid "Inactive"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:933
+#: includes/checks/class-checks-cost.php:944
 msgid "Deleted"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:934
+#: includes/checks/class-checks-cost.php:945
 msgid "Core"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:935
+#: includes/checks/class-checks-cost.php:946
 msgid "Shared"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:936
+#: includes/checks/class-checks-cost.php:947
 msgid "No code"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:937
+#: includes/checks/class-checks-cost.php:948
 msgid "Unclear"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:949
+#: includes/checks/class-checks-cost.php:960
 msgid "registered callback"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:950
+#: includes/checks/class-checks-cost.php:961
 msgid "name in the code"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:951
+#: includes/checks/class-checks-cost.php:962
 msgid "name built from a prefix in the code"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:952
+#: includes/checks/class-checks-cost.php:963
 msgid "WordPress naming rule"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:953
+#: includes/checks/class-checks-cost.php:964
 msgid "registered widget"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:954
+#: includes/checks/class-checks-cost.php:965
 msgid "action group named like the plugin"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:955
+#: includes/checks/class-checks-cost.php:966
 msgid "Action Scheduler table, shared by several plugins"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:956
-msgid "table name rule of the plugin"
+#: includes/checks/class-checks-cost.php:967
+msgid "naming rule of the plugin"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:957
+#: includes/checks/class-checks-cost.php:968
 msgid "not found in the installed code"
 msgstr ""
 
-#: includes/checks/class-checks-cost.php:958
+#: includes/checks/class-checks-cost.php:969
 msgid "search stopped at the limit"
 msgstr ""
 
@@ -1770,7 +1770,7 @@ msgid "Action %1$s (group: %2$s) · %3$s failed · %4$s late · %5$s"
 msgstr ""
 
 #: includes/class-export.php:194
-msgid "Each item is attributed by its registered callback, by searching its name in the installed code or by the table naming rules of a few well-known plugins. When several plugins could own it, it goes to \"Unattributed\": Pulso does not guess. Core content tables (posts, users, orders…) are not counted."
+msgid "Each item is attributed by its registered callback, by searching its name in the installed code or by the naming rules of a few well-known plugins. When several plugins could own it, it goes to \"Unattributed\": Pulso does not guess. Core content tables (posts, users, orders…) are not counted."
 msgstr ""
 
 #: includes/class-export.php:196
