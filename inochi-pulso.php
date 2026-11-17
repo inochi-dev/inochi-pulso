@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Inochi Pulso – Autoload Cost & Site Audit
- * Plugin URI:        https://inochi.dev/
+ * Plugin URI:        https://github.com/inochi-dev/inochi-pulso
  * Description:       Find which plugin is slowing your site: autoload, tables, cron and WooCommerce issues per plugin, in one read-only scan.
  * Version:           1.0.0
  * Requires at least: 6.6
