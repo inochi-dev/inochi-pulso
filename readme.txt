@@ -1,4 +1,4 @@
-=== Inochi Pulso ===
+=== Inochi Pulso – Autoload Cost & Site Audit ===
 Contributors: inochidev
 Tags: autoload, plugin performance, slow wordpress, woocommerce performance, site audit
 Requires at least: 6.6

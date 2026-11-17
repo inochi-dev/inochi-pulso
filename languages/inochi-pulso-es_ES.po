@@ -12,6 +12,9 @@ msgstr ""
 msgid "Inochi Pulso"
 msgstr "Inochi Pulso"
 
+msgid "Inochi Pulso – Autoload Cost & Site Audit"
+msgstr "Inochi Pulso – Coste de autoload y auditoría del sitio"
+
 msgid "https://inochi.dev/"
 msgstr "https://inochi.dev/"
 
