@@ -19,8 +19,8 @@ Run one scan from Tools → Inochi Pulso. Pulso reads your site without changing
 = What makes it different =
 
 * **Cost per plugin, in one scan.** One row per plugin — active, inactive or already deleted — with its autoloaded data, its own database tables, its cron events (orphaned ones included) and its failed or late scheduled actions. No need to browse for days before you get numbers.
-* **No guessing in the attribution.** Every item is attributed by the callback registered for it or by finding its name in the installed code. When more than one plugin could own it, it goes to "Unattributed" instead of being pinned on the wrong plugin.
-* **WordPress and WooCommerce operations in the same report.** Store pages, active gateways, failing webhooks, stuck orders, failed and late scheduled actions, expired sessions and HPOS status.
+* **No guessing in the attribution.** Every item is attributed by the callback registered for it, by finding its name in the installed code, or by the table naming rules of a few well-known plugins (WooCommerce, WPML, Yoast SEO, Wordfence). When more than one plugin could own it, it goes to "Unattributed" instead of being pinned on the wrong plugin.
+* **WordPress and WooCommerce operations in the same report.** Store pages, failing webhooks, stuck orders, failed and late scheduled actions, expired sessions and HPOS status.
 * **No invented results.** A check that cannot run shows "No data" and does not count towards the score. Every finding shows its evidence. Severity is fixed per rule.
 * **Read-only and leaves no trace.** Install, scan, export, uninstall. Uninstalling removes the plugin's tables and options.
 
@@ -29,9 +29,9 @@ Run one scan from Tools → Inochi Pulso. Pulso reads your site without changing
 * Database: autoload size, largest tables, expired transients, post revisions.
 * Plugins: cost per plugin (autoload, tables, cron, scheduled actions), pending updates, plugins not from WordPress.org, number of active plugins; optionally, plugins closed or not updated on WordPress.org (off by default, see External services).
 * Server: response time (TTFB) measured from your own site, page cache, persistent object cache, PHP version and settings, cron.
-* Security basics: HTTPS, security headers, debug output, file editor, administrator accounts, user enumeration, XML-RPC, file permissions, leftover backups and installers reachable from the web, login protection.
-* Maintenance: detected backup system, automatic updates, recurring PHP errors.
-* WooCommerce (if active): version and outdated template overrides, HPOS, store pages, gateways, webhooks, stuck orders, failed and late scheduled actions, expired sessions.
+* Security basics: HTTPS, security headers, debug output, file editor, administrator accounts, user enumeration, XML-RPC, file permissions, leftover backups and installers reachable from the web.
+* Maintenance: automatic updates, recurring PHP errors.
+* WooCommerce (if active): version and outdated template overrides, HPOS, store pages, webhooks, stuck orders, failed and late scheduled actions, expired sessions.
 
 = Export =
 
@@ -74,7 +74,7 @@ No. Every check is read-only. The only data Pulso writes is its own scan results
 
 = Will the scan slow down my site? =
 
-The scan runs in short steps from the Pulso screen, with a progress bar, and does not use WP-Cron. It sends about 40 requests to your own site, which may show up in your server statistics or firewall log.
+The scan runs in short steps from the Pulso screen, with a progress bar, and does not use WP-Cron. It sends about 40 requests to your own site, which may show up in your server statistics or firewall log. In our tests on two WooCommerce stores, with 33 and 46 plugins, a scan took 43 and 75 seconds; larger sites take longer.
 
 = Why does a check say "No data"? =
 
@@ -93,11 +93,11 @@ Only if you enable the optional WordPress.org check described in External servic
 1. Cost per plugin: autoload, tables, cron and scheduled actions for each plugin, from a single scan.
 2. Prioritised report — urgent, stabilise, improve — with the evidence behind every finding.
 3. "No data": checks that could not run don't count. We don't invent results.
-4. WooCommerce operations: gateways, failing webhooks, stuck orders and failed scheduled actions.
+4. WooCommerce operations: store pages, failing webhooks, stuck orders and failed scheduled actions.
 5. Step-by-step read-only scan with progress bar, no WP-Cron.
 6. Export to printable HTML, CSV and JSON.
 
 == Changelog ==
 
 = 1.0.0 =
-* First public release: cost per plugin, 37 read-only checks, prioritised report, HTML/CSV/JSON exports, Site Health tests, Spanish translation.
+* First public release: cost per plugin, 34 read-only checks, prioritised report, HTML/CSV/JSON exports, Site Health tests, Spanish translation.

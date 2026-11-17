@@ -1,6 +1,6 @@
 <?php
 /**
- * MAN-01, MAN-06 and MAN-07.
+ * MAN-06 and MAN-07.
  *
  * @package InochiPulso
  */
@@ -20,23 +20,11 @@ class Inochi_Pulso_Checks_Maintenance extends Inochi_Pulso_Checks_Base {
 	public static function run() {
 		return array(
 			'findings' => array(
-				self::backups(),
 				self::updates_policy(),
 				self::php_errors(),
 			),
 			'payload'  => array(),
 		);
-	}
-
-	/**
-	 * MAN-01: active backup plugins. Backups made by the hosting cannot be seen from here: no state.
-	 */
-	private static function backups() {
-		$found = Inochi_Pulso_Util::active_matching( Inochi_Pulso_Util::known( 'backup' ) );
-		/* translators: %s: list of plugins. */
-		$value = $found ? sprintf( __( 'Backup plugin active: %s', 'inochi-pulso' ), implode( ', ', $found ) ) : __( 'No backup plugin active', 'inochi-pulso' );
-		$ev    = $value . ".\n" . __( 'Backups made by the hosting cannot be seen from WordPress: check them too, with their frequency and destination.', 'inochi-pulso' );
-		return self::partial( 'MAN-01', $value, $ev );
 	}
 
 	/**
@@ -148,6 +136,7 @@ class Inochi_Pulso_Checks_Maintenance extends Inochi_Pulso_Checks_Base {
 		$since    = time() - 7 * DAY_IN_SECONDS;
 		$fatals   = array();
 		$warnings = 0;
+		$direct   = 0;
 		$lines_ev = array();
 		foreach ( $files as $path => $label ) {
 			$data = self::tail( $path, self::LOG_TAIL );
@@ -164,7 +153,9 @@ class Inochi_Pulso_Checks_Maintenance extends Inochi_Pulso_Checks_Base {
 						continue;
 					}
 				}
-				if ( false !== stripos( $line, 'PHP Fatal error' ) ) {
+				if ( false !== stripos( $line, 'PHP Fatal error' ) && self::is_direct_core_request( $line ) ) {
+					++$direct; // A bot asked for a core file directly: not a failure of the site.
+				} elseif ( false !== stripos( $line, 'PHP Fatal error' ) ) {
 					++$n_f;
 					$msg            = preg_replace( '/^.*PHP Fatal error:\s*/i', '', $line );
 					$msg            = preg_replace( '/ in \/.*$/', '', $msg );
@@ -185,6 +176,10 @@ class Inochi_Pulso_Checks_Maintenance extends Inochi_Pulso_Checks_Base {
 		foreach ( array_slice( $fatals, 0, 8, true ) as $msg => $n ) {
 			$top[] = $n . ' × ' . $msg;
 		}
+		if ( $direct ) {
+			/* translators: %d: number of errors not counted. */
+			$lines_ev[] = sprintf( __( 'Not counted: %d "Undefined constant ABSPATH" errors in WordPress core files requested directly (usually bots scanning paths); they do not break the site.', 'inochi-pulso' ), $direct );
+		}
 		$ev = implode( "\n", $lines_ev ) . ( $top ? "\n" . __( 'Most repeated fatal errors:', 'inochi-pulso' ) . "\n" . implode( "\n", $top ) : '' ) . "\n" . __( 'The last 5 MB of each log are read; server paths are not copied.', 'inochi-pulso' );
 		if ( $total > 0 ) {
 			$state = 'Fallo';
@@ -200,5 +195,16 @@ class Inochi_Pulso_Checks_Maintenance extends Inochi_Pulso_Checks_Base {
 			return self::partial( 'MAN-07', $value . ' (' . __( 'debug.log only', 'inochi-pulso' ) . ')', $ev . "\n" . __( 'Only debug.log could be read: check the server log in the hosting panel too.', 'inochi-pulso' ) );
 		}
 		return self::auto( 'MAN-07', $value, $state, $ev );
+	}
+
+	/**
+	 * "Undefined constant ABSPATH" in a core file: the file was requested directly
+	 * (for example /wp-settings.php by a bot), not loaded by WordPress.
+	 *
+	 * @param string $line Log line.
+	 */
+	private static function is_direct_core_request( $line ) {
+		return (bool) preg_match( '/Undefined constant ["\']?ABSPATH/i', $line )
+			&& (bool) preg_match( '#[\\\\/](?:wp-settings\.php|wp-includes[\\\\/]|wp-admin[\\\\/])#', $line );
 	}
 }

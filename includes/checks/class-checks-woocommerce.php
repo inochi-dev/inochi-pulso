@@ -1,6 +1,6 @@
 <?php
 /**
- * WOO-01 to WOO-09.
+ * WOO-01 to WOO-03 and WOO-05 to WOO-09.
  *
  * @package InochiPulso
  */
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 
-	const CODES = array( 'WOO-01', 'WOO-02', 'WOO-03', 'WOO-04', 'WOO-05', 'WOO-06', 'WOO-07', 'WOO-08', 'WOO-09' );
+	const CODES = array( 'WOO-01', 'WOO-02', 'WOO-03', 'WOO-05', 'WOO-06', 'WOO-07', 'WOO-08', 'WOO-09' );
 
 	/**
 	 * Text variants chosen by the checks (code => key).
@@ -40,7 +40,7 @@ class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 		}
 		$findings       = array();
 		self::$variants = array();
-		foreach ( array( 'version_templates', 'hpos', 'pages', 'gateways', 'webhooks', 'stuck_orders', 'failed_actions', 'late_actions', 'sessions' ) as $m ) {
+		foreach ( array( 'version_templates', 'hpos', 'pages', 'webhooks', 'stuck_orders', 'failed_actions', 'late_actions', 'sessions' ) as $m ) {
 			try {
 				$findings[] = self::$m();
 			} catch ( Throwable $e ) {
@@ -225,41 +225,22 @@ class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 				$missing[] = $label;
 			}
 		}
+		$active_gw = 0;
+		foreach ( WC()->payment_gateways()->payment_gateways() as $gw ) {
+			$active_gw += 'yes' === $gw->enabled ? 1 : 0;
+		}
+		$sales = array( __( 'Cart', 'inochi-pulso' ), __( 'Checkout', 'inochi-pulso' ) );
+		if ( $missing && ! $active_gw && ! array_diff( $missing, $sales ) ) {
+			// No cart, no checkout and no payment gateway: the store is used as a catalogue.
+			$lines[] = __( 'No payment gateway is active: the store seems to work as a catalogue. If it should sell online, assign and publish these pages.', 'inochi-pulso' );
+			/* translators: %s: list of pages. */
+			return self::auto( 'WOO-03', sprintf( __( 'Catalogue without %s', 'inochi-pulso' ), implode( ', ', $missing ) ), 'Aviso', implode( "\n", $lines ) );
+		}
 		if ( $missing ) {
 			/* translators: %s: list of pages. */
 			return self::auto( 'WOO-03', sprintf( __( 'Missing or not published: %s', 'inochi-pulso' ), implode( ', ', $missing ) ), 'Fallo', implode( "\n", $lines ) );
 		}
 		return self::auto( 'WOO-03', __( 'The 4 pages assigned and published', 'inochi-pulso' ), 'OK', implode( "\n", $lines ) );
-	}
-
-	/**
-	 * WOO-04: active gateways and test mode (detected from the usual settings).
-	 */
-	private static function gateways() {
-		$active = array();
-		$test   = array();
-		foreach ( WC()->payment_gateways()->payment_gateways() as $id => $gw ) {
-			if ( 'yes' !== $gw->enabled ) {
-				continue;
-			}
-			$active[] = $id;
-			$settings = (array) $gw->settings;
-			foreach ( array( 'testmode', 'test_mode', 'sandbox', 'sandbox_mode', 'environment', 'mode', 'test', 'is_test_mode' ) as $k ) {
-				if ( isset( $settings[ $k ] ) && in_array( strtolower( (string) $settings[ $k ] ), array( 'yes', '1', 'true', 'sandbox', 'test', 'testing' ), true ) ) {
-					$test[] = $id;
-					break;
-				}
-			}
-		}
-		/* translators: %s: list of gateways. */
-		$value = $active ? sprintf( __( 'Active: %s', 'inochi-pulso' ), implode( ', ', $active ) ) : __( 'No active gateway', 'inochi-pulso' );
-		/* translators: %s: list of gateways. */
-		$ev = $value . ".\n" . ( $test ? sprintf( __( 'In test or sandbox mode: %s.', 'inochi-pulso' ), implode( ', ', $test ) ) : __( 'No test mode found in the usual settings: confirm it in each gateway (WooCommerce → Settings → Payments).', 'inochi-pulso' ) );
-		if ( $test ) {
-			/* translators: %s: list of gateways. */
-			return self::auto( 'WOO-04', $value . ' · ' . sprintf( __( 'in test mode: %s', 'inochi-pulso' ), implode( ', ', $test ) ), 'Fallo', $ev );
-		}
-		return self::partial( 'WOO-04', $value, $ev );
 	}
 
 	/**

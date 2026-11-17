@@ -1,7 +1,7 @@
 <?php
 /**
  * HTTP checks against the site itself (loopback):
- * REN-01 (TTFB), REN-05, SEG-07, SEG-08, SEG-09, SEG-12, SEG-13 and SEG-16.
+ * REN-01 (TTFB), REN-05, SEG-07, SEG-08, SEG-09, SEG-12 and SEG-13.
  *
  * Requests leave from the server itself: they measure server time without the
  * visitor's network, and they may skip the CDN if the server resolves its own
@@ -31,7 +31,7 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 		Inochi_Pulso_Util::extend_time( 180 );
 		$urls   = self::sample_urls();
 		$rows   = array();
-		$is_woo = Inochi_Pulso_Util::has_woocommerce();
+		$is_woo = Inochi_Pulso_Util::has_woocommerce() && ( isset( $urls['cart'] ) || isset( $urls['checkout'] ) ); // A catalogue without cart or checkout is measured like any site.
 		$errors = array();
 		foreach ( $urls as $key => $url ) {
 			$row = array(
@@ -49,7 +49,7 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 				$row['origin'][]  = $o['ttfb'];
 				$row['code']      = $v['code'];
 				if ( $v['error'] ) {
-					$errors[] = $label . ': ' . $v['error'];
+					$errors[] = $row['label'] . ': ' . $v['error'];
 				}
 				if ( $i > 0 ) {
 					$row['cache'] = self::cache_signal( $v['headers'] ) ?: $row['cache'];
@@ -141,7 +141,6 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 				self::debug_exposure(),
 				self::user_enumeration(),
 				self::xmlrpc(),
-				self::waf( $again, $cdn ),
 			),
 			'payload'  => array(),
 		);
@@ -191,8 +190,13 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 				)
 			);
 			$urls['single']   = $prod ? get_permalink( $prod[0] ) : home_url( '/' );
-			$urls['cart']     = wc_get_cart_url();
-			$urls['checkout'] = wc_get_checkout_url();
+			// Only pages that exist: without them WooCommerce returns the home page URL.
+			if ( wc_get_page_id( 'cart' ) > 0 ) {
+				$urls['cart'] = wc_get_cart_url();
+			}
+			if ( wc_get_page_id( 'checkout' ) > 0 ) {
+				$urls['checkout'] = wc_get_checkout_url();
+			}
 		} else {
 			$cats             = get_categories(
 				array(
@@ -272,14 +276,20 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 	 * @param array $h Headers.
 	 */
 	private static function cache_signal( array $h ) {
+		// A HIT in any layer wins: behind a CDN that does not cache HTML (DYNAMIC), the
+		// hosting's own page cache (Kinsta, SiteGround, nginx…) still answers HIT.
+		$first = '';
 		foreach ( array( 'cf-cache-status', 'x-cache', 'x-litespeed-cache', 'x-proxy-cache', 'x-cache-status', 'x-nginx-cache', 'x-fastcgi-cache', 'x-sg-cache', 'x-kinsta-cache', 'x-cache-enabled' ) as $name ) {
 			if ( isset( $h[ $name ] ) ) {
 				$val = strtoupper( $h[ $name ] );
 				if ( false !== strpos( $val, 'HIT' ) || 'TRUE' === $val ) {
 					return 'HIT (' . $name . ')';
 				}
-				return $val . ' (' . $name . ')';
+				$first = $first ? $first : $val . ' (' . $name . ')';
 			}
+		}
+		if ( $first ) {
+			return $first;
 		}
 		if ( isset( $h['age'] ) && (int) $h['age'] > 0 ) {
 			return 'HIT (age ' . (int) $h['age'] . ')';
@@ -414,15 +424,32 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 		$value .= ' · ' . ( $ok_redirect ? __( 'redirects', 'inochi-pulso' ) : __( 'redirect not confirmed', 'inochi-pulso' ) );
 		/* translators: %d: days until the certificate expires. */
 		$value .= null !== $days ? ' · ' . sprintf( __( 'certificate %d days', 'inochi-pulso' ), $days ) : '';
-		$value .= ' · ' . ( $hsts ? 'HSTS' : __( 'no HSTS', 'inochi-pulso' ) );
+		$value .= ' · ' . ( $hsts ? 'HSTS' : ( preg_match( '/\.(?:dev|app|page|new|day|foo|zip|mov|bank|insurance)$/i', $host ) ? __( 'HSTS preload by domain', 'inochi-pulso' ) : __( 'no HSTS', 'inochi-pulso' ) ) );
 		if ( $fail ) {
 			/* translators: %s: list of problems. */
 			return self::auto( 'SEG-07', $value, 'Fallo', sprintf( __( 'Fail: %s.', 'inochi-pulso' ), implode( ', ', $fail ) ) . "\n" . implode( "\n", $lines ) );
 		}
-		if ( null !== $days && $days <= 15 ) {
-			$lines[] = __( 'The certificate expires in 15 days or less: make sure it renews automatically.', 'inochi-pulso' );
+		$preload = (bool) preg_match( '/\.(?:dev|app|page|new|day|foo|zip|mov|bank|insurance)$/i', $host ); // TLDs on the browsers' HSTS preload list.
+		if ( ! $hsts && $preload ) {
+			$lines[] = __( 'Without the HSTS header, but the domain ending is on the browsers’ HSTS preload list: browsers only open it over HTTPS.', 'inochi-pulso' );
 		}
-		return self::partial( 'SEG-07', $value, implode( "\n", $lines ) );
+		$warn = array();
+		if ( ! $ok_redirect ) {
+			$warn[] = __( 'the redirect from http:// could not be confirmed', 'inochi-pulso' );
+		}
+		if ( null === $days ) {
+			$warn[] = __( 'the certificate could not be read', 'inochi-pulso' );
+		} elseif ( $days <= 15 ) {
+			$warn[] = __( 'the certificate expires in 15 days or less: make sure it renews automatically', 'inochi-pulso' );
+		}
+		if ( ! $hsts && ! $preload ) {
+			$warn[] = __( 'no HSTS', 'inochi-pulso' );
+		}
+		if ( $warn ) {
+			/* translators: %s: list of problems. */
+			return self::auto( 'SEG-07', $value, 'Aviso', sprintf( __( 'Warning: %s.', 'inochi-pulso' ), implode( ', ', $warn ) ) . "\n" . implode( "\n", $lines ) );
+		}
+		return self::auto( 'SEG-07', $value, 'OK', implode( "\n", $lines ) );
 	}
 
 	/**
@@ -594,40 +621,5 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 		return self::auto( 'SEG-13', __( 'XML-RPC open with no use detected', 'inochi-pulso' ), 'Aviso', $ev );
 	}
 
-	/**
-	 * SEG-16: firewall and login protection.
-	 *
-	 * @param array $again Home page response.
-	 * @param bool  $cdn   Through a CDN.
-	 */
-	private static function waf( array $again, $cdn ) {
-		$h   = $again['headers'];
-		$waf = array();
-		if ( isset( $h['cf-ray'] ) || ( isset( $h['server'] ) && false !== stripos( $h['server'], 'cloudflare' ) ) ) {
-			$waf[] = 'Cloudflare';
-		}
-		if ( isset( $h['x-sucuri-id'] ) || ( isset( $h['server'] ) && false !== stripos( $h['server'], 'sucuri' ) ) ) {
-			$waf[] = 'Sucuri';
-		}
-		$fw_plugins = Inochi_Pulso_Util::active_matching( Inochi_Pulso_Util::known( 'firewall' ) );
-		$waf        = array_merge( $waf, $fw_plugins );
 
-		$login      = Inochi_Pulso_Http_Probe::request( wp_login_url(), array( 'method' => 'HEAD' ) );
-		$loc        = $login['headers']['location'] ?? '';
-		$access     = false !== stripos( $loc, 'cloudflareaccess.com' );
-		$login_prot = Inochi_Pulso_Util::active_matching( Inochi_Pulso_Util::known( 'login' ) );
-		if ( $access ) {
-			$login_prot[] = 'Cloudflare Access';
-		}
-		$waf_txt   = $waf ? implode( ', ', array_unique( $waf ) ) : __( 'not detected', 'inochi-pulso' );
-		$login_txt = $login_prot ? implode( ', ', array_unique( $login_prot ) ) : __( 'no protection detected', 'inochi-pulso' );
-		/* translators: 1: firewall, 2: login protection. */
-		$ev = sprintf( __( 'Firewall: %1$s. Login protection: %2$s.', 'inochi-pulso' ), $waf_txt, $login_txt ) . "\nwp-login.php → HTTP " . $login['code'] . ( $loc ? ' → ' . wp_parse_url( $loc, PHP_URL_HOST ) : '' ) . ".\n" . self::loopback_note();
-		/* translators: 1: firewall, 2: login protection. */
-		$value = sprintf( __( 'Firewall: %1$s · login: %2$s', 'inochi-pulso' ), $waf_txt, $login_txt );
-		if ( $waf && $login_prot ) {
-			return self::auto( 'SEG-16', $value, 'OK', $ev );
-		}
-		return self::partial( 'SEG-16', $value, $ev . ' ' . __( 'A CDN or server rules can protect the site without leaving a signal here.', 'inochi-pulso' ) );
-	}
 }

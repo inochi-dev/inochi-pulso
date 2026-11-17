@@ -37,6 +37,17 @@ class Inochi_Pulso_Checks_Cost extends Inochi_Pulso_Checks_Base {
 	const GENERIC_PREF = array( 'wp_', 'the_', 'my_', 'site_', 'widget_', 'theme_', 'user_', 'db_', 'auto_', 'default_', 'page_', 'post_', 'use_', 'show_', 'can_', 'new_', 'old_', 'last_', 'cache_', 'get_', 'set_', 'is_', 'has_', 'option_', 'options_', 'settings_', 'data_', 'plugin_', 'plugins_', 'admin_', 'transient_' );
 
 	/**
+	 * Table name rules of well-known plugins (pattern on the name without prefix => plugin folders).
+	 * Only used when the code search gives no clear owner, and only if one of the folders is installed.
+	 */
+	const KNOWN_TABLES = array(
+		'/^icl_/'                    => array( 'sitepress-multilingual-cms' ),
+		'/^(?:wc_|woocommerce_)/'    => array( 'woocommerce' ),
+		'/^yoast_/'                  => array( 'wordpress-seo', 'wordpress-seo-premium' ),
+		'/^(?:wfls_|wf[a-z0-9]+$)/' => array( 'wordfence' ),
+	);
+
+	/**
 	 * WordPress core tables (without prefix). Content tables: their size is not a plugin cost.
 	 */
 	const CORE_TABLES = array( 'posts', 'postmeta', 'comments', 'commentmeta', 'terms', 'termmeta', 'term_taxonomy', 'term_relationships', 'options', 'links', 'users', 'usermeta', 'blogs', 'blogmeta', 'site', 'sitemeta', 'signups', 'registration_log', 'blog_versions' );
@@ -66,12 +77,16 @@ class Inochi_Pulso_Checks_Cost extends Inochi_Pulso_Checks_Base {
 
 		// 2. Search the installed code for the rest.
 		$needles = array();
+		$ci      = array(); // Table names: MySQL may store them in lower case while the code writes camelCase.
 		foreach ( $items as $item ) {
 			if ( empty( $item['owner'] ) && empty( $item['preset'] ) ) {
 				$needles[ $item['needle'] ] = true;
+				if ( 'table' === $item['type'] ) {
+					$ci[ $item['needle'] ] = true;
+				}
 			}
 		}
-		list( $full, $built, $complete ) = self::search( array_keys( $needles ) );
+		list( $full, $built, $complete ) = self::search( array_keys( $needles ), array_keys( $ci ) );
 
 		foreach ( $items as $i => $item ) {
 			if ( ! empty( $item['owner'] ) ) {
@@ -92,6 +107,13 @@ class Inochi_Pulso_Checks_Cost extends Inochi_Pulso_Checks_Base {
 			} else {
 				$items[ $i ]['owner'] = $complete ? self::KEY_LEFTOVERS : self::KEY_UNATTRIBUTED;
 				$items[ $i ]['how']   = $complete ? 'none' : 'incomplete';
+			}
+			if ( 'table' === $item['type'] && in_array( $items[ $i ]['owner'], array( self::KEY_UNATTRIBUTED, self::KEY_LEFTOVERS ), true ) ) {
+				$known = self::known_table_owner( $item['needle'], $plugins );
+				if ( '' !== $known ) {
+					$items[ $i ]['owner'] = $known;
+					$items[ $i ]['how']   = 'known';
+				}
 			}
 		}
 
@@ -400,6 +422,27 @@ class Inochi_Pulso_Checks_Cost extends Inochi_Pulso_Checks_Base {
 	}
 
 	/**
+	 * Owner of a table by the naming rule of a well-known plugin, if that plugin is installed.
+	 *
+	 * @param string $short   Table name without prefix.
+	 * @param array  $plugins Installed plugins.
+	 */
+	private static function known_table_owner( $short, array $plugins ) {
+		$short = strtolower( (string) $short );
+		foreach ( self::KNOWN_TABLES as $pattern => $slugs ) {
+			if ( preg_match( $pattern, $short ) ) {
+				foreach ( $slugs as $slug ) {
+					if ( isset( $plugins[ $slug ] ) ) {
+						return 'plugin:' . $slug;
+					}
+				}
+				return '';
+			}
+		}
+		return '';
+	}
+
+	/**
 	 * Picks an owner among candidates, or "Unattributed" when it is not clear.
 	 *
 	 * @param string[] $owners  Candidate owner keys.
@@ -474,9 +517,10 @@ class Inochi_Pulso_Checks_Cost extends Inochi_Pulso_Checks_Base {
 	 * Looks for each name in the installed code, owner by owner.
 	 *
 	 * @param string[] $needles Names.
+	 * @param string[] $ci      Names (among $needles) also matched without case: table names.
 	 * @return array{0: array, 1: array, 2: bool} full matches [name => [owner => true]], built-name matches, whether the search finished.
 	 */
-	private static function search( array $needles ) {
+	private static function search( array $needles, array $ci = array() ) {
 		$full  = array();
 		$built = array();
 		if ( ! $needles ) {
@@ -500,6 +544,13 @@ class Inochi_Pulso_Checks_Cost extends Inochi_Pulso_Checks_Base {
 				}
 				$read += self::tokens( $file, $tokens, $pref, $odd, $full, $owner );
 			}
+			$lower = $ci ? array_change_key_case( $tokens, CASE_LOWER ) : array();
+			foreach ( $ci as $n ) {
+				if ( ! isset( $tokens[ $n ] ) && isset( $lower[ strtolower( $n ) ] ) ) {
+					$full[ $n ][ $owner ] = true;
+				}
+			}
+			unset( $lower );
 			foreach ( $needles as $n ) {
 				if ( isset( $tokens[ $n ] ) ) {
 					$full[ $n ][ $owner ] = true;
@@ -902,6 +953,7 @@ class Inochi_Pulso_Checks_Cost extends Inochi_Pulso_Checks_Base {
 			'widget'     => __( 'registered widget', 'inochi-pulso' ),
 			'group'      => __( 'action group named like the plugin', 'inochi-pulso' ),
 			'shared'     => __( 'Action Scheduler table, shared by several plugins', 'inochi-pulso' ),
+			'known'      => __( 'table name rule of the plugin', 'inochi-pulso' ),
 			'none'       => __( 'not found in the installed code', 'inochi-pulso' ),
 			'incomplete' => __( 'search stopped at the limit', 'inochi-pulso' ),
 		);

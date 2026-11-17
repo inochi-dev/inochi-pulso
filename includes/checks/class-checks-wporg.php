@@ -20,6 +20,11 @@ class Inochi_Pulso_Checks_WPOrg extends Inochi_Pulso_Checks_Base {
 	const STEP_SECONDS = 15;
 
 	/**
+	 * Premium plugins whose folder name matches a plugin closed (or different) on WordPress.org.
+	 */
+	const PREMIUM = array( 'sitepress-multilingual-cms', 'wpml-string-translation', 'wpml-translation-management', 'wpml-media-translation', 'woocommerce-multilingual', 'revslider', 'js_composer', 'fusion-builder', 'fusion-core', 'gravityforms', 'wp-rocket', 'elementor-pro', 'layerslider', 'bricks', 'perfmatters', 'advanced-custom-fields-pro', 'wpforms', 'searchwp', 'facetwp', 'facetwp-i18n', 'admin-columns-pro', 'wp-all-import-pro', 'wp-all-export-pro', 'gp-premium', 'astra-addon', 'ultimate-elementor', 'essential-grid', 'the7-elements', 'dt-the7-core', 'envato-market' );
+
+	/**
 	 * Scan step. It can ask for more rounds ("again") when there are many plugins.
 	 *
 	 * @param array $scan_payload Data already gathered (needs "plugins" from the security step).
@@ -116,14 +121,19 @@ class Inochi_Pulso_Checks_WPOrg extends Inochi_Pulso_Checks_Base {
 	 * @param array $cache   slug => status on WordPress.org.
 	 */
 	private static function summarise( array $plugins, array $cache ) {
-		$closed = array();
-		$old    = array();
-		$rows   = array();
-		$errors = 0;
+		$closed  = array();
+		$premium = array();
+		$old     = array();
+		$rows    = array();
+		$errors  = 0;
+		$local   = Inochi_Pulso_Util::plugins();
 		foreach ( $plugins as $p ) {
 			$slug = sanitize_key( $p['slug'] ?? '' );
 			$info = $cache[ $slug ] ?? array( 'status' => 'error' );
-			if ( 'closed' === $info['status'] ) {
+			if ( 'closed' === $info['status'] && self::is_other_plugin( $slug, (string) ( $info['date'] ?? '' ), $local[ $slug ]['file'] ?? '' ) ) {
+				$p['wporg'] = 'other';
+				$premium[]  = $slug . ( empty( $info['date'] ) ? '' : ' (' . $info['date'] . ')' );
+			} elseif ( 'closed' === $info['status'] ) {
 				$p['wporg'] = 'closed';
 				$closed[]   = $slug;
 			} elseif ( 'ok' === $info['status'] ) {
@@ -143,7 +153,11 @@ class Inochi_Pulso_Checks_WPOrg extends Inochi_Pulso_Checks_Base {
 		$lines = array();
 		foreach ( $closed as $s ) {
 			/* translators: %s: plugin slug. */
-			$lines[] = sprintf( __( 'Closed: %s', 'inochi-pulso' ), $s ) . ( empty( $cache[ $s ]['date'] ) ? '' : ' (' . $cache[ $s ]['date'] . ')' ) . ( empty( $cache[ $s ]['reason'] ) ? '' : ' — ' . $cache[ $s ]['reason'] );
+			$lines[] = sprintf( __( 'Closed: %s', 'inochi-pulso' ), $s ) . ( empty( $cache[ $s ]['date'] ) ? '' : ' (' . $cache[ $s ]['date'] . ')' ) . ( empty( $cache[ $s ]['reason'] ) || 'Unknown' === $cache[ $s ]['reason'] ? '' : ' — ' . $cache[ $s ]['reason'] );
+		}
+		foreach ( $premium as $s ) {
+			/* translators: %s: plugin slug and closing date. */
+			$lines[] = sprintf( __( 'Not counted as closed: %s. It is a premium plugin, or one updated outside WordPress.org, with the same folder name as a plugin closed there years ago.', 'inochi-pulso' ), $s );
 		}
 		foreach ( $old as $s ) {
 			/* translators: %s: plugin slug and date. */
@@ -174,5 +188,27 @@ class Inochi_Pulso_Checks_WPOrg extends Inochi_Pulso_Checks_Base {
 			'findings' => array( self::auto( 'SEG-03', $value, $state, implode( "\n", $lines ) ) ),
 			'payload'  => array( 'plugins' => $rows ),
 		);
+	}
+
+	/**
+	 * A plugin closed on WordPress.org that is not the installed one: a known premium
+	 * plugin with the same folder name, or a plugin closed more than 3 years ago whose
+	 * installed code changed more than a year after the closing date (so it is updated
+	 * from somewhere else).
+	 *
+	 * @param string $slug   Folder name.
+	 * @param string $closed Closing date on WordPress.org.
+	 * @param string $file   Main file, relative to the plugins folder.
+	 */
+	private static function is_other_plugin( $slug, $closed, $file ) {
+		if ( in_array( $slug, self::PREMIUM, true ) ) {
+			return true;
+		}
+		$ts = strtotime( $closed );
+		if ( ! $ts || $ts > time() - 3 * YEAR_IN_SECONDS || '' === $file ) {
+			return false;
+		}
+		$mtime = @filemtime( WP_PLUGIN_DIR . '/' . $file ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- missing file means no evidence.
+		return $mtime && $mtime > $ts + YEAR_IN_SECONDS;
 	}
 }

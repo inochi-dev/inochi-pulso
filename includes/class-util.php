@@ -237,10 +237,7 @@ class Inochi_Pulso_Util {
 	public static function known( $group ) {
 		$lists = array(
 			'cache'    => array( 'wp-rocket', 'w3-total-cache', 'wp-super-cache', 'litespeed-cache', 'wp-fastest-cache', 'sg-cachepress', 'breeze', 'cache-enabler', 'hummingbird-performance', 'wp-optimize', 'swift-performance', 'nitropack', 'flying-press', 'powered-cache', 'comet-cache', 'cloudflare' ),
-			'login'    => array( 'wordfence', 'better-wp-security', 'ithemes-security', 'solid-security', 'all-in-one-wp-security-and-firewall', 'limit-login-attempts-reloaded', 'limit-login-attempts', 'loginizer', 'wp-cerber', 'shield-security', 'wp-defender', 'login-lockdown', 'secupress', 'jetpack' ),
 			'twofa'    => array( 'two-factor', 'wp-2fa', 'wordfence', 'google-authenticator', 'miniorange-2-factor-authentication', 'better-wp-security', 'ithemes-security', 'solid-security', 'wp-defender', 'shield-security', 'all-in-one-wp-security-and-firewall', 'two-factor-authentication', 'secupress' ),
-			'backup'   => array( 'updraftplus', 'backwpup', 'duplicator', 'all-in-one-wp-migration', 'wpvivid-backuprestore', 'blogvault-real-time-backup', 'backupbuddy', 'solid-backups', 'backup-backup', 'jetpack', 'xcloner-backup-and-restore', 'boldgrid-backup', 'backup', 'wp-time-capsule', 'mainwp-child', 'managewp' ),
-			'firewall' => array( 'wordfence', 'ninjafirewall', 'all-in-one-wp-security-and-firewall', 'shield-security', 'wp-cerber', 'secupress', 'sucuri-scanner', 'better-wp-security', 'solid-security' ),
 		);
 		return $lists[ $group ] ?? array();
 	}
