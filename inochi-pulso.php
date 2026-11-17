@@ -30,7 +30,7 @@ require_once INOCHI_PULSO_DIR . 'includes/class-http-probe.php';
 require_once INOCHI_PULSO_DIR . 'includes/checks/class-checks-base.php';
 require_once INOCHI_PULSO_DIR . 'includes/checks/class-checks-general.php';
 require_once INOCHI_PULSO_DIR . 'includes/checks/class-checks-database.php';
-require_once INOCHI_PULSO_DIR . 'includes/checks/class-checks-autoload.php';
+require_once INOCHI_PULSO_DIR . 'includes/checks/class-checks-cost.php';
 require_once INOCHI_PULSO_DIR . 'includes/checks/class-checks-runtime.php';
 require_once INOCHI_PULSO_DIR . 'includes/checks/class-checks-http.php';
 require_once INOCHI_PULSO_DIR . 'includes/checks/class-checks-security.php';
@@ -45,15 +45,25 @@ require_once INOCHI_PULSO_DIR . 'includes/class-scanner.php';
 require_once INOCHI_PULSO_DIR . 'includes/class-export.php';
 require_once INOCHI_PULSO_DIR . 'includes/class-rest.php';
 require_once INOCHI_PULSO_DIR . 'includes/class-admin.php';
+require_once INOCHI_PULSO_DIR . 'includes/class-site-health.php';
 
 register_activation_hook( __FILE__, array( 'Inochi_Pulso_DB', 'install' ) );
+
+add_action(
+	'init',
+	static function () {
+		// Bundled translations (es_ES) until they are available on translate.wordpress.org.
+		load_plugin_textdomain( 'inochi-pulso', false, dirname( plugin_basename( INOCHI_PULSO_FILE ) ) . '/languages' );
+	}
+);
 
 add_action(
 	'plugins_loaded',
 	static function () {
 		Inochi_Pulso_REST::init();
+		Inochi_Pulso_Site_Health::init();
 		if ( is_admin() ) {
-			Inochi_Pulso_DB::maybe_upgrade(); // Solo en el escritorio: ninguna consulta extra en la web pública.
+			Inochi_Pulso_DB::maybe_upgrade(); // Only in the dashboard: no extra query on the public site.
 			Inochi_Pulso_Admin::init();
 		}
 	}

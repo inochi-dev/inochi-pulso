@@ -1,6 +1,9 @@
 <?php
 /**
- * Catálogo de comprobaciones de la versión 1.0, puntuación y prioridad.
+ * Checks of version 1.0, scoring and priority.
+ *
+ * State, area and severity keys are internal identifiers (stored with each result);
+ * the labels shown to the user come from the *_label() methods.
  *
  * @package InochiPulso
  */
@@ -8,7 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Catálogo y puntuación.
+ * Catalog and scoring.
  */
 class Inochi_Pulso_Catalog {
 
@@ -39,37 +42,151 @@ class Inochi_Pulso_Catalog {
 	);
 	const STATES       = array( 'OK', 'Aviso', 'Fallo', 'N.A.', 'Sin datos' );
 	const NO_DATA      = 'Sin datos';
-	const SCORE_K      = 60; // Puntuación de área = 100 × K / (K + penalizaciones): cada problema resta menos y nunca llega a 0.
+	const SCORE_K      = 60; // Area score = 100 × K / (K + penalties): each problem takes away less and it never reaches 0.
 	const SEVERITY_ORD = array(
 		'Crítica' => 4,
 		'Alta'    => 3,
 		'Media'   => 2,
 		'Baja'    => 1,
 	);
-
-	const PHASES = array(
-		'urgente'        => 'Urgente',
-		'estabilizacion' => 'Estabilización',
-		'mejora'         => 'Mejora',
-	);
+	const PHASES       = array( 'urgente', 'estabilizacion', 'mejora' );
 
 	/**
-	 * Catálogo del plugin (data/checks.json).
+	 * Checks: code => area, severity, name.
 	 */
-	public static function map() {
-		static $map = null;
-		if ( null === $map ) {
-			$map = json_decode( (string) file_get_contents( INOCHI_PULSO_DIR . 'data/checks.json' ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- archivo local del plugin.
-			$map = is_array( $map ) ? $map : array();
-		}
-		return $map;
+	private static function data() {
+		return array(
+			'REN-01' => array( 'Rendimiento', 'Alta', __( 'Server response time (TTFB)', 'inochi-pulso' ) ),
+			'REN-05' => array( 'Rendimiento', 'Alta', __( 'Page cache', 'inochi-pulso' ) ),
+			'REN-06' => array( 'Rendimiento', 'Media', __( 'Persistent object cache', 'inochi-pulso' ) ),
+			'REN-07' => array( 'Rendimiento', 'Alta', __( 'Total autoload size', 'inochi-pulso' ) ),
+			'REN-08' => array( 'Rendimiento', 'Media', __( 'Autoload from inactive or deleted plugins', 'inochi-pulso' ) ),
+			'REN-09' => array( 'Rendimiento', 'Media', __( 'Largest tables (logs, sessions, leftovers)', 'inochi-pulso' ) ),
+			'REN-10' => array( 'Rendimiento', 'Baja', __( 'Expired transients', 'inochi-pulso' ) ),
+			'REN-11' => array( 'Rendimiento', 'Baja', __( 'Post revisions', 'inochi-pulso' ) ),
+			'REN-12' => array( 'Rendimiento', 'Media', __( 'Cron: late and orphaned events', 'inochi-pulso' ) ),
+			'REN-14' => array( 'Rendimiento', 'Media', __( 'PHP settings (memory_limit, OPcache)', 'inochi-pulso' ) ),
+			'REN-16' => array( 'Rendimiento', 'Baja', __( 'Number of active plugins', 'inochi-pulso' ) ),
+			'SEG-01' => array( 'Seguridad', 'Alta', __( 'Pending updates', 'inochi-pulso' ) ),
+			'SEG-03' => array( 'Seguridad', 'Alta', __( 'Plugins abandoned or closed on WordPress.org', 'inochi-pulso' ) ),
+			'SEG-04' => array( 'Seguridad', 'Alta', __( 'Plugins from outside WordPress.org', 'inochi-pulso' ) ),
+			'SEG-06' => array( 'Seguridad', 'Alta', __( 'Supported PHP version', 'inochi-pulso' ) ),
+			'SEG-07' => array( 'Seguridad', 'Alta', __( 'HTTPS (redirect, certificate, HSTS)', 'inochi-pulso' ) ),
+			'SEG-08' => array( 'Seguridad', 'Baja', __( 'Security headers', 'inochi-pulso' ) ),
+			'SEG-09' => array( 'Seguridad', 'Alta', __( 'Exposed debugging (errors on screen, debug.log)', 'inochi-pulso' ) ),
+			'SEG-10' => array( 'Seguridad', 'Media', __( 'Dashboard file editor', 'inochi-pulso' ) ),
+			'SEG-11' => array( 'Seguridad', 'Alta', __( 'Administrator accounts', 'inochi-pulso' ) ),
+			'SEG-12' => array( 'Seguridad', 'Baja', __( 'User enumeration', 'inochi-pulso' ) ),
+			'SEG-13' => array( 'Seguridad', 'Baja', __( 'XML-RPC', 'inochi-pulso' ) ),
+			'SEG-14' => array( 'Seguridad', 'Alta', __( 'File permissions', 'inochi-pulso' ) ),
+			'SEG-15' => array( 'Seguridad', 'Crítica', __( 'Leftover files reachable from the web (.sql, .zip, info.php)', 'inochi-pulso' ) ),
+			'SEG-16' => array( 'Seguridad', 'Media', __( 'Login protection and firewall', 'inochi-pulso' ) ),
+			'WOO-01' => array( 'WooCommerce', 'Media', __( 'WooCommerce version and overridden templates', 'inochi-pulso' ) ),
+			'WOO-02' => array( 'WooCommerce', 'Baja', __( 'HPOS and order sync', 'inochi-pulso' ) ),
+			'WOO-03' => array( 'WooCommerce', 'Alta', __( 'WooCommerce pages assigned', 'inochi-pulso' ) ),
+			'WOO-04' => array( 'WooCommerce', 'Alta', __( 'Payment gateways', 'inochi-pulso' ) ),
+			'WOO-05' => array( 'WooCommerce', 'Alta', __( 'Failing webhooks', 'inochi-pulso' ) ),
+			'WOO-06' => array( 'WooCommerce', 'Media', __( 'Stuck orders (processing or on hold > 7 days)', 'inochi-pulso' ) ),
+			'WOO-07' => array( 'WooCommerce', 'Alta', __( 'Failed scheduled actions (30 days)', 'inochi-pulso' ) ),
+			'WOO-08' => array( 'WooCommerce', 'Alta', __( 'Scheduled actions late > 1 h', 'inochi-pulso' ) ),
+			'WOO-09' => array( 'WooCommerce', 'Baja', __( 'Expired sessions', 'inochi-pulso' ) ),
+			'MAN-01' => array( 'Mantenimiento', 'Alta', __( 'Backup system', 'inochi-pulso' ) ),
+			'MAN-06' => array( 'Mantenimiento', 'Baja', __( 'Automatic updates', 'inochi-pulso' ) ),
+			'MAN-07' => array( 'Mantenimiento', 'Alta', __( 'Recurring PHP errors (7 days)', 'inochi-pulso' ) ),
+		);
 	}
 
 	/**
-	 * Fase de un hallazgo: urgente (crítica con Fallo), estabilización (alta con Fallo) o mejora.
+	 * Checks indexed by code: code, area, name, severity.
+	 */
+	public static function all() {
+		$all = array();
+		foreach ( self::data() as $code => $c ) {
+			$all[ $code ] = array(
+				'code'     => $code,
+				'area'     => $c[0],
+				'severity' => $c[1],
+				'name'     => $c[2],
+			);
+		}
+		return $all;
+	}
+
+	/**
+	 * One check.
 	 *
-	 * @param string $code  Código.
-	 * @param string $state Estado.
+	 * @param string $code Code.
+	 */
+	public static function get( $code ) {
+		$all = self::all();
+		return $all[ $code ] ?? null;
+	}
+
+	/**
+	 * Label of a state.
+	 *
+	 * @param string $state State key.
+	 */
+	public static function state_label( $state ) {
+		$labels = array(
+			'OK'        => _x( 'OK', 'check state', 'inochi-pulso' ),
+			'Aviso'     => _x( 'Warning', 'check state', 'inochi-pulso' ),
+			'Fallo'     => _x( 'Fail', 'check state', 'inochi-pulso' ),
+			'N.A.'      => _x( 'N/A', 'check state', 'inochi-pulso' ),
+			'Sin datos' => _x( 'No data', 'check state', 'inochi-pulso' ),
+		);
+		return $labels[ $state ] ?? (string) $state;
+	}
+
+	/**
+	 * Label of an area.
+	 *
+	 * @param string $area Area key.
+	 */
+	public static function area_label( $area ) {
+		$labels = array(
+			'Rendimiento'   => __( 'Performance', 'inochi-pulso' ),
+			'Seguridad'     => __( 'Security', 'inochi-pulso' ),
+			'WooCommerce'   => __( 'WooCommerce', 'inochi-pulso' ),
+			'Mantenimiento' => __( 'Maintenance', 'inochi-pulso' ),
+		);
+		return $labels[ $area ] ?? (string) $area;
+	}
+
+	/**
+	 * Label of a severity.
+	 *
+	 * @param string $severity Severity key.
+	 */
+	public static function severity_label( $severity ) {
+		$labels = array(
+			'Crítica' => __( 'Critical', 'inochi-pulso' ),
+			'Alta'    => __( 'High', 'inochi-pulso' ),
+			'Media'   => __( 'Medium', 'inochi-pulso' ),
+			'Baja'    => __( 'Low', 'inochi-pulso' ),
+		);
+		return $labels[ $severity ] ?? (string) $severity;
+	}
+
+	/**
+	 * Label of a priority phase.
+	 *
+	 * @param string $phase Phase key.
+	 */
+	public static function phase_label( $phase ) {
+		$labels = array(
+			'urgente'        => __( 'Urgent', 'inochi-pulso' ),
+			'estabilizacion' => __( 'Stabilisation', 'inochi-pulso' ),
+			'mejora'         => __( 'Improvement', 'inochi-pulso' ),
+		);
+		return $labels[ $phase ] ?? (string) $phase;
+	}
+
+	/**
+	 * Phase of a finding: urgent (critical with Fail), stabilisation (high with Fail) or improvement.
+	 *
+	 * @param string $code  Code.
+	 * @param string $state State.
 	 */
 	public static function phase( $code, $state ) {
 		$c = self::get( $code );
@@ -83,29 +200,10 @@ class Inochi_Pulso_Catalog {
 	}
 
 	/**
-	 * Comprobaciones indexadas por código: code, area, name, threshold, severity.
-	 */
-	public static function all() {
-		static $all = null;
-		if ( null === $all ) {
-			$all = array();
-			foreach ( (array) ( self::map()['catalog'] ?? array() ) as $c ) {
-				$all[ $c['code'] ] = $c;
-			}
-		}
-		return $all;
-	}
-
-	/**
-	 * Una comprobación.
-	 */
-	public static function get( $code ) {
-		$all = self::all();
-		return $all[ $code ] ?? null;
-	}
-
-	/**
-	 * Penalización de una comprobación según su estado.
+	 * Penalty of a check by state.
+	 *
+	 * @param string $severity Severity.
+	 * @param string $state    State.
 	 */
 	public static function penalty( $severity, $state ) {
 		$base = self::PENALTY[ $severity ] ?? 0;
@@ -119,34 +217,20 @@ class Inochi_Pulso_Catalog {
 	}
 
 	/**
-	 * Puntuación de un área a partir de la suma de penalizaciones.
+	 * Area score from the sum of penalties.
 	 *
-	 * @param float $penalty Penalizaciones.
+	 * @param float $penalty Penalties.
 	 */
 	public static function area_score( $penalty ) {
 		return (int) round( 100 * self::SCORE_K / ( self::SCORE_K + max( 0, (float) $penalty ) ) );
 	}
 
 	/**
-	 * Objetivo legible a partir del umbral («OK …» → «…»).
-	 *
-	 * @param string $code Código.
-	 */
-	public static function target( $code ) {
-		$c = self::get( $code );
-		if ( ! $c || ! preg_match( '/^OK\s+([^·]+)/u', (string) $c['threshold'], $m ) ) {
-			return '';
-		}
-		$t = trim( $m[1] );
-		return function_exists( 'mb_strtoupper' ) ? mb_strtoupper( mb_substr( $t, 0, 1 ) ) . mb_substr( $t, 1 ) : ucfirst( $t );
-	}
-
-	/**
-	 * Puntuación por área y global.
+	 * Score per area and global.
 	 *
 	 * @param array $findings code => ['state' => …].
-	 * @param bool  $is_woo   Hay WooCommerce.
-	 * @return array{areas: array, global: int|null, pending: int, fails: int, warns: int, nodata: int}
+	 * @param bool  $is_woo   WooCommerce is active.
+	 * @return array{areas: array, global: int|null, fails: int, warns: int, nodata: int}
 	 */
 	public static function score( array $findings, $is_woo ) {
 		$areas = array();
@@ -157,23 +241,18 @@ class Inochi_Pulso_Catalog {
 				'penalty' => 0,
 				'fails'   => 0,
 				'warns'   => 0,
-				'pending' => 0,
 				'nodata'  => 0,
 				'score'   => null,
 			);
 		}
 		foreach ( self::all() as $code => $c ) {
 			$area  = $c['area'];
-			$state = $findings[ $code ]['state'] ?? '';
+			$state = (string) ( $findings[ $code ]['state'] ?? '' );
 			if ( ! isset( $areas[ $area ] ) || ! $areas[ $area ]['applies'] ) {
 				continue;
 			}
-			if ( '' === $state ) {
-				++$areas[ $area ]['pending'];
-				continue;
-			}
-			if ( self::NO_DATA === $state ) {
-				++$areas[ $area ]['nodata'];
+			if ( '' === $state || self::NO_DATA === $state ) {
+				++$areas[ $area ]['nodata']; // Without a decided state there is no data: it does not score.
 				continue;
 			}
 			$areas[ $area ]['penalty'] += self::penalty( $c['severity'], $state );
@@ -186,10 +265,9 @@ class Inochi_Pulso_Catalog {
 		$sum_w  = 0;
 		$sum_s  = 0;
 		$totals = array(
-			'pending' => 0,
-			'fails'   => 0,
-			'warns'   => 0,
-			'nodata'  => 0,
+			'fails'  => 0,
+			'warns'  => 0,
+			'nodata' => 0,
 		);
 		foreach ( $areas as $name => $a ) {
 			if ( ! $a['applies'] ) {
@@ -198,7 +276,6 @@ class Inochi_Pulso_Catalog {
 			$areas[ $name ]['score'] = self::area_score( $a['penalty'] );
 			$sum_w                  += $a['weight'];
 			$sum_s                  += $areas[ $name ]['score'] * $a['weight'];
-			$totals['pending']      += $a['pending'];
 			$totals['fails']        += $a['fails'];
 			$totals['warns']        += $a['warns'];
 			$totals['nodata']       += $a['nodata'];
@@ -213,10 +290,10 @@ class Inochi_Pulso_Catalog {
 	}
 
 	/**
-	 * Orden sugerido de hallazgos: críticos con Fallo primero, después por penalización y esfuerzo.
+	 * Suggested order of findings: critical with Fail first, then by penalty and effort.
 	 *
 	 * @param array $findings code => finding.
-	 * @return string[] Códigos ordenados (solo Fallo y Aviso).
+	 * @return string[] Codes in order (only Fail and Warning).
 	 */
 	public static function rank( array $findings ) {
 		$items = array();
@@ -225,12 +302,11 @@ class Inochi_Pulso_Catalog {
 			if ( ! $c || ! in_array( $f['state'] ?? '', array( 'Fallo', 'Aviso' ), true ) ) {
 				continue;
 			}
-			$k       = Inochi_Pulso_Knowledge::finding( $code, $f['state'] );
 			$items[] = array(
 				'code'     => $code,
 				'critical' => ( 'Crítica' === $c['severity'] && 'Fallo' === $f['state'] ) ? 1 : 0,
 				'pen'      => self::penalty( $c['severity'], $f['state'] ),
-				'hours'    => $k ? (float) $k['hours'] : 4,
+				'hours'    => Inochi_Pulso_Knowledge::hours( $code ),
 			);
 		}
 		usort(

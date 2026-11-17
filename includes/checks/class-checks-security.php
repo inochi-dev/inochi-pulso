@@ -1,9 +1,9 @@
 <?php
 /**
- * SEG-01, SEG-04 (parcial), SEG-11 e inventario de plugins.
+ * SEG-01, SEG-04, SEG-11 and the plugin list.
  *
- * Usa los datos de actualizaciones que WordPress ya guarda tras su última
- * comprobación: Pulso no consulta WordPress.org.
+ * Uses the update data WordPress already stores after its last check:
+ * this step does not contact WordPress.org.
  *
  * @package InochiPulso
  */
@@ -11,12 +11,12 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Comprobaciones de seguridad sin red.
+ * Security checks without network.
  */
 class Inochi_Pulso_Checks_Security extends Inochi_Pulso_Checks_Base {
 
 	/**
-	 * Ejecuta el paso.
+	 * Runs the step.
 	 */
 	public static function run() {
 		$plugins = Inochi_Pulso_Util::plugins();
@@ -24,12 +24,10 @@ class Inochi_Pulso_Checks_Security extends Inochi_Pulso_Checks_Base {
 		$rows    = array();
 		$not_org = array();
 		foreach ( $plugins as $slug => $p ) {
-			$file   = $p['file'];
-			$item   = null;
-			$update = '';
+			$file = $p['file'];
+			$item = null;
 			if ( is_object( $updates ) && isset( $updates->response[ $file ] ) ) {
-				$item   = $updates->response[ $file ];
-				$update = (string) ( $item->new_version ?? '' );
+				$item = $updates->response[ $file ];
 			} elseif ( is_object( $updates ) && isset( $updates->no_update[ $file ] ) ) {
 				$item = $updates->no_update[ $file ];
 			}
@@ -39,11 +37,8 @@ class Inochi_Pulso_Checks_Security extends Inochi_Pulso_Checks_Base {
 			}
 			$rows[] = array(
 				'slug'    => $slug,
-				'active'  => $p['active'] ? 'Sí' : 'No',
+				'active'  => $p['active'],
 				'version' => $p['version'],
-				'update'  => $update,
-				'origin'  => $org ? 'WordPress.org' : '',
-				'note'    => $org ? '' : ( is_object( $updates ) && ! empty( $updates->checked ) ? 'No figura en WordPress.org: premium, a medida o cerrado (SEG-03/04)' : '' ),
 			);
 		}
 
@@ -53,39 +48,16 @@ class Inochi_Pulso_Checks_Security extends Inochi_Pulso_Checks_Base {
 				self::outside_repo( $not_org, $updates ),
 				self::admins(),
 			),
-			'payload'  => array(
-				'plugins' => $rows,
-				'themes'  => self::themes(),
-			),
+			'payload'  => array( 'plugins' => $rows ),
 		);
 	}
 
 	/**
-	 * Tema activo y, si existe, su tema padre: slug y versión.
-	 */
-	private static function themes() {
-		$out    = array();
-		$theme  = wp_get_theme();
-		$out[]  = array(
-			'slug'    => $theme->get_stylesheet(),
-			'name'    => $theme->get( 'Name' ),
-			'version' => $theme->get( 'Version' ),
-			'role'    => 'activo',
-		);
-		$parent = $theme->parent();
-		if ( $parent ) {
-			$out[] = array(
-				'slug'    => $parent->get_stylesheet(),
-				'name'    => $parent->get( 'Name' ),
-				'version' => $parent->get( 'Version' ),
-				'role'    => 'padre',
-			);
-		}
-		return $out;
-	}
-
-	/**
-	 * ¿Cambia la versión mayor? $segments = 1 compara x, 2 compara x.y.
+	 * Does the major version change? $segments = 1 compares x, 2 compares x.y.
+	 *
+	 * @param string $from     From version.
+	 * @param string $to       To version.
+	 * @param int    $segments Segments.
 	 */
 	private static function is_major( $from, $to, $segments = 1 ) {
 		$a = array_slice( explode( '.', (string) $from ), 0, $segments );
@@ -94,7 +66,10 @@ class Inochi_Pulso_Checks_Security extends Inochi_Pulso_Checks_Base {
 	}
 
 	/**
-	 * SEG-01: actualizaciones pendientes según la última comprobación de WordPress.
+	 * SEG-01: pending updates according to the last WordPress check.
+	 *
+	 * @param array  $plugins Installed plugins.
+	 * @param object $updates update_plugins transient.
 	 */
 	private static function pending_updates( array $plugins, $updates ) {
 		global $wp_version;
@@ -102,6 +77,7 @@ class Inochi_Pulso_Checks_Security extends Inochi_Pulso_Checks_Base {
 		$themes  = get_site_transient( 'update_themes' );
 		$checked = is_object( $updates ) && ! empty( $updates->last_checked ) ? (int) $updates->last_checked : 0;
 		$stale   = ! $checked || $checked < time() - 7 * DAY_IN_SECONDS;
+		$major_s = ' (' . __( 'major', 'inochi-pulso' ) . ')';
 
 		$lines = array();
 		$major = false;
@@ -120,7 +96,7 @@ class Inochi_Pulso_Checks_Security extends Inochi_Pulso_Checks_Base {
 			++$count;
 			$is_major = self::is_major( $wp_version, $core_new, 2 );
 			$major    = $major || $is_major;
-			$lines[]  = sprintf( 'WordPress %s → %s%s', $wp_version, $core_new, $is_major ? ' (mayor)' : '' );
+			$lines[]  = sprintf( 'WordPress %s → %s%s', $wp_version, $core_new, $is_major ? $major_s : '' );
 		}
 		if ( is_object( $updates ) && ! empty( $updates->response ) ) {
 			foreach ( $updates->response as $file => $item ) {
@@ -130,7 +106,8 @@ class Inochi_Pulso_Checks_Security extends Inochi_Pulso_Checks_Base {
 				$is    = self::is_major( $from, $to, 1 );
 				$major = $major || $is;
 				++$count;
-				$lines[] = sprintf( 'Plugin %s %s → %s%s', $slug, $from, $to, $is ? ' (mayor)' : '' );
+				/* translators: 1: plugin, 2: version, 3: new version. */
+				$lines[] = sprintf( __( 'Plugin %1$s %2$s → %3$s', 'inochi-pulso' ), $slug, $from, $to ) . ( $is ? $major_s : '' );
 			}
 		}
 		if ( is_object( $themes ) && ! empty( $themes->response ) ) {
@@ -140,33 +117,47 @@ class Inochi_Pulso_Checks_Security extends Inochi_Pulso_Checks_Base {
 				$is    = self::is_major( $theme->get( 'Version' ), $to, 1 );
 				$major = $major || $is;
 				++$count;
-				$lines[] = sprintf( 'Tema %s %s → %s%s', $stylesheet, $theme->get( 'Version' ), $to, $is ? ' (mayor)' : '' );
+				/* translators: 1: theme, 2: version, 3: new version. */
+				$lines[] = sprintf( __( 'Theme %1$s %2$s → %3$s', 'inochi-pulso' ), $stylesheet, $theme->get( 'Version' ), $to ) . ( $is ? $major_s : '' );
 			}
 		}
-		$when  = $checked ? gmdate( 'Y-m-d H:i', $checked ) . ' UTC' : 'nunca';
-		$ev    = 'Según la última comprobación de actualizaciones de WordPress (' . $when . "):\n" . ( $lines ? implode( "\n", $lines ) : 'Sin actualizaciones pendientes.' );
-		$value = $count ? sprintf( '%d actualizaciones pendientes%s', $count, $major ? ', alguna mayor' : '' ) : 'Todo al día';
+		$when = $checked ? gmdate( 'Y-m-d H:i', $checked ) . ' UTC' : __( 'never', 'inochi-pulso' );
+		/* translators: %s: date of the last update check. */
+		$ev = sprintf( __( 'According to the last WordPress update check (%s):', 'inochi-pulso' ), $when ) . "\n" . ( $lines ? implode( "\n", $lines ) : __( 'No pending updates.', 'inochi-pulso' ) );
+		if ( $count ) {
+			/* translators: %d: number of pending updates. */
+			$value = sprintf( _n( '%d pending update', '%d pending updates', $count, 'inochi-pulso' ), $count ) . ( $major ? ', ' . __( 'some major', 'inochi-pulso' ) : '' );
+		} else {
+			$value = __( 'Everything up to date', 'inochi-pulso' );
+		}
 		if ( $stale ) {
-			return self::partial( 'SEG-01', $value . ' (dato antiguo)', $ev . "\nLa comprobación tiene más de 7 días o no existe: revisa en Escritorio → Actualizaciones." );
+			return self::partial( 'SEG-01', $value . ' (' . __( 'old data', 'inochi-pulso' ) . ')', $ev . "\n" . __( 'The last check is more than 7 days old or does not exist: open Dashboard → Updates and scan again.', 'inochi-pulso' ) );
 		}
 		$state = ! $count ? 'OK' : ( $major ? 'Fallo' : 'Aviso' );
-		return self::auto( 'SEG-01', $value, $state, $ev . "\nLa antigüedad (> 90 días) de cada actualización se revisa a mano." );
+		return self::auto( 'SEG-01', $value, $state, $ev );
 	}
 
 	/**
-	 * SEG-04 (parcial): plugins que no figuran en WordPress.org.
+	 * SEG-04: plugins not listed on WordPress.org. Without knowing their licence, there is no state.
+	 *
+	 * @param array  $not_org Slugs.
+	 * @param object $updates update_plugins transient.
 	 */
 	private static function outside_repo( array $not_org, $updates ) {
 		if ( ! is_object( $updates ) || empty( $updates->checked ) ) {
-			return self::partial( 'SEG-04', 'Sin datos de WordPress.org', 'WordPress no ha comprobado actualizaciones todavía: no se puede saber qué plugins vienen de WordPress.org.' );
+			return self::partial( 'SEG-04', __( 'No WordPress.org data', 'inochi-pulso' ), __( 'WordPress has not checked for updates yet: it is not possible to know which plugins come from WordPress.org.', 'inochi-pulso' ) );
 		}
-		$value = $not_org ? sprintf( '%d plugins fuera de WordPress.org: %s', count( $not_org ), implode( ', ', array_slice( $not_org, 0, 8 ) ) . ( count( $not_org ) > 8 ? '…' : '' ) ) : 'Todos los plugins vienen de WordPress.org';
-		$ev    = $not_org ? "No figuran en los datos de WordPress.org (premium, a medida o cerrados):\n" . implode( "\n", $not_org ) . "\nPara cada uno: origen, licencia y actualizaciones. Si estaba en WordPress.org y ya no, está cerrado (SEG-03)." : 'Todos figuran en los datos de actualizaciones de WordPress.org. El tema activo se revisa a mano.';
+		if ( ! $not_org ) {
+			return self::auto( 'SEG-04', __( 'All plugins come from WordPress.org', 'inochi-pulso' ), 'OK', __( 'All of them are in the WordPress.org update data.', 'inochi-pulso' ) );
+		}
+		/* translators: 1: number of plugins, 2: list. */
+		$value = sprintf( __( '%1$d plugins from outside WordPress.org: %2$s', 'inochi-pulso' ), count( $not_org ), implode( ', ', array_slice( $not_org, 0, 8 ) ) . ( count( $not_org ) > 8 ? '…' : '' ) );
+		$ev    = __( 'Not in the WordPress.org data (premium, custom or closed):', 'inochi-pulso' ) . "\n" . implode( "\n", $not_org ) . "\n" . __( 'For each one, check where it comes from and that it has a licence and updates.', 'inochi-pulso' );
 		return self::partial( 'SEG-04', $value, $ev );
 	}
 
 	/**
-	 * SEG-11: cuentas de administrador (solo recuentos).
+	 * SEG-11: administrator accounts (counts only).
 	 */
 	private static function admins() {
 		$admins    = get_users(
@@ -178,15 +169,20 @@ class Inochi_Pulso_Checks_Security extends Inochi_Pulso_Checks_Base {
 		$n         = count( $admins );
 		$has_admin = (bool) get_user_by( 'login', 'admin' );
 		$twofa     = Inochi_Pulso_Util::active_matching( Inochi_Pulso_Util::known( 'twofa' ) );
-		$value     = sprintf( '%d administradores · %s · 2FA por plugin: %s', $n, $has_admin ? 'existe la cuenta «admin»' : 'sin cuenta «admin»', $twofa ? implode( ', ', $twofa ) : 'no detectado' );
-		$ev        = $value . ".\nNo se guardan nombres. Cuentas sin dueño conocido y 2FA real de cada administrador: revisar a mano. El segundo factor puede estar fuera de WordPress (p. ej. Cloudflare Access).";
+		$value     = sprintf(
+			/* translators: 1: number of administrators, 2: "admin" account status, 3: 2FA plugins. */
+			__( '%1$d administrators · %2$s · 2FA plugin: %3$s', 'inochi-pulso' ),
+			$n,
+			$has_admin ? __( 'the "admin" account exists', 'inochi-pulso' ) : __( 'no "admin" account', 'inochi-pulso' ),
+			$twofa ? implode( ', ', $twofa ) : __( 'not detected', 'inochi-pulso' )
+		);
+		$ev = $value . ".\n" . __( 'No names are stored. Two-factor authentication can also be outside WordPress (for example, at the CDN).', 'inochi-pulso' );
 		if ( $has_admin ) {
-			return self::partial( 'SEG-11', $value, $ev, 'Fallo' );
+			return self::auto( 'SEG-11', $value, 'Fallo', $ev );
 		}
 		if ( ! $twofa ) {
-			// El umbral marca Aviso sin 2FA; si el segundo factor está fuera de WordPress, se cambia a OK indicando dónde.
-			return self::partial( 'SEG-11', $value, $ev . "\nSin segundo factor detectado: estado sugerido Aviso.", 'Aviso' );
+			return self::auto( 'SEG-11', $value, 'Aviso', $ev );
 		}
-		return self::partial( 'SEG-11', $value, $ev );
+		return self::auto( 'SEG-11', $value, $n <= 3 ? 'OK' : 'Aviso', $ev );
 	}
 }

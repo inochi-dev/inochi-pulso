@@ -1,21 +1,24 @@
 <?php
 /**
- * Tablas de Pulso: escaneos (con payload) y hallazgos.
+ * Pulso tables: scans (with payload) and results.
  *
  * @package InochiPulso
  */
 
 defined( 'ABSPATH' ) || exit;
 
+// The data layer of the plugin's own two tables: direct queries are the point, and each scan is read once.
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
 /**
- * Acceso a datos.
+ * Data access.
  */
 class Inochi_Pulso_DB {
 
 	const OPTION_DB_VERSION = 'inochi_pulso_db_version';
 
 	/**
-	 * Nombre de la tabla de escaneos.
+	 * Scans table name.
 	 */
 	public static function scans_table() {
 		global $wpdb;
@@ -23,7 +26,7 @@ class Inochi_Pulso_DB {
 	}
 
 	/**
-	 * Nombre de la tabla de hallazgos.
+	 * Results table name.
 	 */
 	public static function findings_table() {
 		global $wpdb;
@@ -31,7 +34,7 @@ class Inochi_Pulso_DB {
 	}
 
 	/**
-	 * Crea o actualiza las tablas.
+	 * Creates or updates the tables.
 	 */
 	public static function install() {
 		global $wpdb;
@@ -75,7 +78,7 @@ class Inochi_Pulso_DB {
 	}
 
 	/**
-	 * Actualiza las tablas si cambia la versión de esquema.
+	 * Updates the tables when the schema version changes.
 	 */
 	public static function maybe_upgrade() {
 		if ( get_option( self::OPTION_DB_VERSION ) !== INOCHI_PULSO_DB_VERSION ) {
@@ -84,7 +87,9 @@ class Inochi_Pulso_DB {
 	}
 
 	/**
-	 * Crea un escaneo y devuelve su ID.
+	 * Creates a scan and returns its ID.
+	 *
+	 * @param array $fields Fields.
 	 */
 	public static function create_scan( array $fields = array() ) {
 		global $wpdb;
@@ -105,15 +110,14 @@ class Inochi_Pulso_DB {
 	}
 
 	/**
-	 * Devuelve un escaneo con su payload decodificado, o null.
+	 * Returns a scan with its decoded payload, or null.
 	 *
 	 * @param int $scan_id ID.
 	 */
 	public static function get_scan( $scan_id ) {
 		global $wpdb;
 		$table = self::scans_table();
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- nombre de tabla interno.
-		$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $scan_id ), ARRAY_A );
+		$row   = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE id = %d', $table, $scan_id ), ARRAY_A );
 		if ( ! $row ) {
 			return null;
 		}
@@ -123,35 +127,34 @@ class Inochi_Pulso_DB {
 	}
 
 	/**
-	 * Lista de escaneos, más recientes primero.
+	 * List of scans, newest first.
+	 *
+	 * @param int $limit Limit.
 	 */
 	public static function list_scans( $limit = 50 ) {
 		global $wpdb;
 		$scans = self::scans_table();
 		$finds = self::findings_table();
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- nombres de tabla internos.
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT s.id, s.created_at, s.finished_at, s.status, s.plugin_version, s.origin, s.site, s.client,
-					SUM(CASE WHEN f.source = 'auto' THEN 1 ELSE 0 END) AS n_auto,
-					SUM(CASE WHEN f.source = 'partial' THEN 1 ELSE 0 END) AS n_partial,
-					SUM(CASE WHEN f.state <> '' THEN 1 ELSE 0 END) AS n_done,
+				"SELECT s.id, s.created_at, s.finished_at, s.status, s.plugin_version, s.site,
 					SUM(CASE WHEN f.state = 'Fallo' THEN 1 ELSE 0 END) AS n_fail,
 					SUM(CASE WHEN f.state = 'Aviso' THEN 1 ELSE 0 END) AS n_warn
-				FROM {$scans} s LEFT JOIN {$finds} f ON f.scan_id = s.id
-				GROUP BY s.id ORDER BY s.id DESC LIMIT %d",
+				FROM %i s LEFT JOIN %i f ON f.scan_id = s.id
+				GROUP BY s.id, s.created_at, s.finished_at, s.status, s.plugin_version, s.site ORDER BY s.id DESC LIMIT %d",
+				$scans,
+				$finds,
 				$limit
 			),
 			ARRAY_A
 		);
-		// phpcs:enable
 	}
 
 	/**
-	 * Mezcla datos en el payload de un escaneo.
+	 * Merges data into the payload of a scan.
 	 *
 	 * @param int   $scan_id ID.
-	 * @param array $data    Claves de primer nivel a sustituir.
+	 * @param array $data    First-level keys to replace.
 	 */
 	public static function merge_payload( $scan_id, array $data ) {
 		global $wpdb;
@@ -170,7 +173,10 @@ class Inochi_Pulso_DB {
 	}
 
 	/**
-	 * Actualiza estado y paso.
+	 * Updates status and step.
+	 *
+	 * @param int   $scan_id ID.
+	 * @param array $fields  Fields.
 	 */
 	public static function update_scan( $scan_id, array $fields ) {
 		global $wpdb;
@@ -181,11 +187,11 @@ class Inochi_Pulso_DB {
 	}
 
 	/**
-	 * Guarda (sustituye) el resultado de una comprobación.
+	 * Saves (replaces) the result of a check.
 	 *
 	 * @param int   $scan_id ID.
 	 * @param array $result  code, value, state, source, evidence.
-	 * @return bool Si se guardó.
+	 * @return bool Whether it was saved.
 	 */
 	public static function save_finding( $scan_id, array $result ) {
 		global $wpdb;
@@ -214,14 +220,15 @@ class Inochi_Pulso_DB {
 	}
 
 	/**
-	 * Hallazgos de un escaneo indexados por código.
+	 * Results of a scan indexed by code.
+	 *
+	 * @param int $scan_id ID.
 	 */
 	public static function get_findings( $scan_id ) {
 		global $wpdb;
 		$table = self::findings_table();
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- nombre de tabla interno.
-		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT code, value, state, source, evidence FROM {$table} WHERE scan_id = %d", $scan_id ), ARRAY_A );
-		$out  = array();
+		$rows  = $wpdb->get_results( $wpdb->prepare( 'SELECT code, value, state, source, evidence FROM %i WHERE scan_id = %d', $table, $scan_id ), ARRAY_A );
+		$out   = array();
 		foreach ( (array) $rows as $row ) {
 			$out[ $row['code'] ] = $row;
 		}
@@ -229,7 +236,9 @@ class Inochi_Pulso_DB {
 	}
 
 	/**
-	 * Borra un escaneo y sus hallazgos.
+	 * Deletes a scan and its results.
+	 *
+	 * @param int $scan_id ID.
 	 */
 	public static function delete_scan( $scan_id ) {
 		global $wpdb;

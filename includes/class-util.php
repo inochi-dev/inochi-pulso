@@ -1,6 +1,6 @@
 <?php
 /**
- * Utilidades comunes.
+ * Shared helpers.
  *
  * @package InochiPulso
  */
@@ -8,37 +8,24 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Funciones auxiliares sin estado.
+ * Stateless helpers.
  */
 class Inochi_Pulso_Util {
 
 	/**
-	 * Crea una opción solo si no existe, de forma atómica (INSERT IGNORE). Sirve de bloqueo.
+	 * Number formatted for the site language.
 	 *
-	 * @param string $name Nombre de la opción.
-	 */
-	public static function claim_option( $name ) {
-		global $wpdb;
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- bloqueo atómico.
-		$wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %s, 'off')", $name, (string) time() ) );
-		$ok = 1 === (int) $wpdb->rows_affected;
-		wp_cache_delete( $name, 'options' );
-		wp_cache_delete( 'notoptions', 'options' );
-		return $ok;
-	}
-
-	/**
-	 * Número con formato español.
-	 *
-	 * @param float $n        Número.
-	 * @param int   $decimals Decimales.
+	 * @param float $n        Number.
+	 * @param int   $decimals Decimals.
 	 */
 	public static function num( $n, $decimals = 0 ) {
-		return number_format( (float) $n, $decimals, ',', '.' );
+		return number_format_i18n( (float) $n, $decimals );
 	}
 
 	/**
-	 * Bytes legibles (KB, MB, GB) con formato español.
+	 * Readable bytes (KB, MB, GB) for the site language.
+	 *
+	 * @param float $bytes Bytes.
 	 */
 	public static function bytes( $bytes ) {
 		$bytes = (float) $bytes;
@@ -55,7 +42,11 @@ class Inochi_Pulso_Util {
 	}
 
 	/**
-	 * Estado por tramos: OK si < $warn, Aviso si <= $fail, Fallo si > $fail.
+	 * State by thresholds: OK below $warn, Warning up to $fail, Fail above $fail.
+	 *
+	 * @param float $value Value.
+	 * @param float $warn  Warning threshold.
+	 * @param float $fail  Fail threshold.
 	 */
 	public static function grade( $value, $warn, $fail ) {
 		if ( $value < $warn ) {
@@ -65,7 +56,9 @@ class Inochi_Pulso_Util {
 	}
 
 	/**
-	 * Convierte un valor de php.ini (128M, 1G) a bytes. -1 = ilimitado.
+	 * Converts a php.ini value (128M, 1G) to bytes. -1 = unlimited.
+	 *
+	 * @param string $value Value.
 	 */
 	public static function ini_bytes( $value ) {
 		$value = trim( (string) $value );
@@ -80,10 +73,10 @@ class Inochi_Pulso_Util {
 		switch ( $unit ) {
 			case 'g':
 				$bytes *= 1024;
-				// Sigue.
+				// Falls through.
 			case 'm':
 				$bytes *= 1024;
-				// Sigue.
+				// Falls through.
 			case 'k':
 				$bytes *= 1024;
 		}
@@ -91,7 +84,10 @@ class Inochi_Pulso_Util {
 	}
 
 	/**
-	 * Recorta un texto de evidencia.
+	 * Shortens an evidence text at a line break or a space.
+	 *
+	 * @param string $text Text.
+	 * @param int    $max  Bytes.
 	 */
 	public static function clip( $text, $max = 4000 ) {
 		$text = (string) $text;
@@ -99,8 +95,7 @@ class Inochi_Pulso_Util {
 			return $text;
 		}
 		$cut = function_exists( 'mb_strcut' ) ? mb_strcut( $text, 0, $max, 'UTF-8' ) : substr( $text, 0, $max );
-		// Cortar en el último salto de línea o espacio para no partir palabras.
-		$nl = strrpos( $cut, "\n" );
+		$nl  = strrpos( $cut, "\n" );
 		if ( false !== $nl && $nl > $max * 0.5 ) {
 			$cut = substr( $cut, 0, $nl );
 		} else {
@@ -110,55 +105,15 @@ class Inochi_Pulso_Util {
 			}
 		}
 		$rest = substr_count( substr( $text, strlen( $cut ) ), "\n" );
-		return rtrim( $cut ) . ( $rest > 0 ? sprintf( "\n[… y %d %s más]", $rest, 1 === $rest ? 'línea' : 'líneas' ) : ' […]' );
+		/* translators: %d: number of lines left out. */
+		return rtrim( $cut ) . ( $rest > 0 ? "\n" . sprintf( _n( '[… and %d more line]', '[… and %d more lines]', $rest, 'inochi-pulso' ), $rest ) : ' […]' );
 	}
 
 	/**
-	 * Recorta un texto a un máximo de líneas y caracteres, por líneas completas.
+	 * Cleans a text before saving or exporting it: valid UTF-8, no emails and no
+	 * absolute server paths.
 	 *
-	 * @param string $text      Texto.
-	 * @param int    $max_lines Líneas.
-	 * @param int    $max_chars Caracteres.
-	 * @param string $more      Sufijo con %d para las líneas omitidas.
-	 */
-	public static function clip_lines( $text, $max_lines, $max_chars, $more = '… y %d líneas más' ) {
-		$lines = preg_split( '/\R/', trim( (string) $text ) );
-		$out   = array();
-		$len   = 0;
-		foreach ( $lines as $line ) {
-			$l = strlen( $line ) + 1;
-			if ( count( $out ) >= $max_lines || ( $out && $len + $l > $max_chars ) ) {
-				break;
-			}
-			$out[] = strlen( $line ) > $max_chars ? self::clip( $line, $max_chars ) : $line;
-			$len  += $l;
-		}
-		$rest = count( $lines ) - count( $out );
-		if ( $rest > 0 ) {
-			$out[] = 1 === $rest ? str_replace( array( '%d líneas', '%d' ), array( '1 línea', '1' ), $more ) : sprintf( $more, $rest );
-		}
-		return implode( "\n", $out );
-	}
-
-	/**
-	 * Texto corto en una línea, cortado por palabra.
-	 */
-	public static function short_text( $text, $max ) {
-		$text = trim( preg_replace( '/\s+/u', ' ', (string) $text ) );
-		if ( ( function_exists( 'mb_strlen' ) ? mb_strlen( $text ) : strlen( $text ) ) <= $max ) {
-			return $text;
-		}
-		$cut = function_exists( 'mb_substr' ) ? mb_substr( $text, 0, $max ) : substr( $text, 0, $max );
-		$sp  = strrpos( $cut, ' ' );
-		if ( false !== $sp && $sp > strlen( $cut ) * 0.6 ) {
-			$cut = substr( $cut, 0, $sp );
-		}
-		return rtrim( $cut, ' ,;·' ) . '…';
-	}
-
-	/**
-	 * Limpia un texto antes de guardarlo o exportarlo: UTF-8 válido, sin emails
-	 * y sin rutas absolutas del servidor.
+	 * @param string $text Text.
 	 */
 	public static function redact( $text ) {
 		$text = (string) $text;
@@ -167,8 +122,8 @@ class Inochi_Pulso_Util {
 		}
 		$text = (string) wp_check_invalid_utf8( $text, true );
 		$text = (string) preg_replace( '/[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/', '[email]', $text );
-		// Raíz de WordPress y su carpeta padre, solo si esta tiene al menos dos niveles
-		// (con ABSPATH = /app/ la carpeta padre sería «/» y rompería las URL).
+		// WordPress root and its parent folder, only if the parent has at least two levels
+		// (with ABSPATH = /app/ the parent would be "/" and would break URLs).
 		$roots  = array( wp_normalize_path( ABSPATH ) );
 		$parent = trailingslashit( wp_normalize_path( dirname( ABSPATH ) ) );
 		if ( substr_count( trim( $parent, '/' ), '/' ) >= 1 ) {
@@ -179,16 +134,15 @@ class Inochi_Pulso_Util {
 				$text = str_replace( array( $root, untrailingslashit( $root ) ), array( '', '' ), $text );
 			}
 		}
-		// Rutas absolutas habituales de servidor que queden (no toca URL: exige inicio o espacio delante).
-		$text = (string) preg_replace( '#(^|[\s\'"(=])/(?:home|var|srv|usr|opt|tmp|data)/[^\s\'"()]+#m', '$1[ruta]', $text );
-		return $text;
+		// Usual absolute server paths still left (URLs are untouched: it needs a start or a space before).
+		return (string) preg_replace( '#(^|[\s\'"(=])/(?:home|var|srv|usr|opt|tmp|data)/[^\s\'"()]+#m', '$1[path]', $text );
 	}
 
 	/**
-	 * Tabla de texto simple para evidencias (filas de arrays).
+	 * Plain text table for evidence (rows of arrays).
 	 *
-	 * @param array $rows    Filas.
-	 * @param array $columns Claves a mostrar.
+	 * @param array $rows    Rows.
+	 * @param array $columns Keys to show (header labels).
 	 */
 	public static function text_table( array $rows, array $columns ) {
 		$lines = array( implode( ' | ', $columns ) );
@@ -203,7 +157,9 @@ class Inochi_Pulso_Util {
 	}
 
 	/**
-	 * Slug del plugin a partir de su archivo principal (carpeta/archivo.php).
+	 * Plugin slug from its main file (folder/file.php).
+	 *
+	 * @param string $plugin_file Plugin file.
 	 */
 	public static function plugin_slug( $plugin_file ) {
 		$dir = dirname( $plugin_file );
@@ -211,7 +167,7 @@ class Inochi_Pulso_Util {
 	}
 
 	/**
-	 * Plugins instalados (sin Pulso): slug => array(file, name, version, active).
+	 * Installed plugins (without Pulso): slug => array(file, name, version, active).
 	 */
 	public static function plugins() {
 		if ( ! function_exists( 'get_plugins' ) ) {
@@ -221,7 +177,7 @@ class Inochi_Pulso_Util {
 		$self = plugin_basename( INOCHI_PULSO_FILE );
 		foreach ( get_plugins() as $file => $data ) {
 			if ( $file === $self || 'inochi-pulso' === self::plugin_slug( $file ) ) {
-				continue; // Pulso no cuenta en la auditoría del sitio.
+				continue; // Pulso does not count in the site scan.
 			}
 			$slug         = self::plugin_slug( $file );
 			$out[ $slug ] = array(
@@ -235,9 +191,9 @@ class Inochi_Pulso_Util {
 	}
 
 	/**
-	 * Slugs de plugins activos que coinciden con una lista (por prefijo de slug).
+	 * Active plugin slugs that match a list (by slug prefix).
 	 *
-	 * @param array $known Slugs o prefijos conocidos.
+	 * @param array $known Slugs or prefixes.
 	 */
 	public static function active_matching( array $known ) {
 		$found = array();
@@ -256,40 +212,35 @@ class Inochi_Pulso_Util {
 	}
 
 	/**
-	 * Fecha de «ahora» en UTC (timestamp), aislada para pruebas.
-	 */
-	public static function now() {
-		return time();
-	}
-
-	/**
-	 * Hay WooCommerce activo.
+	 * WooCommerce is active.
 	 */
 	public static function has_woocommerce() {
 		return class_exists( 'WooCommerce' ) && function_exists( 'WC' );
 	}
 
 	/**
-	 * Concede más tiempo a un paso pesado si el servidor lo permite.
+	 * Gives a heavy step more time if the server allows it.
+	 *
+	 * @param int $seconds Seconds.
 	 */
 	public static function extend_time( $seconds = 120 ) {
 		if ( function_exists( 'set_time_limit' ) && false === strpos( (string) ini_get( 'disable_functions' ), 'set_time_limit' ) ) {
-			@set_time_limit( $seconds ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+			@set_time_limit( $seconds ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged,Squiz.PHP.DiscouragedFunctions.Discouraged -- a heavy read-only step may need more than the default 30 s.
 		}
 	}
 
 	/**
-	 * Plugins conocidos por categoría (prefijos de slug).
+	 * Known plugins by group (slug prefixes).
+	 *
+	 * @param string $group Group.
 	 */
 	public static function known( $group ) {
 		$lists = array(
 			'cache'    => array( 'wp-rocket', 'w3-total-cache', 'wp-super-cache', 'litespeed-cache', 'wp-fastest-cache', 'sg-cachepress', 'breeze', 'cache-enabler', 'hummingbird-performance', 'wp-optimize', 'swift-performance', 'nitropack', 'flying-press', 'powered-cache', 'comet-cache', 'cloudflare' ),
-			'security' => array( 'wordfence', 'better-wp-security', 'ithemes-security', 'solid-security', 'all-in-one-wp-security-and-firewall', 'sucuri-scanner', 'limit-login-attempts-reloaded', 'limit-login-attempts', 'loginizer', 'wp-cerber', 'shield-security', 'wp-defender', 'jetpack', 'login-lockdown', 'ninjafirewall', 'secupress' ),
 			'login'    => array( 'wordfence', 'better-wp-security', 'ithemes-security', 'solid-security', 'all-in-one-wp-security-and-firewall', 'limit-login-attempts-reloaded', 'limit-login-attempts', 'loginizer', 'wp-cerber', 'shield-security', 'wp-defender', 'login-lockdown', 'secupress', 'jetpack' ),
 			'twofa'    => array( 'two-factor', 'wp-2fa', 'wordfence', 'google-authenticator', 'miniorange-2-factor-authentication', 'better-wp-security', 'ithemes-security', 'solid-security', 'wp-defender', 'shield-security', 'all-in-one-wp-security-and-firewall', 'two-factor-authentication', 'secupress' ),
 			'backup'   => array( 'updraftplus', 'backwpup', 'duplicator', 'all-in-one-wp-migration', 'wpvivid-backuprestore', 'blogvault-real-time-backup', 'backupbuddy', 'solid-backups', 'backup-backup', 'jetpack', 'xcloner-backup-and-restore', 'boldgrid-backup', 'backup', 'wp-time-capsule', 'mainwp-child', 'managewp' ),
-			'smtp'     => array( 'wp-mail-smtp', 'post-smtp', 'fluent-smtp', 'easy-wp-smtp', 'smtp-mailer', 'wp-ses', 'mailgun', 'sendgrid', 'gmail-smtp', 'wp-smtp', 'mailpoet', 'brevo', 'sendinblue', 'site-mailer', 'suremails', 'elastic-email-sender', 'mailjet-for-wordpress', 'gosmtp', 'mailersend-official-smtp-integration', 'smtp2go', 'postmark-approved-wordpress-plugin', 'sparkpost', 'wp-mail-bank', 'offload-ses', 'newsletter-smtp', 'zeptomail', 'mailster' ),
-			'uptime'   => array( 'jetpack', 'mainwp-child', 'managewp', 'worker', 'wp-umbrella' ),
+			'firewall' => array( 'wordfence', 'ninjafirewall', 'all-in-one-wp-security-and-firewall', 'shield-security', 'wp-cerber', 'secupress', 'sucuri-scanner', 'better-wp-security', 'solid-security' ),
 		);
 		return $lists[ $group ] ?? array();
 	}

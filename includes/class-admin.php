@@ -1,6 +1,6 @@
 <?php
 /**
- * Pantalla de Pulso en Herramientas: escanear, ver el informe, exportar y ajustes.
+ * Pulso screen under Tools: scan, read the report, export and settings.
  *
  * @package InochiPulso
  */
@@ -8,14 +8,14 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Administración.
+ * Admin.
  */
 class Inochi_Pulso_Admin {
 
 	const SLUG = 'inochi-pulso';
 
 	/**
-	 * Ganchos.
+	 * Hooks.
 	 */
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
@@ -27,45 +27,45 @@ class Inochi_Pulso_Admin {
 	}
 
 	/**
-	 * Menú en Herramientas.
+	 * Menu under Tools.
 	 */
 	public static function menu() {
 		add_management_page( 'Inochi Pulso', 'Inochi Pulso', 'manage_options', self::SLUG, array( __CLASS__, 'render' ) );
 	}
 
 	/**
-	 * Enlace «Abrir» en la lista de plugins.
+	 * "Open" link in the plugins list.
 	 *
-	 * @param array $links Enlaces.
+	 * @param array $links Links.
 	 */
 	public static function action_links( $links ) {
-		array_unshift( $links, '<a href="' . esc_url( self::url() ) . '">Abrir</a>' );
+		array_unshift( $links, '<a href="' . esc_url( self::url() ) . '">' . esc_html__( 'Open', 'inochi-pulso' ) . '</a>' );
 		return $links;
 	}
 
 	/**
-	 * URL de la pantalla con parámetros.
+	 * Screen URL with parameters.
 	 *
-	 * @param array $args Parámetros.
+	 * @param array $args Parameters.
 	 */
 	public static function url( array $args = array() ) {
 		return add_query_arg( array_merge( array( 'page' => self::SLUG ), $args ), admin_url( 'tools.php' ) );
 	}
 
 	/**
-	 * URL de una acción admin-post con nonce.
+	 * admin-post action URL with nonce.
 	 *
-	 * @param string $action  Acción.
-	 * @param int    $scan_id Escaneo.
+	 * @param string $action  Action.
+	 * @param int    $scan_id Scan.
 	 */
 	public static function action_url( $action, $scan_id ) {
 		return wp_nonce_url( admin_url( 'admin-post.php?action=inochi_pulso_' . $action . '&scan=' . (int) $scan_id ), 'inochi_pulso_' . $action . '_' . (int) $scan_id );
 	}
 
 	/**
-	 * CSS y JS solo en la pantalla de Pulso.
+	 * CSS and JS only on the Pulso screen.
 	 *
-	 * @param string $hook Pantalla.
+	 * @param string $hook Screen.
 	 */
 	public static function assets( $hook ) {
 		if ( 'tools_page_' . self::SLUG !== $hook ) {
@@ -79,24 +79,33 @@ class Inochi_Pulso_Admin {
 			array(
 				'root'  => esc_url_raw( rest_url( Inochi_Pulso_REST::NS ) ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
+				'i18n'  => array(
+					'starting' => __( 'Starting the scan…', 'inochi-pulso' ),
+					/* translators: 1: step number, 2: total steps, 3: step name. */
+					'step'     => __( 'Step %1$d of %2$d: %3$s', 'inochi-pulso' ),
+					'stepErr'  => __( 'Error in this step (the scan goes on):', 'inochi-pulso' ),
+					'finish'   => __( 'Writing the report…', 'inochi-pulso' ),
+					'failed'   => __( 'The scan could not continue:', 'inochi-pulso' ),
+					'leave'    => __( 'The scan is still running. If you leave, it will stop.', 'inochi-pulso' ),
+				),
 			)
 		);
 	}
 
 	/**
-	 * Comprueba permisos.
+	 * Checks the capability.
 	 */
 	public static function guard() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html( 'No tienes permiso para usar Inochi Pulso.' ), 403 );
+			wp_die( esc_html__( 'You are not allowed to use Inochi Pulso.', 'inochi-pulso' ), 403 );
 		}
 	}
 
 	/**
-	 * Redirige con un aviso.
+	 * Redirects with a notice.
 	 *
-	 * @param array  $args   Parámetros de la URL.
-	 * @param string $notice Texto.
+	 * @param array  $args   URL parameters.
+	 * @param string $notice Text.
 	 * @param string $type   success|error.
 	 */
 	public static function back( array $args, $notice, $type = 'success' ) {
@@ -106,12 +115,12 @@ class Inochi_Pulso_Admin {
 	}
 
 	/**
-	 * Envía un archivo y termina.
+	 * Sends a file and stops.
 	 *
-	 * @param string $content_type Tipo.
-	 * @param string $filename     Nombre.
-	 * @param string $body         Contenido.
-	 * @param bool   $inline       Abrir en el navegador en lugar de descargar.
+	 * @param string $content_type Type.
+	 * @param string $filename     Name.
+	 * @param string $body         Content.
+	 * @param bool   $inline       Open in the browser instead of downloading.
 	 */
 	public static function download( $content_type, $filename, $body, $inline = false ) {
 		while ( ob_get_level() ) {
@@ -122,30 +131,30 @@ class Inochi_Pulso_Admin {
 		header( 'X-Content-Type-Options: nosniff' );
 		header( 'Content-Disposition: ' . ( $inline ? 'inline' : 'attachment' ) . '; filename="' . $filename . '"' );
 		header( 'Content-Length: ' . strlen( $body ) );
-		echo $body; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- documento ya escapado o archivo de datos.
+		echo $body; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- file download: the HTML report is escaped when built; CSV and JSON are data files.
 		exit;
 	}
 
 	/**
-	 * Datos de exportación de la petición actual (con nonce y permiso).
+	 * Export data of the current request (with nonce and capability).
 	 *
-	 * @param string $action Acción.
+	 * @param string $action Action.
 	 */
 	private static function export_data( $action ) {
 		self::guard();
-		$id = isset( $_GET['scan'] ) ? absint( $_GET['scan'] ) : 0;
+		$id = isset( $_GET['scan'] ) ? absint( $_GET['scan'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- checked on the next line.
 		check_admin_referer( 'inochi_pulso_' . $action . '_' . $id );
 		$d = Inochi_Pulso_Export::data( $id );
 		if ( ! $d ) {
-			wp_die( esc_html( 'Escaneo no encontrado.' ), 404 );
+			wp_die( esc_html__( 'Scan not found.', 'inochi-pulso' ), 404 );
 		}
 		return $d;
 	}
 
-	// ------------------------------------------------------------------ Acciones.
+	// ------------------------------------------------------------------ Actions.
 
 	/**
-	 * Informe HTML imprimible (se abre en otra pestaña).
+	 * Printable HTML report (opens in another tab).
 	 */
 	public static function handle_html() {
 		$d = self::export_data( 'html' );
@@ -169,35 +178,64 @@ class Inochi_Pulso_Admin {
 	}
 
 	/**
-	 * Borrado de un escaneo.
+	 * Deletes a scan.
 	 */
 	public static function handle_delete() {
 		self::guard();
-		$id = isset( $_POST['scan'] ) ? absint( $_POST['scan'] ) : 0;
+		$id = isset( $_POST['scan'] ) ? absint( $_POST['scan'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- checked on the next line.
 		check_admin_referer( 'inochi_pulso_delete_' . $id );
 		Inochi_Pulso_DB::delete_scan( $id );
-		self::back( array(), 'Escaneo borrado.' );
+		self::back( array(), __( 'Scan deleted.', 'inochi-pulso' ) );
 	}
 
 	/**
-	 * Guardar ajustes.
+	 * Saves the settings.
 	 */
 	public static function handle_settings() {
 		self::guard();
 		check_admin_referer( 'inochi_pulso_settings' );
 		Inochi_Pulso_Settings::save( array( 'wporg_consent' => ! empty( $_POST['wporg_consent'] ) ) );
-		self::back( array( 'tab' => 'settings' ), 'Ajustes guardados.' );
+		self::back( array( 'tab' => 'settings' ), __( 'Settings saved.', 'inochi-pulso' ) );
 	}
 
-	// ------------------------------------------------------------------ Pantallas.
+	// ------------------------------------------------------------------ Screens.
 
 	/**
-	 * Pantalla principal.
+	 * Tags allowed in the HTML built by Inochi_Pulso_Export (already escaped).
+	 */
+	private static function allowed_html() {
+		$c = array( 'class' => true );
+		return array(
+			'table'   => $c,
+			'thead'   => array(),
+			'tbody'   => array(),
+			'tr'      => $c,
+			'th'      => array(
+				'class'   => true,
+				'colspan' => true,
+			),
+			'td'      => $c,
+			'details' => array(),
+			'summary' => array(),
+			'ul'      => $c,
+			'li'      => array(),
+			'strong'  => array(),
+			'code'    => array(),
+			'p'       => $c,
+			'span'    => $c,
+			'div'     => $c,
+			'h3'      => array(),
+			'pre'     => array(),
+		);
+	}
+
+	/**
+	 * Main screen.
 	 */
 	public static function render() {
 		self::guard();
 		Inochi_Pulso_DB::maybe_upgrade();
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- navegación de solo lectura.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only navigation.
 		$scan_id = isset( $_GET['scan'] ) ? absint( $_GET['scan'] ) : 0;
 		$tab     = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : '';
 		// phpcs:enable
@@ -206,8 +244,8 @@ class Inochi_Pulso_Admin {
 		echo '<h1 class="ip-title"><span class="ip-mark" aria-hidden="true"><svg viewBox="0 0 120 60" width="40" height="20"><path d="M6 34 H36 L44 12 L56 52 L66 24 L72 34 H92" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="106" cy="34" r="8" fill="currentColor"/></svg></span>Inochi Pulso</h1>';
 
 		$tabs = array(
-			''         => 'Escaneos',
-			'settings' => 'Ajustes',
+			''         => __( 'Scans', 'inochi-pulso' ),
+			'settings' => __( 'Settings', 'inochi-pulso' ),
 		);
 		echo '<nav class="nav-tab-wrapper ip-tabs">';
 		foreach ( $tabs as $k => $label ) {
@@ -233,23 +271,23 @@ class Inochi_Pulso_Admin {
 	}
 
 	/**
-	 * Bloque de nuevo escaneo.
+	 * New scan box.
 	 */
 	private static function render_scan_box() {
-		$wporg = Inochi_Pulso_Settings::wporg_allowed();
 		?>
 		<div class="ip-card ip-start">
-			<h2>Nuevo escaneo</h2>
-			<p class="description">Pulso lee este sitio sin cambiar nada y te dice qué arreglar primero. Tarda entre 1 y 3 minutos: no cierres la pestaña mientras se ejecuta.</p>
-			<p class="description">Hace unas 40 peticiones a este mismo sitio (portada, carrito, archivos sobrantes…) para medir tiempos y comprobar qué es accesible desde fuera. Pueden aparecer en las estadísticas del servidor o en el registro del cortafuegos.</p>
+			<h2><?php esc_html_e( 'New scan', 'inochi-pulso' ); ?></h2>
+			<p class="description"><?php esc_html_e( 'Pulso reads this site without changing anything and tells you what to fix first, and how much each plugin costs. It takes 1 to 3 minutes: keep this tab open while it runs.', 'inochi-pulso' ); ?></p>
+			<p class="description"><?php esc_html_e( 'It makes about 40 requests to this same site (home page, cart, leftover files…) to measure times and see what is reachable from outside. They can show up in the server statistics or the firewall log.', 'inochi-pulso' ); ?></p>
 			<p class="description">
-				<?php if ( $wporg ) : ?>
-					Consulta a WordPress.org: <strong>activada</strong> (se envía el nombre de carpeta de cada plugin instalado a api.wordpress.org).
+				<?php if ( Inochi_Pulso_Settings::wporg_allowed() ) : ?>
+					<?php esc_html_e( 'WordPress.org lookup: on (the folder name of each installed plugin is sent to api.wordpress.org).', 'inochi-pulso' ); ?>
 				<?php else : ?>
-					Consulta a WordPress.org: <strong>desactivada</strong>. Pulso no se conecta a ningún servicio externo. Puedes activarla en <a href="<?php echo esc_url( self::url( array( 'tab' => 'settings' ) ) ); ?>">Ajustes</a> para detectar plugins cerrados o abandonados.
+					<?php esc_html_e( 'WordPress.org lookup: off. Pulso does not contact any external service.', 'inochi-pulso' ); ?>
+					<a href="<?php echo esc_url( self::url( array( 'tab' => 'settings' ) ) ); ?>"><?php esc_html_e( 'Turn it on in Settings to detect closed or abandoned plugins.', 'inochi-pulso' ); ?></a>
 				<?php endif; ?>
 			</p>
-			<p><button type="button" class="button button-primary button-hero" id="ip-start">Iniciar escaneo</button></p>
+			<p><button type="button" class="button button-primary button-hero" id="ip-start"><?php esc_html_e( 'Start scan', 'inochi-pulso' ); ?></button></p>
 			<div id="ip-progress" class="ip-progress" hidden>
 				<div class="ip-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span style="width:0"></span></div>
 				<p id="ip-status" aria-live="polite"></p>
@@ -260,136 +298,99 @@ class Inochi_Pulso_Admin {
 	}
 
 	/**
-	 * Lista de escaneos.
+	 * List of scans.
 	 */
 	private static function render_list() {
 		self::render_scan_box();
 		$scans = Inochi_Pulso_DB::list_scans( 100 );
 		if ( ! $scans ) {
-			echo '<p>Todavía no hay escaneos.</p>';
+			echo '<p>' . esc_html__( 'No scans yet.', 'inochi-pulso' ) . '</p>';
 			return;
 		}
-		echo '<h2>Escaneos de este sitio</h2>';
-		echo '<table class="widefat striped ip-table"><thead><tr><th>#</th><th>Fecha (UTC)</th><th>Salud</th><th>Fallos</th><th>Avisos</th><th></th></tr></thead><tbody>';
+		echo '<h2>' . esc_html__( 'Scans of this site', 'inochi-pulso' ) . '</h2>';
+		echo '<table class="widefat striped ip-table"><thead><tr><th>#</th><th>' . esc_html__( 'Date (UTC)', 'inochi-pulso' ) . '</th><th>' . esc_html__( 'Health', 'inochi-pulso' ) . '</th><th>' . esc_html_x( 'Fail', 'check state', 'inochi-pulso' ) . '</th><th>' . esc_html_x( 'Warning', 'check state', 'inochi-pulso' ) . '</th><th></th></tr></thead><tbody>';
 		foreach ( $scans as $s ) {
-			$id = (int) $s['id'];
-			$d  = Inochi_Pulso_Export::data( $id );
+			$id   = (int) $s['id'];
+			$done = 'done' === $s['status'];
+			$d    = $done ? Inochi_Pulso_Export::data( $id ) : null;
 			printf(
-				'<tr><td>%1$d</td><td>%2$s</td><td><strong>%3$s</strong></td><td>%4$d</td><td>%5$d</td><td class="ip-actions"><a class="button button-primary" href="%6$s">Ver</a></td></tr>',
+				'<tr><td>%1$d</td><td>%2$s</td><td><strong>%3$s</strong></td><td>%4$d</td><td>%5$d</td><td class="ip-actions"><a class="button button-primary" href="%6$s">%7$s</a></td></tr>',
 				(int) $id,
 				esc_html( $s['created_at'] ),
-				esc_html( ( 'done' === $s['status'] && $d && null !== $d['score']['global'] ) ? (string) $d['score']['global'] : '—' ),
+				esc_html( ( $d && null !== $d['score']['global'] ) ? (string) $d['score']['global'] : ( $done ? '—' : __( 'unfinished', 'inochi-pulso' ) ) ),
 				(int) ( $d ? $d['score']['fails'] : 0 ),
 				(int) ( $d ? $d['score']['warns'] : 0 ),
-				esc_url( self::url( array( 'scan' => $id ) ) )
+				esc_url( self::url( array( 'scan' => $id ) ) ),
+				esc_html__( 'View', 'inochi-pulso' )
 			);
 		}
 		echo '</tbody></table>';
 	}
 
 	/**
-	 * Informe de un escaneo.
+	 * Report of a scan.
 	 *
-	 * @param int $id Escaneo.
+	 * @param int $id Scan.
 	 */
 	private static function render_detail( $id ) {
 		$d = Inochi_Pulso_Export::data( $id );
-		printf( '<p><a href="%s">← Escaneos</a></p>', esc_url( self::url() ) );
+		printf( '<p><a href="%s">%s</a></p>', esc_url( self::url() ), esc_html__( '← Scans', 'inochi-pulso' ) );
 		if ( ! $d ) {
-			echo '<p>Escaneo no encontrado.</p>';
+			echo '<p>' . esc_html__( 'Scan not found.', 'inochi-pulso' ) . '</p>';
 			return;
 		}
-		$score = $d['score'];
+		$allowed = self::allowed_html();
+		$score   = $d['score'];
 		?>
 		<div class="ip-card">
-			<h2>Escaneo #<?php echo (int) $id; ?> · <?php echo esc_html( $d['scan']['created_at'] ); ?> UTC</h2>
-			<p class="ip-score"><strong><?php echo esc_html( null === $score['global'] ? '—' : $score['global'] . ' / 100' ); ?></strong> salud global</p>
-			<table class="widefat ip-table"><thead><tr><th>Área</th><th>Puntuación</th><th>Fallos</th><th>Avisos</th><th>Sin datos</th></tr></thead><tbody>
-			<?php foreach ( $score['areas'] as $name => $a ) : ?>
-				<?php
-				if ( ! $a['applies'] ) {
-					continue;
-				}
-				?>
-				<tr><td><?php echo esc_html( $name ); ?></td><td><?php echo esc_html( (string) $a['score'] ); ?></td><td><?php echo (int) $a['fails']; ?></td><td><?php echo (int) $a['warns']; ?></td><td><?php echo (int) ( $a['nodata'] + $a['pending'] ); ?></td></tr>
+			<?php /* translators: 1: scan number, 2: date. */ ?>
+			<h2><?php echo esc_html( sprintf( __( 'Scan #%1$d · %2$s UTC', 'inochi-pulso' ), $id, $d['scan']['created_at'] ) ); ?></h2>
+			<?php if ( 'done' !== $d['scan']['status'] ) : ?>
+				<div class="notice notice-warning inline"><p><?php esc_html_e( 'This scan did not finish: some checks are missing. Run a new scan and keep the tab open until the end.', 'inochi-pulso' ); ?></p></div>
+			<?php endif; ?>
+			<?php foreach ( $d['errors'] as $step => $err ) : ?>
+				<?php /* translators: 1: step key, 2: error. */ ?>
+				<div class="notice notice-error inline"><p><?php echo esc_html( sprintf( __( 'Step "%1$s" failed: %2$s', 'inochi-pulso' ), $step, $err ) ); ?></p></div>
 			<?php endforeach; ?>
-			</tbody></table>
-			<p class="description">Lo que no se pudo comprobar aparece como «Sin datos» y no cuenta en la puntuación: Pulso no inventa resultados.</p>
+			<p class="ip-score"><strong><?php echo esc_html( null === $score['global'] ? '—' : $score['global'] . ' / 100' ); ?></strong> <?php esc_html_e( 'site health', 'inochi-pulso' ); ?></p>
+			<?php echo wp_kses( Inochi_Pulso_Export::score_table( $d, 'widefat ip-table' ), $allowed ); ?>
+			<p class="description"><?php esc_html_e( 'What could not be checked shows as "No data" and does not count in the score: Pulso does not make up results.', 'inochi-pulso' ); ?></p>
 			<p>
-				<a class="button button-primary" target="_blank" rel="noopener" href="<?php echo esc_url( self::action_url( 'html', $id ) ); ?>">Informe imprimible</a>
+				<a class="button button-primary" target="_blank" rel="noopener" href="<?php echo esc_url( self::action_url( 'html', $id ) ); ?>"><?php esc_html_e( 'Printable report', 'inochi-pulso' ); ?></a>
 				<a class="button" href="<?php echo esc_url( self::action_url( 'csv', $id ) ); ?>">CSV</a>
 				<a class="button" href="<?php echo esc_url( self::action_url( 'json', $id ) ); ?>">JSON</a>
 			</p>
 		</div>
+
+		<h2><?php esc_html_e( 'Cost per plugin', 'inochi-pulso' ); ?></h2>
+		<?php echo wp_kses( Inochi_Pulso_Export::cost_table( $d, 'widefat striped ip-table ip-cost' ), $allowed ); ?>
 		<?php
-		foreach ( Inochi_Pulso_Catalog::PHASES as $phase => $label ) {
+		foreach ( Inochi_Pulso_Catalog::PHASES as $phase ) {
 			if ( empty( $d['priorities'][ $phase ] ) ) {
 				continue;
 			}
-			printf( '<h2>Prioridad: %s</h2>', esc_html( $label ) );
+			/* translators: %s: priority (Urgent, Stabilisation, Improvement). */
+			echo '<h2>' . esc_html( sprintf( __( 'Priority: %s', 'inochi-pulso' ), Inochi_Pulso_Catalog::phase_label( $phase ) ) ) . '</h2>';
 			foreach ( $d['priorities'][ $phase ] as $p ) {
-				?>
-				<div class="ip-card ip-priority">
-					<h3><code><?php echo esc_html( $p['code'] ); ?></code> <?php echo esc_html( $p['title'] ); ?></h3>
-					<p><?php echo esc_html( $p['cost'] ); ?></p>
-					<p><strong>Hoy:</strong> <?php echo esc_html( $p['value'] ); ?><?php echo $p['target'] ? ' · <strong>Objetivo:</strong> ' . esc_html( $p['target'] ) : ''; ?></p>
-					<p><strong>Qué hacer:</strong></p>
-					<ul><?php foreach ( array_filter( explode( "\n", $p['proposal'] ) ) as $line ) : ?><li><?php echo esc_html( $line ); ?></li><?php endforeach; ?></ul>
-					<p class="description"><strong>Cómo comprobarlo:</strong> <?php echo esc_html( $p['verify'] ); ?></p>
-				</div>
-				<?php
+				echo wp_kses( Inochi_Pulso_Export::priority( $p, 'h3', 'ip-card ip-priority' ), $allowed );
 			}
 		}
 
-		if ( $d['plugins'] ) {
-			echo '<h2>Autoload por plugin</h2><table class="widefat striped ip-table"><thead><tr><th>Plugin</th><th>Estado</th><th>Autoload</th><th>Opciones</th></tr></thead><tbody>';
-			foreach ( $d['plugins'] as $p ) {
-				printf( '<tr><td>%s</td><td>%s</td><td>%s</td><td>%d</td></tr>', esc_html( $p['owner'] ), esc_html( $p['state'] ), esc_html( Inochi_Pulso_Util::bytes( $p['autoload_bytes'] ) ), (int) $p['autoload_options'] );
-			}
-			echo '</tbody></table>';
-		}
-
-		echo '<h2>Todas las comprobaciones</h2>';
-		self::render_findings_table( $d['rows'] );
+		echo '<h2>' . esc_html__( 'All checks', 'inochi-pulso' ) . '</h2>';
+		echo wp_kses( Inochi_Pulso_Export::findings_table( $d['rows'], 'widefat ip-table ip-findings' ), $allowed );
 		?>
-		<p class="ip-cta">¿Quieres que lo revise un ingeniero? <a href="<?php echo esc_url( Inochi_Pulso_Export::inochi_url() ); ?>" target="_blank" rel="noopener">Auditoría de Inochi</a></p>
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="ip-delete" onsubmit="return confirm('¿Borrar este escaneo? No se puede deshacer.');">
+		<p class="ip-cta"><?php esc_html_e( 'Want an engineer to review it?', 'inochi-pulso' ); ?> <a href="<?php echo esc_url( Inochi_Pulso_Export::inochi_url() ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Inochi audit', 'inochi-pulso' ); ?></a></p>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="ip-delete" data-confirm="<?php esc_attr_e( 'Delete this scan? This cannot be undone.', 'inochi-pulso' ); ?>">
 			<input type="hidden" name="action" value="inochi_pulso_delete">
 			<input type="hidden" name="scan" value="<?php echo (int) $id; ?>">
 			<?php wp_nonce_field( 'inochi_pulso_delete_' . $id ); ?>
-			<button type="submit" class="button button-link-delete">Borrar este escaneo</button>
+			<button type="submit" class="button button-link-delete"><?php esc_html_e( 'Delete this scan', 'inochi-pulso' ); ?></button>
 		</form>
 		<?php
 	}
 
 	/**
-	 * Tabla de resultados por área.
-	 *
-	 * @param array $rows Filas de Inochi_Pulso_Export::data().
-	 */
-	public static function render_findings_table( array $rows ) {
-		echo '<table class="widefat ip-table ip-findings"><thead><tr><th>Código</th><th>Comprobación</th><th>Valor medido</th><th>Estado</th></tr></thead><tbody>';
-		$area = '';
-		foreach ( $rows as $r ) {
-			if ( $r['area'] !== $area ) {
-				$area = $r['area'];
-				printf( '<tr class="ip-area"><th colspan="4">%s</th></tr>', esc_html( $area ) );
-			}
-			printf(
-				'<tr><td><code>%1$s</code></td><td>%2$s</td><td>%3$s%4$s</td><td><span class="%5$s">%6$s</span></td></tr>',
-				esc_html( $r['code'] ),
-				esc_html( $r['name'] ),
-				esc_html( '' !== $r['value'] ? $r['value'] : '—' ),
-				'' !== $r['evidence'] ? '<details><summary>Evidencia</summary><pre>' . esc_html( $r['evidence'] ) . '</pre></details>' : '',
-				esc_attr( 'ip-state ip-' . sanitize_html_class( strtolower( str_replace( array( '.', ' ' ), array( '', '-' ), $r['state'] ) ) ) ),
-				esc_html( $r['state'] )
-			);
-		}
-		echo '</tbody></table>';
-	}
-
-	/**
-	 * Ajustes: consentimiento para consultar WordPress.org.
+	 * Settings: consent to contact WordPress.org.
 	 */
 	private static function render_settings() {
 		$s = Inochi_Pulso_Settings::all();
@@ -397,14 +398,18 @@ class Inochi_Pulso_Admin {
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="ip-card ip-settings">
 			<input type="hidden" name="action" value="inochi_pulso_settings">
 			<?php wp_nonce_field( 'inochi_pulso_settings' ); ?>
-			<h2>Servicios externos</h2>
-			<p>Por defecto, Pulso no se conecta a ningún servicio externo: todo el escaneo se hace en este servidor.</p>
-			<p><label><input type="checkbox" name="wporg_consent" value="1" <?php checked( true === $s['wporg_consent'] ); ?>> <strong>Consultar plugins en WordPress.org</strong></label></p>
-			<p class="description">Para detectar plugins cerrados o que llevan más de 2 años sin actualizarse, Pulso envía a la API de plugins de WordPress.org (api.wordpress.org) el nombre de carpeta (slug) de cada plugin instalado, incluidos los premium o hechos a medida. No se envía nada más. <a href="https://wordpress.org/about/privacy/" target="_blank" rel="noopener noreferrer">Política de privacidad de WordPress.org</a>.</p>
+			<h2><?php esc_html_e( 'External services', 'inochi-pulso' ); ?></h2>
+			<p><?php esc_html_e( 'By default Pulso does not contact any external service: the whole scan runs on this server.', 'inochi-pulso' ); ?></p>
+			<p><label><input type="checkbox" name="wporg_consent" value="1" <?php checked( true === $s['wporg_consent'] ); ?>> <strong><?php esc_html_e( 'Check plugins on WordPress.org', 'inochi-pulso' ); ?></strong></label></p>
+			<p class="description">
+				<?php esc_html_e( 'To detect plugins that are closed or have not been updated for more than 2 years, Pulso sends the WordPress.org plugins API (api.wordpress.org) the folder name (slug) of each installed plugin, premium and custom ones included. Nothing else is sent.', 'inochi-pulso' ); ?>
+				<a href="https://wordpress.org/about/privacy/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'WordPress.org privacy policy', 'inochi-pulso' ); ?></a>
+			</p>
 			<?php if ( $s['wporg_consent'] && $s['wporg_consent_at'] ) : ?>
-				<p class="description">Activada el <?php echo esc_html( $s['wporg_consent_at'] ); ?> UTC.</p>
+				<?php /* translators: %s: date. */ ?>
+				<p class="description"><?php echo esc_html( sprintf( __( 'Turned on on %s UTC.', 'inochi-pulso' ), $s['wporg_consent_at'] ) ); ?></p>
 			<?php endif; ?>
-			<p><button type="submit" class="button button-primary">Guardar ajustes</button></p>
+			<p><button type="submit" class="button button-primary"><?php esc_html_e( 'Save settings', 'inochi-pulso' ); ?></button></p>
 		</form>
 		<?php
 	}

@@ -1,8 +1,6 @@
 <?php
 /**
- * MAN-01 (parcial), MAN-06 (parcial) y MAN-07.
- *
- * MAN-02 a MAN-05 dependen del panel del alojamiento o del cliente: son manuales.
+ * MAN-01, MAN-06 and MAN-07.
  *
  * @package InochiPulso
  */
@@ -10,14 +8,14 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Comprobaciones de mantenimiento.
+ * Maintenance checks.
  */
 class Inochi_Pulso_Checks_Maintenance extends Inochi_Pulso_Checks_Base {
 
-	const LOG_TAIL = 5242880; // Últimos 5 MB de cada registro.
+	const LOG_TAIL = 5242880; // Last 5 MB of each log.
 
 	/**
-	 * Ejecuta el paso.
+	 * Runs the step.
 	 */
 	public static function run() {
 		return array(
@@ -31,17 +29,18 @@ class Inochi_Pulso_Checks_Maintenance extends Inochi_Pulso_Checks_Base {
 	}
 
 	/**
-	 * MAN-01 (parcial): plugins de copias activos.
+	 * MAN-01: active backup plugins. Backups made by the hosting cannot be seen from here: no state.
 	 */
 	private static function backups() {
 		$found = Inochi_Pulso_Util::active_matching( Inochi_Pulso_Util::known( 'backup' ) );
-		$value = $found ? 'Plugin de copias activo: ' . implode( ', ', $found ) : 'Sin plugin de copias activo';
-		$ev    = $value . ".\nRevisa también las copias de Plesk y del alojamiento, su frecuencia y su destino.";
+		/* translators: %s: list of plugins. */
+		$value = $found ? sprintf( __( 'Backup plugin active: %s', 'inochi-pulso' ), implode( ', ', $found ) ) : __( 'No backup plugin active', 'inochi-pulso' );
+		$ev    = $value . ".\n" . __( 'Backups made by the hosting cannot be seen from WordPress: check them too, with their frequency and destination.', 'inochi-pulso' );
 		return self::partial( 'MAN-01', $value, $ev );
 	}
 
 	/**
-	 * MAN-06 (parcial): actualizaciones automáticas.
+	 * MAN-06: automatic updates. The procedure cannot be seen from here: a state only with many pending updates.
 	 */
 	private static function updates_policy() {
 		$auto_plugins = (array) get_site_option( 'auto_update_plugins', array() );
@@ -52,49 +51,77 @@ class Inochi_Pulso_Checks_Maintenance extends Inochi_Pulso_Checks_Base {
 				++$auto_active;
 			}
 		}
-		$core = 'solo versiones menores (por defecto)';
+		$core = __( 'minor versions only (default)', 'inochi-pulso' );
 		if ( defined( 'WP_AUTO_UPDATE_CORE' ) ) {
-			$v    = WP_AUTO_UPDATE_CORE;
-			$core = true === $v || 'true' === $v ? 'todas las versiones' : ( false === $v || 'false' === $v ? 'desactivadas' : ( 'minor' === $v ? 'solo versiones menores' : ( 'beta' === $v || 'rc' === $v || 'development' === $v ? 'versiones de desarrollo' : 'configuración no estándar' ) ) );
+			$v = WP_AUTO_UPDATE_CORE;
+			if ( true === $v || 'true' === $v ) {
+				$core = __( 'all versions', 'inochi-pulso' );
+			} elseif ( false === $v || 'false' === $v ) {
+				$core = __( 'turned off', 'inochi-pulso' );
+			} elseif ( 'minor' === $v ) {
+				$core = __( 'minor versions only', 'inochi-pulso' );
+			} elseif ( in_array( $v, array( 'beta', 'rc', 'development' ), true ) ) {
+				$core = __( 'development versions', 'inochi-pulso' );
+			} else {
+				$core = __( 'non-standard setting', 'inochi-pulso' );
+			}
 		}
 		if ( defined( 'AUTOMATIC_UPDATER_DISABLED' ) && AUTOMATIC_UPDATER_DISABLED ) {
-			$core = 'desactivadas (AUTOMATIC_UPDATER_DISABLED)';
+			$core = __( 'turned off', 'inochi-pulso' ) . ' (AUTOMATIC_UPDATER_DISABLED)';
 		}
 		$updates = get_site_transient( 'update_plugins' );
 		$pending = is_object( $updates ) && ! empty( $updates->response ) ? count( (array) $updates->response ) : 0;
-		$value   = sprintf( '%d plugins activos con actualización automática · núcleo: %s · %d plugins con actualización pendiente', $auto_active, $core, $pending );
-		$ev      = $value . ".\nEl procedimiento (copia, prueba, revisión) se pregunta al cliente.";
+		/* translators: 1: plugins with auto-updates, 2: core setting, 3: plugins with a pending update. */
+		$value = sprintf( __( '%1$d active plugins with automatic updates · core: %2$s · %3$d plugins with a pending update', 'inochi-pulso' ), $auto_active, $core, $pending );
+		$ev    = $value . ".\n" . __( 'Whether there is an update procedure (backup, test, check) cannot be seen from here.', 'inochi-pulso' );
 		if ( $pending >= 10 ) {
-			// Con tantas pendientes, en la práctica nadie está actualizando: Aviso salvo que el cliente demuestre lo contrario.
-			return self::partial( 'MAN-06', $value, $ev . "\nCon {$pending} actualizaciones pendientes el estado sugerido es Aviso.", 'Aviso' );
+			// With so many pending updates, in practice nobody is updating.
+			return self::auto( 'MAN-06', $value, 'Aviso', $ev );
 		}
 		return self::partial( 'MAN-06', $value, $ev );
 	}
 
 	/**
-	 * Registros de errores legibles: ruta => etiqueta.
+	 * Readable error logs: path => label.
 	 */
 	private static function log_files() {
 		$files = array();
 		$ini   = (string) ini_get( 'error_log' );
-		if ( $ini && @is_file( $ini ) && @is_readable( $ini ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- open_basedir.
-			$files[ $ini ] = 'error_log de PHP';
+		if ( $ini && @is_file( $ini ) && @is_readable( $ini ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- open_basedir can forbid it.
+			$files[ $ini ] = 'php';
 		}
 		$log = defined( 'WP_DEBUG_LOG' ) ? WP_DEBUG_LOG : false;
 		$dbg = is_string( $log ) && ! in_array( $log, array( '', 'true', 'false', '1', '0' ), true ) ? $log : WP_CONTENT_DIR . '/debug.log';
 		if ( @is_file( $dbg ) && @is_readable( $dbg ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-			$files[ $dbg ] = 'debug.log de WordPress';
+			$files[ $dbg ] = 'debug';
 		}
 		foreach ( array( dirname( ABSPATH ) . '/logs/error_log', ABSPATH . 'error_log' ) as $p ) {
 			if ( @is_file( $p ) && @is_readable( $p ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-				$files[ $p ] = 'registro del alojamiento';
+				$files[ $p ] = 'hosting';
 			}
 		}
 		return $files;
 	}
 
 	/**
-	 * Lee el final de un archivo.
+	 * Label of a log.
+	 *
+	 * @param string $kind Kind.
+	 */
+	private static function log_label( $kind ) {
+		$labels = array(
+			'php'     => __( 'PHP error_log', 'inochi-pulso' ),
+			'debug'   => __( 'WordPress debug.log', 'inochi-pulso' ),
+			'hosting' => __( 'hosting log', 'inochi-pulso' ),
+		);
+		return $labels[ $kind ] ?? $kind;
+	}
+
+	/**
+	 * Reads the end of a file.
+	 *
+	 * @param string $path  File.
+	 * @param int    $bytes Bytes.
 	 */
 	private static function tail( $path, $bytes ) {
 		$size = (int) @filesize( $path ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
@@ -111,12 +138,12 @@ class Inochi_Pulso_Checks_Maintenance extends Inochi_Pulso_Checks_Base {
 	}
 
 	/**
-	 * MAN-07: errores de PHP en los últimos 7 días.
+	 * MAN-07: PHP errors in the last 7 days.
 	 */
 	private static function php_errors() {
 		$files = self::log_files();
 		if ( ! $files ) {
-			return self::partial( 'MAN-07', 'Sin acceso a registros de errores', 'No hay registros legibles desde WordPress. Revisa Plesk → Registros. Si tampoco tienes acceso, deja el estado en «Sin datos».', Inochi_Pulso_Catalog::NO_DATA );
+			return self::partial( 'MAN-07', __( 'No access to error logs', 'inochi-pulso' ), __( 'There are no logs WordPress can read. Look at the logs in the hosting panel.', 'inochi-pulso' ), Inochi_Pulso_Catalog::NO_DATA );
 		}
 		$since    = time() - 7 * DAY_IN_SECONDS;
 		$fatals   = array();
@@ -130,7 +157,7 @@ class Inochi_Pulso_Checks_Maintenance extends Inochi_Pulso_Checks_Base {
 				if ( '' === $line ) {
 					continue;
 				}
-				// Fecha al inicio: [29-Oct-2026 21:00:00 UTC] o [Thu Oct 29 21:00:00.123 2026].
+				// Date at the start: [29-Oct-2026 21:00:00 UTC] or [Thu Oct 29 21:00:00.123 2026].
 				if ( preg_match( '/^\[([^\]]+)\]/', $line, $m ) ) {
 					$ts = strtotime( preg_replace( '/\.\d+/', '', $m[1] ) );
 					if ( $ts && $ts < $since ) {
@@ -141,15 +168,16 @@ class Inochi_Pulso_Checks_Maintenance extends Inochi_Pulso_Checks_Base {
 					++$n_f;
 					$msg            = preg_replace( '/^.*PHP Fatal error:\s*/i', '', $line );
 					$msg            = preg_replace( '/ in \/.*$/', '', $msg );
-					$msg            = preg_replace( '#[\'"]?/[^\s\'"]+[\'"]?#', '[ruta]', (string) $msg );
+					$msg            = preg_replace( '#[\'"]?/[^\s\'"]+[\'"]?#', '[path]', (string) $msg );
 					$key            = substr( trim( $msg ), 0, 140 );
 					$fatals[ $key ] = ( $fatals[ $key ] ?? 0 ) + 1;
 				} elseif ( false !== stripos( $line, 'PHP Warning' ) ) {
 					++$n_w;
 				}
 			}
-			$warnings  += $n_w;
-			$lines_ev[] = sprintf( '%s (%s): %d fatales y %d warnings en 7 días.', $label, basename( $path ), $n_f, $n_w );
+			$warnings += $n_w;
+			/* translators: 1: log, 2: file name, 3: fatal errors, 4: warnings. */
+			$lines_ev[] = sprintf( __( '%1$s (%2$s): %3$d fatal errors and %4$d warnings in 7 days.', 'inochi-pulso' ), self::log_label( $label ), basename( $path ), $n_f, $n_w );
 		}
 		arsort( $fatals );
 		$total = array_sum( $fatals );
@@ -157,7 +185,7 @@ class Inochi_Pulso_Checks_Maintenance extends Inochi_Pulso_Checks_Base {
 		foreach ( array_slice( $fatals, 0, 8, true ) as $msg => $n ) {
 			$top[] = $n . ' × ' . $msg;
 		}
-		$ev = implode( "\n", $lines_ev ) . ( $top ? "\nFatales más repetidos:\n" . implode( "\n", $top ) : '' ) . "\nSe leen los últimos 5 MB de cada registro; las rutas del servidor no se copian.";
+		$ev = implode( "\n", $lines_ev ) . ( $top ? "\n" . __( 'Most repeated fatal errors:', 'inochi-pulso' ) . "\n" . implode( "\n", $top ) : '' ) . "\n" . __( 'The last 5 MB of each log are read; server paths are not copied.', 'inochi-pulso' );
 		if ( $total > 0 ) {
 			$state = 'Fallo';
 		} elseif ( $warnings > 50 ) {
@@ -165,10 +193,11 @@ class Inochi_Pulso_Checks_Maintenance extends Inochi_Pulso_Checks_Base {
 		} else {
 			$state = 'OK';
 		}
-		$value  = sprintf( '%d errores fatales y %d warnings en 7 días', $total, $warnings );
-		$server = array_diff( $files, array( 'debug.log de WordPress' ) );
+		/* translators: 1: fatal errors, 2: warnings. */
+		$value  = sprintf( __( '%1$d fatal errors and %2$d warnings in 7 days', 'inochi-pulso' ), $total, $warnings );
+		$server = array_diff( $files, array( 'debug' ) );
 		if ( ! $server && 'Fallo' !== $state ) {
-			return self::partial( 'MAN-07', $value . ' (solo debug.log)', $ev . "\nSolo se pudo leer el debug.log: revisa también el registro del servidor en Plesk." );
+			return self::partial( 'MAN-07', $value . ' (' . __( 'debug.log only', 'inochi-pulso' ) . ')', $ev . "\n" . __( 'Only debug.log could be read: check the server log in the hosting panel too.', 'inochi-pulso' ) );
 		}
 		return self::auto( 'MAN-07', $value, $state, $ev );
 	}

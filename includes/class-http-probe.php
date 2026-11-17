@@ -1,8 +1,8 @@
 <?php
 /**
- * Peticiones HTTP al propio sitio (loopback) con medición del primer byte.
+ * HTTP requests to the site itself (loopback) with time to first byte.
  *
- * Solo se llama al propio dominio: Pulso no usa servicios externos.
+ * Only the site's own domain is requested.
  *
  * @package InochiPulso
  */
@@ -10,28 +10,28 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Sonda HTTP.
+ * HTTP probe.
  */
 class Inochi_Pulso_Http_Probe {
 
 	/**
-	 * Fin del presupuesto de tiempo del paso actual (microtime), 0 = sin presupuesto.
+	 * End of the time budget of the current step (microtime), 0 = no budget.
 	 *
 	 * @var float
 	 */
 	private static $deadline = 0;
 
 	/**
-	 * El sitio no responde a sí mismo: no se insiste en este paso.
+	 * The site does not answer itself: this step does not insist.
 	 *
 	 * @var string
 	 */
 	private static $unreachable = '';
 
 	/**
-	 * Abre un presupuesto de tiempo compartido por las peticiones de un paso.
+	 * Opens a time budget shared by the requests of a step.
 	 *
-	 * @param int $seconds Segundos totales.
+	 * @param int $seconds Total seconds.
 	 */
 	public static function start_budget( $seconds ) {
 		self::$deadline    = $seconds > 0 ? microtime( true ) + (float) $seconds : 0;
@@ -39,17 +39,17 @@ class Inochi_Pulso_Http_Probe {
 	}
 
 	/**
-	 * ¿Queda presupuesto?
+	 * Is there budget left?
 	 */
 	public static function has_budget() {
 		return '' === self::$unreachable && ( ! self::$deadline || microtime( true ) < self::$deadline );
 	}
 
 	/**
-	 * Hace una petición y devuelve código, cabeceras, tiempos y (opcional) cuerpo.
+	 * Makes a request and returns code, headers, times and (optionally) body.
 	 *
-	 * @param string $url    URL absoluta del propio sitio.
-	 * @param array  $args   method, body_limit (bytes de cuerpo a conservar), timeout.
+	 * @param string $url  Absolute URL of the site itself.
+	 * @param array  $args method, body_limit (body bytes to keep), timeout, optional.
 	 * @return array{code:int,headers:array,ttfb:float|null,total:float|null,body:string,error:string,via:string}
 	 */
 	public static function request( $url, array $args = array() ) {
@@ -63,31 +63,34 @@ class Inochi_Pulso_Http_Probe {
 			$args
 		);
 		if ( ! in_array( $args['method'], array( 'GET', 'HEAD' ), true ) ) {
-			return self::empty_result( 'Método no permitido: Pulso solo hace GET y HEAD.' );
+			return self::empty_result( __( 'Method not allowed: Pulso only makes GET and HEAD requests.', 'inochi-pulso' ) );
 		}
 		if ( ! self::is_own_url( $url ) ) {
-			return self::empty_result( 'URL ajena al sitio: no se consulta.' );
+			return self::empty_result( __( 'URL outside the site: not requested.', 'inochi-pulso' ) );
 		}
 		if ( '' !== self::$unreachable ) {
-			return self::empty_result( 'Sin respuesta del propio sitio: ' . self::$unreachable );
+			/* translators: %s: error. */
+			return self::empty_result( sprintf( __( 'No answer from the site itself: %s', 'inochi-pulso' ), self::$unreachable ) );
 		}
 		if ( self::$deadline ) {
 			$left = self::$deadline - microtime( true );
 			if ( $left < 1 ) {
-				return self::empty_result( 'Tiempo del paso agotado.' );
+				return self::empty_result( __( 'Step time is over.', 'inochi-pulso' ) );
 			}
 			$args['timeout'] = (int) max( 1, min( $args['timeout'], floor( $left ) ) );
 		}
 		$result = function_exists( 'curl_init' ) ? self::curl( $url, $args ) : self::wp_http( $url, $args );
 		if ( ! $args['optional'] && 0 === $result['code'] && '' !== $result['error'] ) {
-			// Fallo de conexión o tiempo agotado: el resto del paso no insiste.
+			// Connection failure or timeout: the rest of the step does not insist.
 			self::$unreachable = $result['error'];
 		}
 		return $result;
 	}
 
 	/**
-	 * Solo se permiten URL del propio sitio (home o site URL).
+	 * Only URLs of the site itself are allowed (home or site URL).
+	 *
+	 * @param string $url URL.
 	 */
 	public static function is_own_url( $url ) {
 		$host = wp_parse_url( $url, PHP_URL_HOST );
@@ -96,7 +99,9 @@ class Inochi_Pulso_Http_Probe {
 	}
 
 	/**
-	 * Resultado vacío.
+	 * Empty result.
+	 *
+	 * @param string $error Error.
 	 */
 	private static function empty_result( $error ) {
 		return array(
@@ -111,20 +116,23 @@ class Inochi_Pulso_Http_Probe {
 	}
 
 	/**
-	 * Verificación TLS para peticiones al propio sitio (mismo filtro que usa el núcleo).
+	 * TLS verification for requests to the site itself (same filter core uses).
 	 */
 	private static function verify_ssl() {
-		return (bool) apply_filters( 'https_local_ssl_verify', false ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- filtro del núcleo.
+		return (bool) apply_filters( 'https_local_ssl_verify', false ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- core filter.
 	}
 
 	/**
-	 * Petición con cURL para obtener el tiempo hasta el primer byte.
+	 * Request with cURL to get the time to first byte.
+	 *
+	 * @param string $url  URL.
+	 * @param array  $args Arguments.
 	 */
 	private static function curl( $url, array $args ) {
 		$headers = array();
 		$body    = '';
 		$limit   = (int) $args['body_limit'];
-		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_init,WordPress.WP.AlternativeFunctions.curl_curl_setopt_array,WordPress.WP.AlternativeFunctions.curl_curl_exec,WordPress.WP.AlternativeFunctions.curl_curl_getinfo,WordPress.WP.AlternativeFunctions.curl_curl_error,WordPress.WP.AlternativeFunctions.curl_curl_close -- se necesita CURLINFO_STARTTRANSFER_TIME.
+		// phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_init,WordPress.WP.AlternativeFunctions.curl_curl_setopt_array,WordPress.WP.AlternativeFunctions.curl_curl_exec,WordPress.WP.AlternativeFunctions.curl_curl_getinfo,WordPress.WP.AlternativeFunctions.curl_curl_error,WordPress.WP.AlternativeFunctions.curl_curl_close -- CURLINFO_STARTTRANSFER_TIME is needed and the WP HTTP API does not expose it.
 		$ch   = curl_init( $url );
 		$opts = array(
 			CURLOPT_RETURNTRANSFER => false,
@@ -133,11 +141,11 @@ class Inochi_Pulso_Http_Probe {
 			CURLOPT_CONNECTTIMEOUT => 4,
 			CURLOPT_SSL_VERIFYPEER => self::verify_ssl(),
 			CURLOPT_SSL_VERIFYHOST => self::verify_ssl() ? 2 : 0,
-			CURLOPT_USERAGENT      => 'Inochi-Pulso/' . INOCHI_PULSO_VERSION . ' (auditoría; solo lectura)',
+			CURLOPT_USERAGENT      => 'Inochi-Pulso/' . INOCHI_PULSO_VERSION . ' (read-only site scan)',
 			CURLOPT_HEADERFUNCTION => static function ( $ch, $line ) use ( &$headers ) {
 				$len = strlen( $line );
 				if ( 0 === stripos( $line, 'HTTP/' ) ) {
-					$headers = array(); // Nueva respuesta (p. ej. tras 100 Continue).
+					$headers = array(); // New response (for example after 100 Continue).
 				}
 				$parts = explode( ':', $line, 2 );
 				if ( 2 === count( $parts ) ) {
@@ -176,7 +184,10 @@ class Inochi_Pulso_Http_Probe {
 	}
 
 	/**
-	 * Alternativa sin cURL: tiempo total (no primer byte).
+	 * Fallback without cURL: total time (not first byte).
+	 *
+	 * @param string $url  URL.
+	 * @param array  $args Arguments.
 	 */
 	private static function wp_http( $url, array $args ) {
 		$start    = microtime( true );
@@ -187,7 +198,7 @@ class Inochi_Pulso_Http_Probe {
 				'timeout'     => (int) $args['timeout'],
 				'redirection' => 0,
 				'sslverify'   => self::verify_ssl(),
-				'user-agent'  => 'Inochi-Pulso/' . INOCHI_PULSO_VERSION . ' (auditoría; solo lectura)',
+				'user-agent'  => 'Inochi-Pulso/' . INOCHI_PULSO_VERSION . ' (read-only site scan)',
 			)
 		);
 		$elapsed  = microtime( true ) - $start;

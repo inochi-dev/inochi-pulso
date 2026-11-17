@@ -1,4 +1,4 @@
-=== Inochi Pulso – Plugin Cost & Site Audit ===
+=== Inochi Pulso ===
 Contributors: inochidev
 Tags: autoload, plugin performance, slow wordpress, woocommerce performance, site audit
 Requires at least: 6.6
@@ -14,11 +14,12 @@ Find which plugin is slowing your site: autoload, tables, cron and WooCommerce i
 
 Inochi Pulso tells you what each plugin costs your site and what to fix first.
 
-Run one scan from Tools → Inochi Pulso. Pulso reads your site without changing anything and gives you a prioritised report: urgent, stabilise, improve.
+Run one scan from Tools → Inochi Pulso. Pulso reads your site without changing anything and gives you a cost per plugin table and a prioritised report: urgent, stabilise, improve.
 
 = What makes it different =
 
-* **Autoload per plugin, in one scan.** The heaviest autoloaded options are attributed to the plugin that owns them, including plugins that are inactive or already deleted. No need to browse for days before you get numbers.
+* **Cost per plugin, in one scan.** One row per plugin — active, inactive or already deleted — with its autoloaded data, its own database tables, its cron events (orphaned ones included) and its failed or late scheduled actions. No need to browse for days before you get numbers.
+* **No guessing in the attribution.** Every item is attributed by the callback registered for it or by finding its name in the installed code. When more than one plugin could own it, it goes to "Unattributed" instead of being pinned on the wrong plugin.
 * **WordPress and WooCommerce operations in the same report.** Store pages, active gateways, failing webhooks, stuck orders, failed and late scheduled actions, expired sessions and HPOS status.
 * **No invented results.** A check that cannot run shows "No data" and does not count towards the score. Every finding shows its evidence. Severity is fixed per rule.
 * **Read-only and leaves no trace.** Install, scan, export, uninstall. Uninstalling removes the plugin's tables and options.
@@ -26,7 +27,7 @@ Run one scan from Tools → Inochi Pulso. Pulso reads your site without changing
 = What it checks =
 
 * Database: autoload size, largest tables, expired transients, post revisions.
-* Plugins: autoload per plugin, pending updates, plugins not from WordPress.org, number of active plugins; optionally, plugins closed or not updated on WordPress.org (off by default, see External services).
+* Plugins: cost per plugin (autoload, tables, cron, scheduled actions), pending updates, plugins not from WordPress.org, number of active plugins; optionally, plugins closed or not updated on WordPress.org (off by default, see External services).
 * Server: response time (TTFB) measured from your own site, page cache, persistent object cache, PHP version and settings, cron.
 * Security basics: HTTPS, security headers, debug output, file editor, administrator accounts, user enumeration, XML-RPC, file permissions, leftover backups and installers reachable from the web, login protection.
 * Maintenance: detected backup system, automatic updates, recurring PHP errors.
@@ -34,7 +35,15 @@ Run one scan from Tools → Inochi Pulso. Pulso reads your site without changing
 
 = Export =
 
-Printable HTML (save as PDF from your browser), CSV and JSON. Exports never include usernames or email addresses.
+Printable HTML (save as PDF from your browser), CSV and JSON, with the cost per plugin table first. Exports never include usernames or email addresses.
+
+= Site Health =
+
+Pulso adds two tests to Tools → Site Health: the result of the last scan and the plugins with the highest cost. They read the last scan; they do not scan again.
+
+= Languages =
+
+English and Spanish (es_ES).
 
 = Who it is for =
 
@@ -81,7 +90,7 @@ Only if you enable the optional WordPress.org check described in External servic
 
 == Screenshots ==
 
-1. Autoload per plugin, from a single scan.
+1. Cost per plugin: autoload, tables, cron and scheduled actions for each plugin, from a single scan.
 2. Prioritised report — urgent, stabilise, improve — with the evidence behind every finding.
 3. "No data": checks that could not run don't count. We don't invent results.
 4. WooCommerce operations: gateways, failing webhooks, stuck orders and failed scheduled actions.
@@ -91,4 +100,4 @@ Only if you enable the optional WordPress.org check described in External servic
 == Changelog ==
 
 = 1.0.0 =
-* First public release.
+* First public release: cost per plugin, 37 read-only checks, prioritised report, HTML/CSV/JSON exports, Site Health tests, Spanish translation.

@@ -1,6 +1,6 @@
 <?php
 /**
- * REN-06, REN-12, REN-14, REN-16, SEG-06 y SEG-10: configuración en ejecución.
+ * REN-06, REN-14, REN-16, SEG-06 and SEG-10: runtime settings.
  *
  * @package InochiPulso
  */
@@ -8,12 +8,12 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Comprobaciones de configuración de PHP y WordPress.
+ * PHP and WordPress settings.
  */
 class Inochi_Pulso_Checks_Runtime extends Inochi_Pulso_Checks_Base {
 
 	/**
-	 * Fin del soporte de seguridad de cada rama de PHP (php.net/supported-versions).
+	 * End of security support of each PHP branch (php.net/supported-versions).
 	 */
 	const PHP_SUPPORT_END = array(
 		'7.4' => '2022-11-28',
@@ -26,13 +26,12 @@ class Inochi_Pulso_Checks_Runtime extends Inochi_Pulso_Checks_Base {
 	);
 
 	/**
-	 * Ejecuta el paso.
+	 * Runs the step.
 	 */
 	public static function run() {
 		return array(
 			'findings' => array(
 				self::object_cache(),
-				self::cron(),
 				self::php_config(),
 				self::plugin_count(),
 				self::php_version(),
@@ -43,7 +42,7 @@ class Inochi_Pulso_Checks_Runtime extends Inochi_Pulso_Checks_Base {
 	}
 
 	/**
-	 * REN-06: caché de objetos persistente.
+	 * REN-06: persistent object cache.
 	 */
 	private static function object_cache() {
 		$ext  = wp_using_ext_object_cache();
@@ -57,74 +56,32 @@ class Inochi_Pulso_Checks_Runtime extends Inochi_Pulso_Checks_Base {
 			$type    = $dropins['object-cache.php']['Name'] ?? 'object-cache.php';
 		}
 		if ( $ext ) {
-			return self::auto( 'REN-06', 'Activa' . ( $type ? ': ' . $type : '' ), 'OK', 'wp_using_ext_object_cache() = true; drop-in object-cache.php ' . ( $drop ? 'presente' : 'ausente' ) . '.' );
+			/* translators: %s: drop-in status. */
+			$ev = sprintf( __( 'wp_using_ext_object_cache() = true; object-cache.php drop-in %s.', 'inochi-pulso' ), $drop ? __( 'present', 'inochi-pulso' ) : __( 'missing', 'inochi-pulso' ) );
+			return self::auto( 'REN-06', __( 'Active', 'inochi-pulso' ) . ( $type ? ': ' . $type : '' ), 'OK', $ev );
 		}
-		$woo    = Inochi_Pulso_Util::has_woocommerce();
 		$big    = false;
 		$detail = '';
-		if ( $woo ) {
+		if ( Inochi_Pulso_Util::has_woocommerce() ) {
 			$products = (int) ( wp_count_posts( 'product' )->publish ?? 0 );
 			$per_day  = Inochi_Pulso_Checks_General::count_orders( 30 ) / 30;
 			$big      = $products > 1000 || $per_day > 50;
-			$detail   = sprintf( ' Tienda con %s productos y %s pedidos/día (media 30 días).', Inochi_Pulso_Util::num( $products ), Inochi_Pulso_Util::num( $per_day, 1 ) );
+			/* translators: 1: products, 2: orders per day. */
+			$detail = ' ' . sprintf( __( 'Store with %1$s products and %2$s orders a day (30-day average).', 'inochi-pulso' ), Inochi_Pulso_Util::num( $products ), Inochi_Pulso_Util::num( $per_day, 1 ) );
 		}
-		$state = $big ? 'Fallo' : 'Aviso';
-		$ev    = 'wp_using_ext_object_cache() = false' . ( $drop ? '; hay object-cache.php pero no está activo' : '; sin drop-in object-cache.php' ) . '.' . $detail;
-		return self::auto( 'REN-06', 'No hay caché de objetos persistente', $state, $ev );
+		$ev = 'wp_using_ext_object_cache() = false; ' . ( $drop ? __( 'there is an object-cache.php file but it is not active.', 'inochi-pulso' ) : __( 'no object-cache.php drop-in.', 'inochi-pulso' ) ) . $detail;
+		return self::auto( 'REN-06', __( 'No persistent object cache', 'inochi-pulso' ), $big ? 'Fallo' : 'Aviso', $ev );
 	}
 
 	/**
-	 * REN-12: eventos de cron atrasados y huérfanos.
-	 */
-	private static function cron() {
-		$crons   = function_exists( '_get_cron_array' ) ? (array) _get_cron_array() : array();
-		$now     = time();
-		$late    = array();
-		$orphans = array();
-		$total   = 0;
-		foreach ( $crons as $ts => $hooks ) {
-			foreach ( (array) $hooks as $hook => $events ) {
-				$total += count( (array) $events );
-				if ( (int) $ts < $now - HOUR_IN_SECONDS ) {
-					$late[ $hook ] = max( $late[ $hook ] ?? 0, $now - (int) $ts );
-				}
-				if ( ! has_action( $hook ) ) {
-					$orphans[ $hook ] = true;
-				}
-			}
-		}
-		$disabled = defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON;
-		if ( $late ) {
-			$state = 'Fallo';
-		} elseif ( $orphans ) {
-			$state = 'Aviso';
-		} else {
-			$state = 'OK';
-		}
-		$value = sprintf( '%d eventos · %d atrasados > 1 h · %d huérfanos · WP-Cron %s', $total, count( $late ), count( $orphans ), $disabled ? 'desactivado (cron del sistema)' : 'activo' );
-		$lines = array();
-		foreach ( $late as $hook => $secs ) {
-			$lines[] = sprintf( 'Atrasado: %s (%s h)', $hook, Inochi_Pulso_Util::num( $secs / 3600, 1 ) );
-		}
-		foreach ( array_keys( $orphans ) as $hook ) {
-			$lines[] = 'Huérfano (ningún código activo lo atiende): ' . $hook;
-		}
-		if ( $disabled ) {
-			$lines[] = 'DISABLE_WP_CRON = true: comprueba en Plesk que existe la tarea que llama a wp-cron.php.';
-		}
-		$lines[] = 'Un hook huérfano puede ser falso positivo si su plugin solo lo registra en el escritorio o durante el cron; confírmalo con grep.';
-		return self::auto( 'REN-12', $value, $state, implode( "\n", $lines ) );
-	}
-
-	/**
-	 * REN-14: memory_limit y OPcache (valores del PHP que sirve la web).
+	 * REN-14: memory_limit and OPcache (values of the PHP that serves the site).
 	 */
 	private static function php_config() {
 		$mem_raw = (string) ini_get( 'memory_limit' );
 		$mem     = Inochi_Pulso_Util::ini_bytes( $mem_raw );
 		$opcache = false;
 		if ( function_exists( 'opcache_get_status' ) ) {
-			$status  = @opcache_get_status( false ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- opcache.restrict_api puede impedirlo.
+			$status  = @opcache_get_status( false ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- opcache.restrict_api can forbid it.
 			$opcache = is_array( $status ) ? ! empty( $status['opcache_enabled'] ) : (bool) ini_get( 'opcache.enable' );
 		}
 		$woo     = Inochi_Pulso_Util::has_woocommerce();
@@ -137,38 +94,41 @@ class Inochi_Pulso_Checks_Runtime extends Inochi_Pulso_Checks_Base {
 		} else {
 			$state = 'OK';
 		}
-		$value = sprintf( 'memory_limit %s · OPcache %s', $mem_raw, $opcache ? 'activo' : 'inactivo' );
+		$op = $opcache ? __( 'active', 'inochi-pulso' ) : __( 'inactive', 'inochi-pulso' );
+		/* translators: 1: memory_limit, 2: OPcache status. */
+		$value = sprintf( __( 'memory_limit %1$s · OPcache %2$s', 'inochi-pulso' ), $mem_raw, $op );
 		$ev    = sprintf(
-			"memory_limit = %s · WP_MEMORY_LIMIT = %s · WP_MAX_MEMORY_LIMIT = %s · max_execution_time = %s · OPcache = %s.\nValores del PHP que atiende la web (no de la línea de comandos).",
+			'memory_limit = %s · WP_MEMORY_LIMIT = %s · WP_MAX_MEMORY_LIMIT = %s · max_execution_time = %s · OPcache = %s.',
 			$mem_raw,
 			defined( 'WP_MEMORY_LIMIT' ) ? WP_MEMORY_LIMIT : '-',
 			defined( 'WP_MAX_MEMORY_LIMIT' ) ? WP_MAX_MEMORY_LIMIT : '-',
 			ini_get( 'max_execution_time' ),
-			$opcache ? 'activo' : 'inactivo'
-		);
+			$op
+		) . "\n" . __( 'Values of the PHP that serves the site (not of the command line).', 'inochi-pulso' );
 		return self::auto( 'REN-14', $value, $state, $ev );
 	}
 
 	/**
-	 * REN-16: número de plugins activos.
+	 * REN-16: number of active plugins.
 	 */
 	private static function plugin_count() {
 		$plugins = Inochi_Pulso_Util::plugins();
 		$active  = count( array_filter( wp_list_pluck( $plugins, 'active' ) ) );
 		$mu      = function_exists( 'get_mu_plugins' ) ? count( get_mu_plugins() ) : 0;
-		$value   = sprintf( '%d activos de %d instalados · %d mu-plugins', $active, count( $plugins ), $mu );
-		return self::auto( 'REN-16', $value, Inochi_Pulso_Util::grade( $active, 41, 60 ), $value . '. Umbral: ≤ 40 OK · 41–60 Aviso · > 60 Fallo.' );
+		/* translators: 1: active plugins, 2: installed plugins, 3: must-use plugins. */
+		$value = sprintf( __( '%1$d active of %2$d installed · %3$d must-use', 'inochi-pulso' ), $active, count( $plugins ), $mu );
+		return self::auto( 'REN-16', $value, Inochi_Pulso_Util::grade( $active, 41, 60 ), $value . '. ' . __( 'Thresholds: up to 40 OK · 41–60 Warning · more than 60 Fail.', 'inochi-pulso' ) );
 	}
 
 	/**
-	 * SEG-06: versión de PHP con soporte de seguridad.
+	 * SEG-06: PHP version with security support.
 	 */
 	private static function php_version() {
 		$branch = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
 		$eol    = self::PHP_SUPPORT_END[ $branch ] ?? null;
 		if ( null === $eol ) {
 			$state = version_compare( $branch, '7.4', '<' ) ? 'Fallo' : 'OK';
-			$note  = 'Rama sin fecha registrada en Pulso: confirma en php.net/supported-versions.';
+			$note  = __( 'Branch without a date in Pulso: check php.net/supported-versions.', 'inochi-pulso' );
 		} else {
 			$eol_ts = strtotime( $eol . ' 23:59:59 UTC' );
 			$now    = time();
@@ -179,21 +139,22 @@ class Inochi_Pulso_Checks_Runtime extends Inochi_Pulso_Checks_Base {
 			} else {
 				$state = 'OK';
 			}
-			$note = 'Fin del soporte de seguridad de PHP ' . $branch . ': ' . $eol . ' (php.net/supported-versions).';
+			/* translators: 1: PHP branch, 2: date. */
+			$note = sprintf( __( 'End of security support for PHP %1$s: %2$s (php.net/supported-versions).', 'inochi-pulso' ), $branch, $eol );
 		}
-		return self::auto( 'SEG-06', 'PHP ' . PHP_VERSION, $state, $note . ' Aviso si termina en menos de 12 meses.' );
+		return self::auto( 'SEG-06', 'PHP ' . PHP_VERSION, $state, $note . ' ' . __( 'Warning if it ends in less than 12 months.', 'inochi-pulso' ) );
 	}
 
 	/**
-	 * SEG-10: editor de archivos del escritorio.
+	 * SEG-10: dashboard file editor.
 	 */
 	private static function file_editor() {
 		$off = ( defined( 'DISALLOW_FILE_EDIT' ) && DISALLOW_FILE_EDIT ) || ( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS );
 		return self::auto(
 			'SEG-10',
-			$off ? 'Editor desactivado' : 'Editor de archivos activo',
+			$off ? __( 'Editor turned off', 'inochi-pulso' ) : __( 'File editor active', 'inochi-pulso' ),
 			$off ? 'OK' : 'Aviso',
-			'DISALLOW_FILE_EDIT = ' . ( defined( 'DISALLOW_FILE_EDIT' ) ? var_export( DISALLOW_FILE_EDIT, true ) : 'no definido' ) . ' · DISALLOW_FILE_MODS = ' . ( defined( 'DISALLOW_FILE_MODS' ) ? var_export( DISALLOW_FILE_MODS, true ) : 'no definido' ) . '.' // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
+			'DISALLOW_FILE_EDIT = ' . ( defined( 'DISALLOW_FILE_EDIT' ) ? wp_json_encode( DISALLOW_FILE_EDIT ) : '—' ) . ' · DISALLOW_FILE_MODS = ' . ( defined( 'DISALLOW_FILE_MODS' ) ? wp_json_encode( DISALLOW_FILE_MODS ) : '—' ) . '.'
 		);
 	}
 }

@@ -1,0 +1,2086 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Inochi Pulso 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/inochi-dev/inochi-pulso/issues\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: inochi-pulso\n"
+
+msgid "Inochi Pulso"
+msgstr "Inochi Pulso"
+
+msgid "https://inochi.dev/"
+msgstr "https://inochi.dev/"
+
+msgid "Find which plugin is slowing your site: autoload, tables, cron and WooCommerce issues per plugin, in one read-only scan."
+msgstr "Descubre qué plugin ralentiza tu web: autoload, tablas, cron y problemas de WooCommerce por plugin, en un solo escaneo de solo lectura."
+
+msgid "Inochi"
+msgstr "Inochi"
+
+msgid "%1$s: %2$s in %3$d option"
+msgid_plural "%1$s: %2$s in %3$d options"
+msgstr[0] "%1$s: %2$s en %3$d opción"
+msgstr[1] "%1$s: %2$s en %3$d opciones"
+
+msgid "%s KB from inactive or deleted plugins"
+msgstr "%s KB de plugins inactivos o borrados"
+
+msgid "Every autoloaded option, attributed by searching its name in the installed code. Details in the cost per plugin table."
+msgstr "Todas las opciones con autoload, atribuidas buscando su nombre en el código instalado. Detalle en la tabla de coste por plugin."
+
+msgid "None."
+msgstr "Ninguna."
+
+msgid "The code search stopped at the time or size limit: options without a match are listed as unattributed, not as leftovers."
+msgstr "La búsqueda en el código se detuvo en el límite de tiempo o tamaño: las opciones sin coincidencia figuran como sin atribuir, no como restos."
+
+msgid "%1$d events · %2$d late > 1 h · %3$d orphaned · WP-Cron %4$s"
+msgstr "%1$d eventos · %2$d atrasados > 1 h · %3$d huérfanos · WP-Cron %4$s"
+
+msgid "disabled (system cron)"
+msgstr "desactivado (cron del sistema)"
+
+msgid "active"
+msgstr "activo"
+
+msgid "Late: %1$s (%2$s h)"
+msgstr "Atrasado: %1$s (%2$s h)"
+
+msgid "Orphaned (only an inactive or deleted plugin uses it): %s"
+msgstr "Huérfano (solo lo usa un plugin inactivo o borrado): %s"
+
+msgid "DISABLE_WP_CRON is true: check that the server has a task that calls wp-cron.php."
+msgstr "DISABLE_WP_CRON está activado: comprueba que el servidor tiene una tarea que llama a wp-cron.php."
+
+msgid "A hook counts as orphaned only when no callback is registered and no active code uses its name."
+msgstr "Un gancho solo cuenta como huérfano si no tiene ninguna función registrada y ningún código activo usa su nombre."
+
+msgid "Leftovers (no installed code uses them)"
+msgstr "Restos (ningún código instalado los usa)"
+
+msgid "Unattributed"
+msgstr "Sin atribuir"
+
+msgid "Theme: %s"
+msgstr "Tema: %s"
+
+msgid "Must-use: %s"
+msgstr "Must-use: %s"
+
+msgid "%s (shared library)"
+msgstr "%s (librería compartida)"
+
+msgid "Active"
+msgstr "Activo"
+
+msgid "Inactive"
+msgstr "Inactivo"
+
+msgid "Deleted"
+msgstr "Borrado"
+
+msgid "Core"
+msgstr "Núcleo"
+
+msgid "Shared"
+msgstr "Compartido"
+
+msgid "No code"
+msgstr "Sin código"
+
+msgid "Unclear"
+msgstr "Dudoso"
+
+msgid "registered callback"
+msgstr "función registrada"
+
+msgid "name in the code"
+msgstr "nombre en el código"
+
+msgid "name built from a prefix in the code"
+msgstr "nombre construido con un prefijo del código"
+
+msgid "WordPress naming rule"
+msgstr "regla de nombres de WordPress"
+
+msgid "registered widget"
+msgstr "widget registrado"
+
+msgid "action group named like the plugin"
+msgstr "grupo de acciones con el nombre del plugin"
+
+msgid "Action Scheduler table, shared by several plugins"
+msgstr "tabla de Action Scheduler, compartida por varios plugins"
+
+msgid "not found in the installed code"
+msgstr "no aparece en el código instalado"
+
+msgid "search stopped at the limit"
+msgstr "búsqueda detenida en el límite"
+
+msgid "%1$s MB (%2$s options)"
+msgstr "%1$s MB (%2$s opciones)"
+
+msgid "%1$s bytes, %2$s options."
+msgstr "%1$s bytes, %2$s opciones."
+
+msgid "No access to information_schema"
+msgstr "Sin acceso a information_schema"
+
+msgid "The information_schema query returned nothing (permissions of the database user)."
+msgstr "La consulta a information_schema no devolvió datos (permisos del usuario de la base de datos)."
+
+msgid "table"
+msgstr "tabla"
+
+msgid "rows"
+msgstr "filas"
+
+msgid "Database %1$s · largest: %2$s (%3$s)"
+msgstr "Base de datos %1$s · mayor: %2$s (%3$s)"
+
+msgid "to review: %s"
+msgstr "a revisar: %s"
+
+msgid "Tables with the %s prefix (15 largest; content tables do not score; the 30 %% rule only applies above 200 MB):"
+msgstr "Tablas con el prefijo %s (las 15 mayores; las de contenido no puntúan; la regla del 30 %% solo se aplica por encima de 200 MB):"
+
+msgid "Transients with a timeout before now in %1$s: %2$s."
+msgstr "Transients con caducidad anterior a ahora en %1$s: %2$s."
+
+msgid "There is a persistent object cache: new transients are not stored in the database."
+msgstr "Hay caché de objetos persistente: los transients nuevos no se guardan en la base de datos."
+
+msgid "%s expired"
+msgstr "%s caducados"
+
+msgid "revisions turned off"
+msgstr "revisiones desactivadas"
+
+msgid "limit %d"
+msgstr "límite %d"
+
+msgid "no limit"
+msgstr "sin límite"
+
+msgid "%1$s revisions · %2$s"
+msgstr "%1$s revisiones · %2$s"
+
+msgid "Windows server"
+msgstr "Servidor Windows"
+
+msgid "Unix permissions do not apply here."
+msgstr "Los permisos Unix no se aplican aquí."
+
+msgid "not found"
+msgstr "no encontrado"
+
+msgid "Permission walk stopped at the time limit."
+msgstr "Recorrido de permisos detenido en el límite de tiempo."
+
+msgid "thumbnails of an elFinder-like file manager: find out which plugin created it"
+msgstr "miniaturas de un gestor de archivos tipo elFinder: averigua qué plugin la creó"
+
+msgid "folder"
+msgstr "carpeta"
+
+msgid "file"
+msgstr "archivo"
+
+msgid "The whole file tree could not be walked."
+msgstr "No se pudo recorrer todo el árbol de archivos."
+
+msgid "World-writable (up to 3 levels, paths from the web root):"
+msgstr "Escribibles por todos (hasta 3 niveles, rutas desde la raíz de la web):"
+
+msgid "none."
+msgstr "ninguno."
+
+msgid "wp-config.php %1$s · %2$d world-writable paths"
+msgstr "wp-config.php %1$s · %2$d rutas escribibles por todos"
+
+msgid "runnable from the web (not requested, so it is not run)"
+msgstr "ejecutable desde la web (no se ha pedido para no ejecutarlo)"
+
+msgid "%1$d file downloadable from the web: %2$s"
+msgid_plural "%1$d files downloadable from the web: %2$s"
+msgstr[0] "%1$d archivo descargable desde la web: %2$s"
+msgstr[1] "%1$d archivos descargables desde la web: %2$s"
+
+msgid "%1$d leftover scripts on the site: %2$s"
+msgstr "%1$d scripts sobrantes en la web: %2$s"
+
+msgid "An installer, Adminer or phpinfo in the root is usually reachable: delete it."
+msgstr "Un instalador, Adminer o phpinfo en la raíz suele ser accesible: bórralo."
+
+msgid "%d leftover files, reachability not checked"
+msgstr "%d archivos sobrantes, accesibilidad sin comprobar"
+
+msgid "The site did not answer: check from outside."
+msgstr "El sitio no respondió: comprueba desde fuera."
+
+msgid "%d leftover files, not reachable"
+msgstr "%d archivos sobrantes, no accesibles"
+
+msgid "No leftover files"
+msgstr "Sin archivos sobrantes"
+
+msgid "Checked the root, its first-level folders and wp-content."
+msgstr "Revisada la raíz, sus carpetas de primer nivel y wp-content."
+
+msgid "Measured from the server itself (loopback): without the visitor’s network latency."
+msgstr "Medido desde el propio servidor (loopback): sin la latencia de red del visitante."
+
+msgid "page"
+msgstr "página"
+
+msgid "visitor"
+msgstr "visitante"
+
+msgid "origin"
+msgstr "origen"
+
+msgid "cache"
+msgstr "caché"
+
+msgid "Medians in seconds of 3 requests. \"Origin\" adds ?inochi_pulso=random to skip the cache."
+msgstr "Medianas en segundos de 3 peticiones. «Origen» añade ?inochi_pulso=aleatorio para saltar la caché."
+
+msgid "If it is close to a threshold, measure from outside too."
+msgstr "Si queda cerca de un umbral, mide también desde fuera."
+
+msgid "Not counted for the state because they answer with a redirect (for example, checkout with an empty cart): %s."
+msgstr "No cuentan para el estado porque responden con una redirección (por ejemplo, finalizar compra con el carrito vacío): %s."
+
+msgid "Errors: %s"
+msgstr "Errores: %s"
+
+msgid "Could not be measured from the server"
+msgstr "No se pudo medir desde el servidor"
+
+msgid "from the server, without cache, URLs without redirect"
+msgstr "desde el servidor, sin caché, URL sin redirección"
+
+msgid "from the server, without cache, cart"
+msgstr "desde el servidor, sin caché, carrito"
+
+msgid "from the server, without cache, cart and checkout"
+msgstr "desde el servidor, sin caché, carrito y finalizar compra"
+
+msgid "Home"
+msgstr "Portada"
+
+msgid "Category"
+msgstr "Categoría"
+
+msgid "Product / post"
+msgstr "Producto / entrada"
+
+msgid "Cart"
+msgstr "Carrito"
+
+msgid "Checkout"
+msgstr "Finalizar compra"
+
+msgid "Page"
+msgstr "Página"
+
+msgid "none"
+msgstr "ninguna"
+
+msgid "Two requests to the home page. Cache headers in the second one: %1$s. Cache marker in the HTML: %2$s. Active cache plugins: %3$s. Request %4$s."
+msgstr "Dos peticiones a la portada. Cabeceras de caché en la segunda: %1$s. Marca de caché en el HTML: %2$s. Plugins de caché activos: %3$s. Petición %4$s."
+
+msgid "through a CDN"
+msgstr "a través de una CDN"
+
+msgid "without CDN signals"
+msgstr "sin señales de CDN"
+
+msgid "Home page served from cache"
+msgstr "Portada servida desde caché"
+
+msgid "No page cache: the CDN answers %s"
+msgstr "Sin caché de página: la CDN responde %s"
+
+msgid "without HIT"
+msgstr "sin HIT"
+
+msgid "Cache plugin active without a HIT signal"
+msgstr "Plugin de caché activo sin señal de HIT"
+
+msgid "No page cache signals from the server"
+msgstr "Sin señales de caché de página desde el servidor"
+
+msgid "Check from outside the server, for example with curl -I."
+msgstr "Comprueba desde fuera del servidor, por ejemplo con curl -I."
+
+msgid "Site URL: %s."
+msgstr "URL del sitio: %s."
+
+msgid "the site does not use HTTPS"
+msgstr "el sitio no usa HTTPS"
+
+msgid "http:// answers 200 without redirecting"
+msgstr "http:// responde 200 sin redirigir"
+
+msgid "Certificate valid until %1$s (%2$d days)"
+msgstr "Certificado válido hasta el %1$s (%2$d días)"
+
+msgid "issued by %s"
+msgstr "emitido por %s"
+
+msgid "Could not read the certificate: %s"
+msgstr "No se pudo leer el certificado: %s"
+
+msgid "expired certificate"
+msgstr "certificado caducado"
+
+msgid "no"
+msgstr "no"
+
+msgid "Mixed content is not checked: look at the browser console on the home page and the checkout."
+msgstr "El contenido mixto no se comprueba: revisa la consola del navegador en la portada y en finalizar compra."
+
+msgid "No HTTPS"
+msgstr "Sin HTTPS"
+
+msgid "redirects"
+msgstr "redirige"
+
+msgid "redirect not confirmed"
+msgstr "redirección sin confirmar"
+
+msgid "certificate %d days"
+msgstr "certificado %d días"
+
+msgid "no HSTS"
+msgstr "sin HSTS"
+
+msgid "Fail: %s."
+msgstr "Fallo: %s."
+
+msgid "The certificate expires in 15 days or less: make sure it renews automatically."
+msgstr "El certificado caduca en 15 días o menos: asegúrate de que se renueva solo."
+
+msgid "yes"
+msgstr "sí"
+
+msgid "%d of 3 basic headers"
+msgstr "%d de 3 cabeceras básicas"
+
+msgid "The request did not go through a CDN: if the site uses one that adds headers, check from outside."
+msgstr "La petición no pasó por una CDN: si el sitio usa una que añade cabeceras, comprueba desde fuera."
+
+msgid "not defined"
+msgstr "no definido"
+
+msgid "custom path (%s)"
+msgstr "ruta propia (%s)"
+
+msgid "the server’s display_errors decides"
+msgstr "decide display_errors del servidor"
+
+msgid "file exists"
+msgstr "el archivo existe"
+
+msgid "file does not exist"
+msgstr "el archivo no existe"
+
+msgid "Request to debug.log from the web → HTTP %d."
+msgstr "Petición al debug.log desde la web → HTTP %d."
+
+msgid "Errors shown on screen and debug.log downloadable from the web"
+msgstr "Errores visibles en pantalla y debug.log descargable desde la web"
+
+msgid "Errors shown on screen"
+msgstr "Errores visibles en pantalla"
+
+msgid "debug.log downloadable from the web"
+msgstr "debug.log descargable desde la web"
+
+msgid "Errors possibly visible (display_errors on in the server)"
+msgstr "Errores posiblemente visibles (display_errors activo en el servidor)"
+
+msgid "WordPress leaves the decision to the server and its php.ini shows errors: check the PHP settings in the hosting panel."
+msgstr "WordPress deja la decisión al servidor y su php.ini muestra errores: revisa la configuración de PHP en el panel del alojamiento."
+
+msgid "debug.log is outside the web root: it cannot be downloaded."
+msgstr "El debug.log está fuera de la raíz web: no se puede descargar."
+
+msgid "Debugging not exposed"
+msgstr "Depuración no expuesta"
+
+msgid "REST /wp/v2/users without a session → HTTP %1$d, %2$d users visible."
+msgstr "REST /wp/v2/users sin sesión → HTTP %1$d, %2$d usuarios visibles."
+
+msgid "redirects to an author archive (exposes the name)"
+msgstr "redirige a un archivo de autor (expone el nombre)"
+
+msgid "Usernames are not stored."
+msgstr "No se guardan nombres de usuario."
+
+msgid "Could not be checked from the server"
+msgstr "No se pudo comprobar desde el servidor"
+
+msgid "The site did not answer the request properly: check from outside."
+msgstr "El sitio no respondió bien a la petición: comprueba desde fuera."
+
+msgid "Names exposed by the REST API and ?author="
+msgstr "Nombres expuestos por la API REST y ?author="
+
+msgid "Names exposed by the REST API"
+msgstr "Nombres expuestos por la API REST"
+
+msgid "Names exposed by ?author="
+msgstr "Nombres expuestos por ?author="
+
+msgid "No user enumeration"
+msgstr "Sin enumeración de usuarios"
+
+msgid "with the answer of an active XML-RPC"
+msgstr "con la respuesta de XML-RPC activo"
+
+msgid "active (needs XML-RPC)"
+msgstr "activo (necesita XML-RPC)"
+
+msgid "not active"
+msgstr "no activo"
+
+msgid "Check from outside."
+msgstr "Comprueba desde fuera."
+
+msgid "XML-RPC blocked (HTTP %d)"
+msgstr "XML-RPC bloqueado (HTTP %d)"
+
+msgid "XML-RPC open (used by Jetpack)"
+msgstr "XML-RPC abierto (lo usa Jetpack)"
+
+msgid "Check that it is protected."
+msgstr "Comprueba que está protegido."
+
+msgid "XML-RPC open with no use detected"
+msgstr "XML-RPC abierto sin uso detectado"
+
+msgid "not detected"
+msgstr "no detectado"
+
+msgid "no protection detected"
+msgstr "sin protección detectada"
+
+msgid "Firewall: %1$s. Login protection: %2$s."
+msgstr "Cortafuegos: %1$s. Protección del acceso: %2$s."
+
+msgid "Firewall: %1$s · login: %2$s"
+msgstr "Cortafuegos: %1$s · acceso: %2$s"
+
+msgid "A CDN or server rules can protect the site without leaving a signal here."
+msgstr "Una CDN o reglas del servidor pueden proteger el sitio sin dejar señal aquí."
+
+msgid "Backup plugin active: %s"
+msgstr "Plugin de copias activo: %s"
+
+msgid "No backup plugin active"
+msgstr "Sin plugin de copias activo"
+
+msgid "Backups made by the hosting cannot be seen from WordPress: check them too, with their frequency and destination."
+msgstr "Las copias que hace el alojamiento no se ven desde WordPress: revísalas también, con su frecuencia y su destino."
+
+msgid "minor versions only (default)"
+msgstr "solo versiones menores (por defecto)"
+
+msgid "all versions"
+msgstr "todas las versiones"
+
+msgid "turned off"
+msgstr "desactivado"
+
+msgid "minor versions only"
+msgstr "solo versiones menores"
+
+msgid "development versions"
+msgstr "versiones de desarrollo"
+
+msgid "non-standard setting"
+msgstr "configuración no estándar"
+
+msgid "%1$d active plugins with automatic updates · core: %2$s · %3$d plugins with a pending update"
+msgstr "%1$d plugins activos con actualización automática · núcleo: %2$s · %3$d plugins con actualización pendiente"
+
+msgid "Whether there is an update procedure (backup, test, check) cannot be seen from here."
+msgstr "Si existe un procedimiento de actualización (copia, prueba, revisión) no se puede ver desde aquí."
+
+msgid "PHP error_log"
+msgstr "error_log de PHP"
+
+msgid "WordPress debug.log"
+msgstr "debug.log de WordPress"
+
+msgid "hosting log"
+msgstr "registro del alojamiento"
+
+msgid "No access to error logs"
+msgstr "Sin acceso a registros de errores"
+
+msgid "There are no logs WordPress can read. Look at the logs in the hosting panel."
+msgstr "No hay registros que WordPress pueda leer. Revisa los registros en el panel del alojamiento."
+
+msgid "%1$s (%2$s): %3$d fatal errors and %4$d warnings in 7 days."
+msgstr "%1$s (%2$s): %3$d errores fatales y %4$d warnings en 7 días."
+
+msgid "Most repeated fatal errors:"
+msgstr "Errores fatales más repetidos:"
+
+msgid "The last 5 MB of each log are read; server paths are not copied."
+msgstr "Se leen los últimos 5 MB de cada registro; las rutas del servidor no se copian."
+
+msgid "%1$d fatal errors and %2$d warnings in 7 days"
+msgstr "%1$d errores fatales y %2$d warnings en 7 días"
+
+msgid "debug.log only"
+msgstr "solo debug.log"
+
+msgid "Only debug.log could be read: check the server log in the hosting panel too."
+msgstr "Solo se pudo leer el debug.log: revisa también el registro del servidor en el panel del alojamiento."
+
+msgid "wp_using_ext_object_cache() = true; object-cache.php drop-in %s."
+msgstr "wp_using_ext_object_cache() = true; drop-in object-cache.php %s."
+
+msgid "present"
+msgstr "presente"
+
+msgid "missing"
+msgstr "ausente"
+
+msgid "Store with %1$s products and %2$s orders a day (30-day average)."
+msgstr "Tienda con %1$s productos y %2$s pedidos al día (media de 30 días)."
+
+msgid "there is an object-cache.php file but it is not active."
+msgstr "hay un archivo object-cache.php pero no está activo."
+
+msgid "no object-cache.php drop-in."
+msgstr "sin drop-in object-cache.php."
+
+msgid "No persistent object cache"
+msgstr "No hay caché de objetos persistente"
+
+msgid "inactive"
+msgstr "inactivo"
+
+msgid "memory_limit %1$s · OPcache %2$s"
+msgstr "memory_limit %1$s · OPcache %2$s"
+
+msgid "Values of the PHP that serves the site (not of the command line)."
+msgstr "Valores del PHP que atiende la web (no de la línea de comandos)."
+
+msgid "%1$d active of %2$d installed · %3$d must-use"
+msgstr "%1$d activos de %2$d instalados · %3$d must-use"
+
+msgid "Thresholds: up to 40 OK · 41–60 Warning · more than 60 Fail."
+msgstr "Umbrales: hasta 40 OK · 41–60 Aviso · más de 60 Fallo."
+
+msgid "Branch without a date in Pulso: check php.net/supported-versions."
+msgstr "Rama sin fecha registrada en Pulso: confírmalo en php.net/supported-versions."
+
+msgid "End of security support for PHP %1$s: %2$s (php.net/supported-versions)."
+msgstr "Fin del soporte de seguridad de PHP %1$s: %2$s (php.net/supported-versions)."
+
+msgid "Warning if it ends in less than 12 months."
+msgstr "Aviso si termina en menos de 12 meses."
+
+msgid "Editor turned off"
+msgstr "Editor desactivado"
+
+msgid "File editor active"
+msgstr "Editor de archivos activo"
+
+msgid "major"
+msgstr "mayor"
+
+msgid "Plugin %1$s %2$s → %3$s"
+msgstr "Plugin %1$s %2$s → %3$s"
+
+msgid "Theme %1$s %2$s → %3$s"
+msgstr "Tema %1$s %2$s → %3$s"
+
+msgid "never"
+msgstr "nunca"
+
+msgid "According to the last WordPress update check (%s):"
+msgstr "Según la última comprobación de actualizaciones de WordPress (%s):"
+
+msgid "No pending updates."
+msgstr "Sin actualizaciones pendientes."
+
+msgid "%d pending update"
+msgid_plural "%d pending updates"
+msgstr[0] "%d actualización pendiente"
+msgstr[1] "%d actualizaciones pendientes"
+
+msgid "some major"
+msgstr "alguna mayor"
+
+msgid "Everything up to date"
+msgstr "Todo al día"
+
+msgid "old data"
+msgstr "dato antiguo"
+
+msgid "The last check is more than 7 days old or does not exist: open Dashboard → Updates and scan again."
+msgstr "La última comprobación tiene más de 7 días o no existe: abre Escritorio → Actualizaciones y vuelve a escanear."
+
+msgid "No WordPress.org data"
+msgstr "Sin datos de WordPress.org"
+
+msgid "WordPress has not checked for updates yet: it is not possible to know which plugins come from WordPress.org."
+msgstr "WordPress todavía no ha comprobado las actualizaciones: no se puede saber qué plugins vienen de WordPress.org."
+
+msgid "All plugins come from WordPress.org"
+msgstr "Todos los plugins vienen de WordPress.org"
+
+msgid "All of them are in the WordPress.org update data."
+msgstr "Todos figuran en los datos de actualizaciones de WordPress.org."
+
+msgid "%1$d plugins from outside WordPress.org: %2$s"
+msgstr "%1$d plugins de fuera de WordPress.org: %2$s"
+
+msgid "Not in the WordPress.org data (premium, custom or closed):"
+msgstr "No figuran en los datos de WordPress.org (premium, a medida o cerrados):"
+
+msgid "For each one, check where it comes from and that it has a licence and updates."
+msgstr "Para cada uno, comprueba de dónde viene y que tiene licencia y actualizaciones."
+
+msgid "%1$d administrators · %2$s · 2FA plugin: %3$s"
+msgstr "%1$d administradores · %2$s · 2FA por plugin: %3$s"
+
+msgid "the \"admin\" account exists"
+msgstr "existe la cuenta «admin»"
+
+msgid "no \"admin\" account"
+msgstr "sin cuenta «admin»"
+
+msgid "No names are stored. Two-factor authentication can also be outside WordPress (for example, at the CDN)."
+msgstr "No se guardan nombres. El segundo factor también puede estar fuera de WordPress (por ejemplo, en la CDN)."
+
+msgid "No WooCommerce"
+msgstr "Sin WooCommerce"
+
+msgid "WooCommerce is not active."
+msgstr "WooCommerce no está activo."
+
+msgid "Error while checking"
+msgstr "Error al comprobar"
+
+msgid "no version"
+msgstr "sin versión"
+
+msgid "%s available"
+msgstr "disponible la %s"
+
+msgid "%1$d of %2$d overridden templates outdated"
+msgstr "%1$d de %2$d plantillas sobrescritas obsoletas"
+
+msgid "Available version according to the last WordPress update check; no data if there is no pending update."
+msgstr "Versión disponible según la última comprobación de actualizaciones de WordPress; sin dato si no hay actualización pendiente."
+
+msgid "HPOS active · sync turned off"
+msgstr "HPOS activo · sincronización desactivada"
+
+msgid "WooCommerce counts %d different orders in the old table, which is not used with sync turned off: it is not a problem."
+msgstr "WooCommerce cuenta %d pedidos distintos en la tabla antigua, que no se usa con la sincronización desactivada: no es un problema."
+
+msgid "sync active"
+msgstr "sincronización activa"
+
+msgid "sync inactive"
+msgstr "sincronización inactiva"
+
+msgid "%d pending"
+msgstr "%d pendientes"
+
+msgid "Shop"
+msgstr "Tienda"
+
+msgid "My account"
+msgstr "Mi cuenta"
+
+msgid "does not exist"
+msgstr "no existe"
+
+msgid "not assigned"
+msgstr "sin asignar"
+
+msgid "Missing or not published: %s"
+msgstr "Falta o no está publicada: %s"
+
+msgid "The 4 pages assigned and published"
+msgstr "Las 4 páginas asignadas y publicadas"
+
+msgid "Active: %s"
+msgstr "Activas: %s"
+
+msgid "No active gateway"
+msgstr "Ninguna pasarela activa"
+
+msgid "In test or sandbox mode: %s."
+msgstr "En modo pruebas o sandbox: %s."
+
+msgid "No test mode found in the usual settings: confirm it in each gateway (WooCommerce → Settings → Payments)."
+msgstr "No se detecta modo pruebas en los ajustes habituales: confírmalo en cada pasarela (WooCommerce → Ajustes → Pagos)."
+
+msgid "in test mode: %s"
+msgstr "en pruebas: %s"
+
+msgid "No webhooks"
+msgstr "Sin webhooks"
+
+msgid "The webhooks table does not exist."
+msgstr "No existe la tabla de webhooks."
+
+msgid "name"
+msgstr "nombre"
+
+msgid "status"
+msgstr "estado"
+
+msgid "failures"
+msgstr "fallos"
+
+msgid "destination"
+msgstr "destino"
+
+msgid "%1$d webhooks · %2$d disabled by failures · %3$d with failures"
+msgstr "%1$d webhooks · %2$d desactivados por fallos · %3$d con fallos"
+
+msgid "Only the destination domain is kept."
+msgstr "Solo se guarda el dominio de destino."
+
+msgid "No webhooks."
+msgstr "Sin webhooks."
+
+msgid "%1$d processing and %2$d on hold > 7 days · %3$d old pending payment"
+msgstr "%1$d procesando y %2$d en espera > 7 días · %3$d pendientes de pago antiguos"
+
+msgid "Old \"pending payment\" orders are abandoned carts: they do not score. Check with the team whether old \"processing\" orders are normal in this business."
+msgstr "Los pedidos «pendientes de pago» antiguos son carritos abandonados: no puntúan. Confirma con el equipo si los «procesando» antiguos son normales en este negocio."
+
+msgid "No Action Scheduler table"
+msgstr "Sin tabla de Action Scheduler"
+
+msgid "The actionscheduler_actions table does not exist."
+msgstr "No existe la tabla actionscheduler_actions."
+
+msgid "failed"
+msgstr "fallidas"
+
+msgid "last"
+msgstr "última"
+
+msgid "%s failed in 30 days"
+msgstr "%s fallidas en 30 días"
+
+msgid "affecting: %s"
+msgstr "afectan a: %s"
+
+msgid "The reason for each failure: Tools → Scheduled Actions → Failed (Log column)."
+msgstr "El motivo de cada fallo: Herramientas → Acciones programadas → Fallidas (columna Registro)."
+
+msgid "No failed actions in 30 days."
+msgstr "Sin acciones fallidas en 30 días."
+
+msgid "late"
+msgstr "atrasadas"
+
+msgid "No late actions."
+msgstr "Sin acciones atrasadas."
+
+msgid "%s late > 1 h"
+msgstr "%s atrasadas > 1 h"
+
+msgid "No sessions table"
+msgstr "Sin tabla de sesiones"
+
+msgid "The woocommerce_sessions table does not exist."
+msgstr "No existe la tabla woocommerce_sessions."
+
+msgid "%1$s expired · table %2$s"
+msgstr "%1$s caducadas · tabla %2$s"
+
+msgid "WordPress.org lookup turned off"
+msgstr "Consulta a WordPress.org desactivada"
+
+msgid "To know whether any plugin is closed or has not been updated for more than 2 years, turn on \"Check plugins on WordPress.org\" in Settings and scan again. Until then this check does not score."
+msgstr "Para saber si algún plugin está cerrado o lleva más de 2 años sin actualizarse, activa «Consultar plugins en WordPress.org» en Ajustes y vuelve a escanear. Hasta entonces esta comprobación no puntúa."
+
+msgid "%1$d plugins checked, %2$d left…"
+msgstr "%1$d plugins consultados, quedan %2$d…"
+
+msgid "Closed: %s"
+msgstr "Cerrado: %s"
+
+msgid "Not updated for more than 2 years: %s"
+msgstr "Sin actualizar en más de 2 años: %s"
+
+msgid "Checked on the WordPress.org plugins API: %1$d (with errors: %2$d)."
+msgstr "Consultados en la API de plugins de WordPress.org: %1$d (con error: %2$d)."
+
+msgid "%1$d closed and %2$d not updated for more than 2 years"
+msgstr "%1$d cerrados y %2$d sin actualizar en más de 2 años"
+
+msgid "WordPress.org did not answer for every plugin"
+msgstr "WordPress.org no respondió para todos los plugins"
+
+msgid "None closed or abandoned"
+msgstr "Ninguno cerrado ni abandonado"
+
+msgid "Open"
+msgstr "Abrir"
+
+msgid "Starting the scan…"
+msgstr "Iniciando el escaneo…"
+
+msgid "Step %1$d of %2$d: %3$s"
+msgstr "Paso %1$d de %2$d: %3$s"
+
+msgid "Error in this step (the scan goes on):"
+msgstr "Error en este paso (el escaneo sigue):"
+
+msgid "Writing the report…"
+msgstr "Preparando el informe…"
+
+msgid "The scan could not continue:"
+msgstr "El escaneo no pudo continuar:"
+
+msgid "The scan is still running. If you leave, it will stop."
+msgstr "El escaneo sigue en marcha. Si sales de la página, se detendrá."
+
+msgid "You are not allowed to use Inochi Pulso."
+msgstr "No tienes permiso para usar Inochi Pulso."
+
+msgid "Scan not found."
+msgstr "Escaneo no encontrado."
+
+msgid "Scan deleted."
+msgstr "Escaneo borrado."
+
+msgid "Settings saved."
+msgstr "Ajustes guardados."
+
+msgid "Scans"
+msgstr "Escaneos"
+
+msgid "Settings"
+msgstr "Ajustes"
+
+msgid "New scan"
+msgstr "Nuevo escaneo"
+
+msgid "Pulso reads this site without changing anything and tells you what to fix first, and how much each plugin costs. It takes 1 to 3 minutes: keep this tab open while it runs."
+msgstr "Pulso lee este sitio sin cambiar nada y te dice qué arreglar primero y cuánto cuesta cada plugin. Tarda entre 1 y 3 minutos: no cierres la pestaña mientras se ejecuta."
+
+msgid "It makes about 40 requests to this same site (home page, cart, leftover files…) to measure times and see what is reachable from outside. They can show up in the server statistics or the firewall log."
+msgstr "Hace unas 40 peticiones a este mismo sitio (portada, carrito, archivos sobrantes…) para medir tiempos y comprobar qué es accesible desde fuera. Pueden aparecer en las estadísticas del servidor o en el registro del cortafuegos."
+
+msgid "WordPress.org lookup: on (the folder name of each installed plugin is sent to api.wordpress.org)."
+msgstr "Consulta a WordPress.org: activada (se envía a api.wordpress.org el nombre de carpeta de cada plugin instalado)."
+
+msgid "WordPress.org lookup: off. Pulso does not contact any external service."
+msgstr "Consulta a WordPress.org: desactivada. Pulso no se conecta a ningún servicio externo."
+
+msgid "Turn it on in Settings to detect closed or abandoned plugins."
+msgstr "Actívala en Ajustes para detectar plugins cerrados o abandonados."
+
+msgid "Start scan"
+msgstr "Iniciar escaneo"
+
+msgid "No scans yet."
+msgstr "Todavía no hay escaneos."
+
+msgid "Scans of this site"
+msgstr "Escaneos de este sitio"
+
+msgid "Date (UTC)"
+msgstr "Fecha (UTC)"
+
+msgid "Health"
+msgstr "Salud"
+
+msgctxt "check state"
+msgid "Fail"
+msgstr "Fallo"
+
+msgctxt "check state"
+msgid "Warning"
+msgstr "Aviso"
+
+msgid "unfinished"
+msgstr "sin terminar"
+
+msgid "View"
+msgstr "Ver"
+
+msgid "← Scans"
+msgstr "← Escaneos"
+
+msgid "Scan #%1$d · %2$s UTC"
+msgstr "Escaneo n.º %1$d · %2$s UTC"
+
+msgid "This scan did not finish: some checks are missing. Run a new scan and keep the tab open until the end."
+msgstr "Este escaneo no terminó: faltan comprobaciones. Lanza un escaneo nuevo y deja la pestaña abierta hasta el final."
+
+msgid "Step \"%1$s\" failed: %2$s"
+msgstr "El paso «%1$s» falló: %2$s"
+
+msgid "site health"
+msgstr "salud del sitio"
+
+msgid "What could not be checked shows as \"No data\" and does not count in the score: Pulso does not make up results."
+msgstr "Lo que no se pudo comprobar aparece como «Sin datos» y no cuenta en la puntuación: Pulso no inventa resultados."
+
+msgid "Printable report"
+msgstr "Informe imprimible"
+
+msgid "Cost per plugin"
+msgstr "Coste por plugin"
+
+msgid "Priority: %s"
+msgstr "Prioridad: %s"
+
+msgid "All checks"
+msgstr "Todas las comprobaciones"
+
+msgid "Want an engineer to review it?"
+msgstr "¿Quieres que lo revise un ingeniero?"
+
+msgid "Inochi audit"
+msgstr "Auditoría de Inochi"
+
+msgid "Delete this scan? This cannot be undone."
+msgstr "¿Borrar este escaneo? No se puede deshacer."
+
+msgid "Delete this scan"
+msgstr "Borrar este escaneo"
+
+msgid "External services"
+msgstr "Servicios externos"
+
+msgid "By default Pulso does not contact any external service: the whole scan runs on this server."
+msgstr "Por defecto, Pulso no se conecta a ningún servicio externo: todo el escaneo se hace en este servidor."
+
+msgid "Check plugins on WordPress.org"
+msgstr "Consultar plugins en WordPress.org"
+
+msgid "To detect plugins that are closed or have not been updated for more than 2 years, Pulso sends the WordPress.org plugins API (api.wordpress.org) the folder name (slug) of each installed plugin, premium and custom ones included. Nothing else is sent."
+msgstr "Para detectar plugins cerrados o que llevan más de 2 años sin actualizarse, Pulso envía a la API de plugins de WordPress.org (api.wordpress.org) el nombre de carpeta (slug) de cada plugin instalado, incluidos los premium o hechos a medida. No se envía nada más."
+
+msgid "WordPress.org privacy policy"
+msgstr "Política de privacidad de WordPress.org"
+
+msgid "Turned on on %s UTC."
+msgstr "Activada el %s UTC."
+
+msgid "Save settings"
+msgstr "Guardar ajustes"
+
+msgid "Server response time (TTFB)"
+msgstr "Tiempo de respuesta del servidor (TTFB)"
+
+msgid "Page cache"
+msgstr "Caché de página"
+
+msgid "Persistent object cache"
+msgstr "Caché de objetos persistente"
+
+msgid "Total autoload size"
+msgstr "Tamaño total del autoload"
+
+msgid "Autoload from inactive or deleted plugins"
+msgstr "Autoload de plugins inactivos o borrados"
+
+msgid "Largest tables (logs, sessions, leftovers)"
+msgstr "Tablas más grandes (registros, sesiones, restos)"
+
+msgid "Expired transients"
+msgstr "Transients caducados"
+
+msgid "Post revisions"
+msgstr "Revisiones de entradas"
+
+msgid "Cron: late and orphaned events"
+msgstr "Cron: eventos atrasados y huérfanos"
+
+msgid "PHP settings (memory_limit, OPcache)"
+msgstr "Configuración de PHP (memory_limit, OPcache)"
+
+msgid "Number of active plugins"
+msgstr "Número de plugins activos"
+
+msgid "Pending updates"
+msgstr "Actualizaciones pendientes"
+
+msgid "Plugins abandoned or closed on WordPress.org"
+msgstr "Plugins abandonados o cerrados en WordPress.org"
+
+msgid "Plugins from outside WordPress.org"
+msgstr "Plugins de fuera de WordPress.org"
+
+msgid "Supported PHP version"
+msgstr "Versión de PHP con soporte"
+
+msgid "HTTPS (redirect, certificate, HSTS)"
+msgstr "HTTPS (redirección, certificado, HSTS)"
+
+msgid "Security headers"
+msgstr "Cabeceras de seguridad"
+
+msgid "Exposed debugging (errors on screen, debug.log)"
+msgstr "Depuración expuesta (errores en pantalla, debug.log)"
+
+msgid "Dashboard file editor"
+msgstr "Editor de archivos del escritorio"
+
+msgid "Administrator accounts"
+msgstr "Cuentas de administrador"
+
+msgid "User enumeration"
+msgstr "Enumeración de usuarios"
+
+msgid "XML-RPC"
+msgstr "XML-RPC"
+
+msgid "File permissions"
+msgstr "Permisos de archivos"
+
+msgid "Leftover files reachable from the web (.sql, .zip, info.php)"
+msgstr "Archivos sobrantes accesibles desde la web (.sql, .zip, info.php)"
+
+msgid "Login protection and firewall"
+msgstr "Protección del acceso y cortafuegos"
+
+msgid "WooCommerce version and overridden templates"
+msgstr "Versión de WooCommerce y plantillas sobrescritas"
+
+msgid "HPOS and order sync"
+msgstr "HPOS y sincronización de pedidos"
+
+msgid "WooCommerce pages assigned"
+msgstr "Páginas de WooCommerce asignadas"
+
+msgid "Payment gateways"
+msgstr "Pasarelas de pago"
+
+msgid "Failing webhooks"
+msgstr "Webhooks con fallos"
+
+msgid "Stuck orders (processing or on hold > 7 days)"
+msgstr "Pedidos atascados (procesando o en espera > 7 días)"
+
+msgid "Failed scheduled actions (30 days)"
+msgstr "Acciones programadas fallidas (30 días)"
+
+msgid "Scheduled actions late > 1 h"
+msgstr "Acciones programadas atrasadas > 1 h"
+
+msgid "Expired sessions"
+msgstr "Sesiones caducadas"
+
+msgid "Backup system"
+msgstr "Sistema de copias de seguridad"
+
+msgid "Automatic updates"
+msgstr "Actualizaciones automáticas"
+
+msgid "Recurring PHP errors (7 days)"
+msgstr "Errores de PHP recurrentes (7 días)"
+
+msgctxt "check state"
+msgid "OK"
+msgstr "OK"
+
+msgctxt "check state"
+msgid "N/A"
+msgstr "N/A"
+
+msgctxt "check state"
+msgid "No data"
+msgstr "Sin datos"
+
+msgid "Performance"
+msgstr "Rendimiento"
+
+msgid "Security"
+msgstr "Seguridad"
+
+msgid "WooCommerce"
+msgstr "WooCommerce"
+
+msgid "Maintenance"
+msgstr "Mantenimiento"
+
+msgid "Critical"
+msgstr "Crítica"
+
+msgid "High"
+msgstr "Alta"
+
+msgid "Medium"
+msgstr "Media"
+
+msgid "Low"
+msgstr "Baja"
+
+msgid "Urgent"
+msgstr "Urgente"
+
+msgid "Stabilisation"
+msgstr "Estabilización"
+
+msgid "Improvement"
+msgstr "Mejora"
+
+msgid "%s option"
+msgid_plural "%s options"
+msgstr[0] "%s opción"
+msgstr[1] "%s opciones"
+
+msgid "%s table"
+msgid_plural "%s tables"
+msgstr[0] "%s tabla"
+msgstr[1] "%s tablas"
+
+msgid "%s orphaned"
+msgstr "%s huérfanos"
+
+msgid "%s late"
+msgstr "%s atrasados"
+
+msgid "%1$s failed · %2$s late"
+msgstr "%1$s fallidas · %2$s atrasadas"
+
+msgid "Option %1$s · %2$s · %3$s"
+msgstr "Opción %1$s · %2$s · %3$s"
+
+msgid "Table %1$s · %2$s · %3$s rows · %4$s"
+msgstr "Tabla %1$s · %2$s · %3$s filas · %4$s"
+
+msgid "orphaned"
+msgstr "huérfano"
+
+msgid "%s h late"
+msgstr "%s h de retraso"
+
+msgid "Cron %1$s · %2$s events%3$s · %4$s"
+msgstr "Cron %1$s · %2$s eventos%3$s · %4$s"
+
+msgid "Action %1$s (group: %2$s) · %3$s failed · %4$s late · %5$s"
+msgstr "Acción %1$s (grupo: %2$s) · %3$s fallidas · %4$s atrasadas · %5$s"
+
+msgid "Each item is attributed by its registered callback or by searching its name in the installed code. When several plugins could own it, it goes to \"Unattributed\": Pulso does not guess. Core content tables (posts, users, orders…) are not counted."
+msgstr "Cada elemento se atribuye por la función registrada o buscando su nombre en el código instalado. Si varios plugins pueden ser su dueño, va a «Sin atribuir»: Pulso no adivina. Las tablas de contenido del núcleo (entradas, usuarios, pedidos…) no cuentan."
+
+msgid "The code search stopped at its time or size limit: items without a match are in \"Unattributed\"."
+msgstr "La búsqueda en el código se detuvo en su límite de tiempo o tamaño: los elementos sin coincidencia están en «Sin atribuir»."
+
+msgid "Plugin"
+msgstr "Plugin"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Autoload (KB)"
+msgstr "Autoload (KB)"
+
+msgid "Autoloaded options"
+msgstr "Opciones con autoload"
+
+msgid "Own tables (MB)"
+msgstr "Tablas propias (MB)"
+
+msgid "Tables"
+msgstr "Tablas"
+
+msgid "Cron events"
+msgstr "Eventos de cron"
+
+msgid "Orphaned events"
+msgstr "Eventos huérfanos"
+
+msgid "Failed actions (30 days)"
+msgstr "Acciones fallidas (30 días)"
+
+msgid "Late actions (> 1 h)"
+msgstr "Acciones atrasadas (> 1 h)"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "Area"
+msgstr "Área"
+
+msgid "Check"
+msgstr "Comprobación"
+
+msgid "Severity"
+msgstr "Severidad"
+
+msgid "State"
+msgstr "Estado"
+
+msgid "Priority"
+msgstr "Prioridad"
+
+msgid "Measured value"
+msgstr "Valor medido"
+
+msgid "Evidence"
+msgstr "Evidencia"
+
+msgid "Print or save as PDF"
+msgstr "Imprimir o guardar como PDF"
+
+msgid "Inochi Pulso report"
+msgstr "Informe de Inochi Pulso"
+
+msgid "Site health"
+msgstr "Salud del sitio"
+
+msgid "What could not be checked shows as \"No data\" and does not count in the score."
+msgstr "Lo que no se pudo comprobar aparece como «Sin datos» y no cuenta en la puntuación."
+
+msgid "Score"
+msgstr "Puntuación"
+
+msgid "No data: the cost per plugin step did not finish."
+msgstr "Sin datos: el paso de coste por plugin no terminó."
+
+msgid "Autoload"
+msgstr "Autoload"
+
+msgid "Own tables"
+msgstr "Tablas propias"
+
+msgid "Scheduled actions"
+msgstr "Acciones programadas"
+
+msgid "Today:"
+msgstr "Hoy:"
+
+msgid "Target:"
+msgstr "Objetivo:"
+
+msgid "What to do:"
+msgstr "Qué hacer:"
+
+msgid "How to check it:"
+msgstr "Cómo comprobarlo:"
+
+msgid "Method not allowed: Pulso only makes GET and HEAD requests."
+msgstr "Método no permitido: Pulso solo hace peticiones GET y HEAD."
+
+msgid "URL outside the site: not requested."
+msgstr "URL ajena al sitio: no se consulta."
+
+msgid "No answer from the site itself: %s"
+msgstr "Sin respuesta del propio sitio: %s"
+
+msgid "Step time is over."
+msgstr "Tiempo del paso agotado."
+
+msgid "The server takes {num} to start responding"
+msgstr "El servidor tarda {num} en empezar a responder"
+
+msgid "Every page, cart and checkout included, starts loading late. Visitors wait looking at a blank screen, and Google takes it into account."
+msgstr "Cada página, también el carrito y el pago, empieza a cargar tarde. Es tiempo que el visitante espera mirando una pantalla en blanco y que Google tiene en cuenta."
+
+msgid "Measure how much of the time is PHP, database or network on the same 5 pages."
+msgstr "Medir qué parte del tiempo es PHP, base de datos o red con las mismas 5 páginas."
+
+msgid "Fix what weighs most (queries, autoload, slow plugins, cache)."
+msgstr "Corregir lo que más pese (consultas, autoload, plugins lentos, caché)."
+
+msgid "Check whether the hosting has enough resources for the real traffic."
+msgstr "Revisar si el alojamiento tiene recursos suficientes para el tráfico real."
+
+msgid "Response time of the same 5 pages before and after."
+msgstr "Tiempo de respuesta de las mismas 5 páginas antes y después."
+
+msgid "Under 0.6 s"
+msgstr "Menos de 0,6 s"
+
+msgid "No page cache: every visit builds the page from scratch"
+msgstr "Sin caché de página: cada visita genera la página desde cero"
+
+msgid "The server repeats the same work on every visit: slower pages, load peaks and a worse position in Google."
+msgstr "El servidor repite el mismo trabajo en cada visita: páginas más lentas, picos de carga y peor posición en Google."
+
+msgid "Turn on page caching (plugin or server), excluding cart, checkout and my account."
+msgstr "Activar caché de página (plugin o servidor) excluyendo carrito, pago y mi cuenta."
+
+msgid "Set up purging when content or stock changes."
+msgstr "Configurar la purga al publicar o al cambiar el stock."
+
+msgid "Cache header showing HIT and home page response time before and after."
+msgstr "Cabecera de caché en HIT y tiempo de respuesta de la portada antes y después."
+
+msgid "Pages served from cache (HIT)"
+msgstr "Páginas servidas desde caché (HIT)"
+
+msgid "No object cache: the database repeats the same queries"
+msgstr "Sin caché de objetos: la base de datos repite las mismas consultas"
+
+msgid "More queries per page and more time in cart and checkout, which page caching cannot serve."
+msgstr "Más consultas por página y más tiempo en el carrito y el pago, que no se pueden servir desde la caché de página."
+
+msgid "Turn on Redis or Memcached in the hosting."
+msgstr "Activar Redis o Memcached en el alojamiento."
+
+msgid "Install the object cache connector and check that the cart still works."
+msgstr "Instalar el conector de caché de objetos y comprobar que el carrito sigue funcionando."
+
+msgid "Queries per page and cart response time before and after."
+msgstr "Consultas por página y tiempo de respuesta del carrito antes y después."
+
+msgid "Object cache active"
+msgstr "Caché de objetos activa"
+
+msgid "{num} of data that WordPress loads on every visit"
+msgstr "{num} de datos que WordPress carga en cada visita"
+
+msgid "Every page, cart and checkout included, takes longer to serve. WordPress warns from 0.8 MB."
+msgstr "Cada página, carrito y pago incluidos, tarda más en servirse. WordPress avisa a partir de 0,8 MB."
+
+msgid "Back up the database before touching anything."
+msgstr "Copia de la base de datos antes de tocar nada."
+
+msgid "Look at the cost per plugin table to see which plugin loads the most."
+msgstr "Mirar en la tabla de coste por plugin qué plugin carga más."
+
+msgid "Delete the options of plugins that are no longer installed."
+msgstr "Borrar las opciones de plugins ya desinstalados."
+
+msgid "Stop autoloading options that only the dashboard uses."
+msgstr "Quitar la carga automática a opciones que solo usa el escritorio."
+
+msgid "Autoload size and response time on the same 5 pages."
+msgstr "Tamaño del autoload y tiempo de respuesta en las mismas 5 páginas."
+
+msgid "Under 0.8 MB"
+msgstr "Menos de 0,8 MB"
+
+msgid "{num} of data from inactive or deleted plugins loaded on every visit"
+msgstr "{num} de datos de plugins inactivos o borrados que se cargan en cada visita"
+
+msgid "Data from plugins that are no longer used is still loaded on every page."
+msgstr "Datos de plugins que ya no se usan y que se siguen cargando en cada página."
+
+msgid "Confirm that the owner plugin is no longer needed (see the cost per plugin table)."
+msgstr "Confirmar que el plugin dueño ya no hace falta (ver la tabla de coste por plugin)."
+
+msgid "Back up the database and delete those options."
+msgstr "Copia de la base de datos y borrado de esas opciones."
+
+msgid "Autoload from inactive or deleted plugins close to 0 on the next scan."
+msgstr "Autoload de plugins inactivos o borrados cercano a 0 en el siguiente escaneo."
+
+msgid "Under 100 KB"
+msgstr "Menos de 100 KB"
+
+msgid "Log tables or leftovers that bloat the database"
+msgstr "Tablas de registros o restos que inflan la base de datos"
+
+msgid "Slower and heavier backups, longer restores and slower queries."
+msgstr "Copias de seguridad más lentas y pesadas, restauraciones más largas y consultas más lentas."
+
+msgid "Find the plugin of each large table in the cost per plugin table."
+msgstr "Localizar el plugin de cada tabla grande en la tabla de coste por plugin."
+
+msgid "Empty old logs and drop tables of uninstalled plugins, with a backup first."
+msgstr "Vaciar registros antiguos y borrar tablas de plugins desinstalados, con copia previa."
+
+msgid "Limit log retention from now on."
+msgstr "Limitar la retención de registros en adelante."
+
+msgid "Size of the database and of the backup before and after."
+msgstr "Tamaño de la base de datos y de la copia antes y después."
+
+msgid "No log table above 100 MB"
+msgstr "Ninguna tabla de registros por encima de 100 MB"
+
+msgid "Expired temporary data in the database ({num})"
+msgstr "Datos temporales caducados en la base de datos ({num})"
+
+msgid "It takes space and slows down the options table, which is read on every visit."
+msgstr "Ocupan espacio y ralentizan la tabla de opciones, que se lee en cada visita."
+
+msgid "Delete the expired transients."
+msgstr "Borrar los transients caducados."
+
+msgid "Check that the clean-up cron runs."
+msgstr "Comprobar que el cron de limpieza funciona."
+
+msgid "Number of expired transients on the next scan."
+msgstr "Número de transients caducados en el siguiente escaneo."
+
+msgid "Under 500"
+msgstr "Menos de 500"
+
+msgid "Unlimited content revisions ({num})"
+msgstr "Revisiones de contenido guardadas sin límite ({num})"
+
+msgid "A bigger database than needed: slower backups and heavier queries."
+msgstr "Base de datos más grande de lo necesario: copias más lentas y consultas más pesadas."
+
+msgid "Limit revisions (for example, to 10 per post)."
+msgstr "Limitar las revisiones (por ejemplo, a 10 por entrada)."
+
+msgid "Delete old revisions, with a backup first."
+msgstr "Borrar las revisiones antiguas, con copia previa."
+
+msgid "Number of revisions and database size."
+msgstr "Número de revisiones y tamaño de la base de datos."
+
+msgid "Limited revisions"
+msgstr "Revisiones limitadas"
+
+msgid "Late or ownerless scheduled tasks"
+msgstr "Tareas programadas atrasadas o sin dueño"
+
+msgid "Scheduled tasks from plugins that are no longer active"
+msgstr "Tareas programadas de plugins que ya no están activos"
+
+msgid "WordPress keeps trying to run tasks that no longer do anything: useless work on every run and noise that hides the real problems."
+msgstr "WordPress sigue intentando ejecutar tareas que ya no hacen nada: trabajo inútil en cada ejecución y ruido que oculta los problemas reales."
+
+msgid "Delete the orphaned tasks, with a backup first."
+msgstr "Eliminar las tareas huérfanas, con copia previa."
+
+msgid "Replace WP-Cron with a server task every 5 minutes."
+msgstr "Sustituir WP-Cron por una tarea del servidor cada 5 minutos."
+
+msgid "Automatic tasks that do not run on time: emails, backups, clean-ups or syncs delayed without anyone noticing."
+msgstr "Tareas automáticas que no se ejecutan a tiempo: correos, copias, limpiezas o sincronizaciones que se retrasan sin que nadie lo vea."
+
+msgid "Delete the tasks of uninstalled plugins."
+msgstr "Eliminar las tareas de plugins desinstalados."
+
+msgid "No events more than 1 hour late on the next scan."
+msgstr "Sin eventos atrasados más de 1 hora en el siguiente escaneo."
+
+msgid "No late or orphaned tasks, with a real server cron"
+msgstr "Ninguna tarea atrasada ni huérfana, con cron real del servidor"
+
+msgid "PHP settings below the recommended values"
+msgstr "Configuración de PHP por debajo de lo recomendado"
+
+msgid "Memory errors in heavy processes (imports, large orders) and slower PHP without OPcache."
+msgstr "Errores de memoria en procesos pesados (importaciones, pedidos grandes) y PHP más lento sin OPcache."
+
+msgid "Raise memory_limit to 256M or more."
+msgstr "Subir memory_limit a 256M o más."
+
+msgid "Turn on OPcache in the hosting."
+msgstr "Activar OPcache en el alojamiento."
+
+msgid "Values in Site Health → Info → Server."
+msgstr "Valores en Salud del sitio → Información → Servidor."
+
+msgid "256 MB or more and OPcache active"
+msgstr "256 MB o más y OPcache activo"
+
+msgid "Too many active plugins ({num}): many parts to maintain"
+msgstr "Demasiados plugins activos ({num}): muchas piezas que mantener"
+
+msgid "Every plugin adds code, queries and risk. Above 40 it is hard to know what each one does and which one fails."
+msgstr "Cada plugin añade código, consultas y riesgo. A partir de 40 es difícil saber qué hace cada uno y cuál falla."
+
+msgid "List what each plugin is for."
+msgstr "Inventario de para qué sirve cada plugin."
+
+msgid "Remove the ones that are not used or duplicate features."
+msgstr "Quitar los que no se usan o duplican funciones."
+
+msgid "Number of active plugins and response time."
+msgstr "Número de plugins activos y tiempo de respuesta."
+
+msgid "40 or fewer, each with a clear purpose"
+msgstr "40 o menos, todos con una función clara"
+
+msgid "Pending updates in core, plugins or theme ({num})"
+msgstr "Actualizaciones pendientes en el núcleo, los plugins o el tema ({num})"
+
+msgid "Old versions pile up known bugs and vulnerabilities. The longer you wait, the riskier it is to update everything at once."
+msgstr "Las versiones antiguas acumulan fallos y vulnerabilidades conocidas. Cuanto más tiempo pasa, más arriesgado es actualizar de golpe."
+
+msgid "Full backup and a test on a staging site."
+msgstr "Copia completa y prueba en un entorno de pruebas."
+
+msgid "Update minor versions first and then major ones, one at a time."
+msgstr "Actualizar primero lo menor y después lo mayor, una cosa cada vez."
+
+msgid "Check forms, cart and checkout after each update."
+msgstr "Revisar formularios, carrito y pago tras cada actualización."
+
+msgid "Dashboard → Updates with nothing pending."
+msgstr "Escritorio → Actualizaciones sin pendientes."
+
+msgid "Plugins abandoned or removed from WordPress.org"
+msgstr "Plugins abandonados o retirados de WordPress.org"
+
+msgid "Nobody fixes their bugs. If a vulnerability appears there will be no patch, and they tend to stop working with new WordPress versions."
+msgstr "Nadie corrige sus fallos. Si aparece una vulnerabilidad no habrá parche, y suelen dejar de funcionar con nuevas versiones de WordPress."
+
+msgid "Find a maintained alternative for each one."
+msgstr "Buscar una alternativa mantenida para cada uno."
+
+msgid "Replace them on a staging site and migrate their data."
+msgstr "Sustituirlos en un entorno de pruebas y migrar sus datos."
+
+msgid "No plugin closed or without updates for more than 2 years."
+msgstr "Ningún plugin cerrado ni sin actualizar en más de 2 años."
+
+msgid "No closed or abandoned plugins"
+msgstr "Ningún plugin cerrado ni abandonado"
+
+msgid "Premium or custom plugins without guaranteed updates"
+msgstr "Plugins de pago o a medida sin actualizaciones garantizadas"
+
+msgid "Without an active licence, security patches do not arrive. A plugin of doubtful origin can bring malicious code."
+msgstr "Sin licencia activa no llegan los parches de seguridad. Un plugin de origen dudoso puede traer código malicioso."
+
+msgid "Renew the licences of the premium plugins in use."
+msgstr "Renovar las licencias de los plugins de pago en uso."
+
+msgid "Replace any copy of doubtful origin with the official one."
+msgstr "Sustituir cualquier copia de origen dudoso por la oficial."
+
+msgid "Active licence and current version for each premium plugin."
+msgstr "Licencia activa y versión al día en cada plugin de pago."
+
+msgid "All with an active licence and updates"
+msgstr "Todos con licencia activa y actualizaciones"
+
+msgid "The PHP version is losing or has lost security support"
+msgstr "La versión de PHP pierde o ha perdido el soporte de seguridad"
+
+msgid "PHP security bugs are no longer fixed. New plugins stop being compatible."
+msgstr "Los fallos de seguridad de PHP dejan de corregirse. Los plugins nuevos dejan de ser compatibles."
+
+msgid "Test the site with a current PHP version on a staging site."
+msgstr "Probar la web con una versión de PHP actual en un entorno de pruebas."
+
+msgid "Change the version in the hosting panel and check the error log."
+msgstr "Cambiar la versión en el panel del alojamiento y revisar el registro de errores."
+
+msgid "A PHP version with security support and no new errors in the log."
+msgstr "Versión de PHP con soporte de seguridad y sin errores nuevos en el registro."
+
+msgid "PHP 8.3 or later"
+msgstr "PHP 8.3 o superior"
+
+msgid "Problems with the secure connection (HTTPS)"
+msgstr "Problemas en la conexión segura (HTTPS)"
+
+msgid "\"Not secure\" warnings in the browser, exposed forms and payments, and lost trust."
+msgstr "Avisos de «no seguro» en el navegador, formularios y pagos expuestos y pérdida de confianza."
+
+msgid "Force HTTPS on the whole site."
+msgstr "Forzar HTTPS en todo el sitio."
+
+msgid "Fix the resources loaded over http."
+msgstr "Corregir los recursos que se cargan por http."
+
+msgid "Turn on HSTS once everything works over HTTPS."
+msgstr "Activar HSTS cuando todo funcione por HTTPS."
+
+msgid "Redirect, certificate and a browser console without warnings."
+msgstr "Redirección, certificado y consola del navegador sin avisos."
+
+msgid "Full HTTPS, with HSTS and no mixed content"
+msgstr "HTTPS completo, con HSTS y sin contenido mixto"
+
+msgid "Basic security headers are missing"
+msgstr "Faltan cabeceras básicas de seguridad"
+
+msgid "The site is more exposed to attacks that embed it in other sites or abuse the visitor’s browser."
+msgstr "La web queda más expuesta a ataques que la meten dentro de otras webs o que abusan del navegador del visitante."
+
+msgid "Add X-Content-Type-Options, X-Frame-Options and Referrer-Policy in the server or the CDN."
+msgstr "Añadir X-Content-Type-Options, X-Frame-Options y Referrer-Policy en el servidor o en la CDN."
+
+msgid "Headers present in the home page response."
+msgstr "Cabeceras presentes en la respuesta de la portada."
+
+msgid "The 3 basic headers"
+msgstr "Las 3 cabeceras básicas"
+
+msgid "Error information exposed to the public"
+msgstr "Información de errores expuesta al público"
+
+msgid "Errors show paths, versions and internal data that make an attack easier. The log can include customer data."
+msgstr "Los errores muestran rutas, versiones y datos internos que facilitan un ataque. El registro puede incluir datos de clientes."
+
+msgid "Turn off error display in production."
+msgstr "Desactivar la visualización de errores en producción."
+
+msgid "Move the log out of the public folder or block access to it."
+msgstr "Mover el registro fuera de la carpeta pública o bloquear su acceso."
+
+msgid "No errors on screen and debug.log not downloadable."
+msgstr "Sin errores en pantalla y debug.log no descargable."
+
+msgid "Errors hidden and log unreachable"
+msgstr "Errores ocultos y registro inaccesible"
+
+msgid "The dashboard can edit the site’s code"
+msgstr "El escritorio permite editar el código de la web"
+
+msgid "Anyone who gets into an administrator account can inject code in seconds without server access."
+msgstr "Si alguien entra con una cuenta de administrador, puede inyectar código en segundos sin acceso al servidor."
+
+msgid "Add DISALLOW_FILE_EDIT to wp-config.php."
+msgstr "Añadir DISALLOW_FILE_EDIT en wp-config.php."
+
+msgid "The file editor no longer appears in the dashboard."
+msgstr "El editor de archivos ya no aparece en el escritorio."
+
+msgid "Administrator accounts without enough protection"
+msgstr "Cuentas de administrador sin protección suficiente"
+
+msgid "A stolen password gives full control of the site. Accounts without a known owner are doors nobody watches."
+msgstr "Una contraseña robada da control total de la web. Las cuentas sin dueño conocido son puertas que nadie vigila."
+
+msgid "Delete or downgrade the accounts that are not used."
+msgstr "Eliminar o degradar las cuentas que no se usan."
+
+msgid "Turn on two-factor authentication for every administrator."
+msgstr "Activar el segundo factor para todos los administradores."
+
+msgid "Rename or delete the \"admin\" account."
+msgstr "Renombrar o eliminar la cuenta «admin»."
+
+msgid "Number of administrators and two-factor authentication active for all."
+msgstr "Número de administradores y segundo factor activo en todos."
+
+msgid "At most 3 administrators, all with an owner and two-factor authentication"
+msgstr "Máximo 3 administradores, todos con dueño y segundo factor"
+
+msgid "The site publishes its usernames"
+msgstr "La web publica los nombres de usuario"
+
+msgid "It helps brute-force attacks: the attacker already has half of the credentials."
+msgstr "Facilita los ataques de fuerza bruta: el atacante ya tiene la mitad de las credenciales."
+
+msgid "Limit the REST API user list to logged-in users."
+msgstr "Restringir el listado de usuarios de la API REST a usuarios conectados."
+
+msgid "Block the ?author= redirect."
+msgstr "Bloquear la redirección de ?author=."
+
+msgid "Neither request returns names."
+msgstr "Las dos peticiones no devuelven nombres."
+
+msgid "No public username"
+msgstr "Ningún nombre de usuario público"
+
+msgid "XML-RPC open but not used"
+msgstr "XML-RPC abierto sin que se use"
+
+msgid "It is a common way in for mass brute-force attacks and server overload."
+msgstr "Es una vía habitual de ataques de fuerza bruta masivos y de sobrecarga del servidor."
+
+msgid "Block xmlrpc.php in the server or the CDN if nothing needs it."
+msgstr "Bloquear xmlrpc.php en el servidor o en la CDN si nada lo necesita."
+
+msgid "xmlrpc.php answers 403."
+msgstr "xmlrpc.php responde 403."
+
+msgid "XML-RPC blocked or protected"
+msgstr "XML-RPC bloqueado o protegido"
+
+msgid "File permissions too open"
+msgstr "Permisos de archivos demasiado abiertos"
+
+msgid "Other users of the server or a compromised process can read passwords or change files."
+msgstr "Otros usuarios del servidor o un proceso comprometido pueden leer contraseñas o modificar archivos."
+
+msgid "wp-config.php to 600 or 640."
+msgstr "wp-config.php a 600 o 640."
+
+msgid "Folders to 755 and files to 644."
+msgstr "Carpetas a 755 y archivos a 644."
+
+msgid "No world-writable files."
+msgstr "Sin archivos escribibles por todos."
+
+msgid "wp-config.php at 600 or 640 and nothing world-writable"
+msgstr "wp-config.php en 600 o 640 y nada escribible por todos"
+
+msgid "Leftover files reachable from the web"
+msgstr "Archivos sobrantes accesibles desde la web"
+
+msgid "A downloadable database dump exposes all customer data and passwords. A forgotten installer lets anyone take over the site."
+msgstr "Una copia de la base de datos descargable expone todos los datos de clientes y las contraseñas. Un instalador olvidado permite tomar la web."
+
+msgid "Delete the leftover files today."
+msgstr "Borrar los archivos sobrantes hoy mismo."
+
+msgid "Check the access logs in case someone downloaded them."
+msgstr "Revisar los registros de acceso por si alguien los descargó."
+
+msgid "The files no longer exist or answer from the web."
+msgstr "Los archivos ya no existen ni responden desde la web."
+
+msgid "No web firewall or login attempt limit"
+msgstr "Sin cortafuegos web ni límite de intentos de acceso"
+
+msgid "The site gets automatic attacks and password guessing without any filter."
+msgstr "La web recibe sin filtro los ataques automáticos y los intentos de adivinar contraseñas."
+
+msgid "Put the site behind a web application firewall."
+msgstr "Poner la web detrás de un cortafuegos de aplicaciones web (WAF)."
+
+msgid "Limit login attempts and protect /wp-admin."
+msgstr "Limitar los intentos de acceso y proteger /wp-admin."
+
+msgid "Firewall headers present and blocking after several failed attempts."
+msgstr "Cabeceras del cortafuegos presentes y bloqueo tras varios intentos fallidos."
+
+msgid "Firewall and login attempt limit"
+msgstr "Cortafuegos y límite de intentos de acceso"
+
+msgid "Outdated WooCommerce or templates"
+msgstr "WooCommerce o sus plantillas desactualizadas"
+
+msgid "Old theme templates can break cart or checkout after an update, or keep bugs that are already fixed."
+msgstr "Las plantillas antiguas del tema pueden romper el carrito o el pago tras una actualización, o dejar sin corregir fallos ya resueltos."
+
+msgid "Update the theme’s overridden templates to the current version."
+msgstr "Actualizar las plantillas sobrescritas del tema a la versión actual."
+
+msgid "Update WooCommerce on a staging site and test the purchase process."
+msgstr "Actualizar WooCommerce en un entorno de pruebas y revisar el proceso de compra."
+
+msgid "System status without outdated templates."
+msgstr "Estado del sistema sin plantillas obsoletas."
+
+msgid "WooCommerce and templates up to date"
+msgstr "WooCommerce y plantillas al día"
+
+msgid "Orders do not use WooCommerce’s modern storage (HPOS)"
+msgstr "Los pedidos no usan el almacenamiento moderno de WooCommerce (HPOS)"
+
+msgid "Orders pending sync in WooCommerce"
+msgstr "Pedidos pendientes de sincronizar en WooCommerce"
+
+msgid "The two copies of the orders do not match: if you had to go back to the old storage, orders would be missing."
+msgstr "Las dos copias de los pedidos no coinciden: si hubiera que volver al almacenamiento antiguo, faltarían pedidos."
+
+msgid "Let the sync finish, or turn it off if it is no longer needed."
+msgstr "Dejar terminar la sincronización o desactivarla si ya no se necesita."
+
+msgid "No orders pending sync."
+msgstr "Sin pedidos pendientes de sincronizar."
+
+msgid "Order queries get slower as the store grows, and future compatibility is lower."
+msgstr "Consultas de pedidos más lentas a medida que crece la tienda y menos compatibilidad futura."
+
+msgid "Check plugin compatibility."
+msgstr "Comprobar la compatibilidad de los plugins."
+
+msgid "Turn on sync, migrate and switch to HPOS."
+msgstr "Activar la sincronización, migrar y cambiar a HPOS."
+
+msgid "HPOS active and no orders pending sync."
+msgstr "HPOS activo y sin pedidos pendientes de sincronizar."
+
+msgid "HPOS active and no orders pending"
+msgstr "HPOS activo y sin pedidos pendientes"
+
+msgid "A basic store page is missing"
+msgstr "Falta una página básica de la tienda"
+
+msgid "A cart, checkout or account page that fails stops people from buying."
+msgstr "Una página de carrito, pago o cuenta que falla impide comprar."
+
+msgid "Assign and publish the right page in the WooCommerce settings."
+msgstr "Asignar y publicar la página correcta en los ajustes de WooCommerce."
+
+msgid "The 4 pages assigned and a full test order."
+msgstr "Las 4 páginas asignadas y un pedido de prueba completo."
+
+msgid "Payment gateway misconfigured"
+msgstr "Pasarela de pago mal configurada"
+
+msgid "Orders marked as paid without being charged, or active gateways nobody uses that widen the risk."
+msgstr "Pedidos que se dan por pagados sin cobrarse, o pasarelas activas que nadie usa y que amplían el riesgo."
+
+msgid "Switch to live mode or turn off the gateways in test mode."
+msgstr "Pasar a modo real o desactivar las pasarelas en pruebas."
+
+msgid "Turn off the gateways that are not used."
+msgstr "Desactivar las pasarelas que no se usan."
+
+msgid "A real test order with a charge and a refund."
+msgstr "Pedido real de prueba con cobro y devolución."
+
+msgid "Only gateways in use, in live mode"
+msgstr "Solo pasarelas en uso y en modo real"
+
+msgid "Automatic notifications to other systems are failing"
+msgstr "Avisos automáticos a otros sistemas que fallan"
+
+msgid "Orders that do not reach the ERP, the warehouse or invoicing without anyone noticing."
+msgstr "Pedidos que no llegan al ERP, al almacén o a la facturación sin que nadie lo note."
+
+msgid "Check the destination of each failing webhook."
+msgstr "Revisar el destino de cada webhook con fallos."
+
+msgid "Turn it back on and resend the orders that did not arrive."
+msgstr "Reactivarlo y reenviar los pedidos que no llegaron."
+
+msgid "Webhooks active and without failures for a week."
+msgstr "Webhooks activos y sin fallos durante una semana."
+
+msgid "Webhooks without failures"
+msgstr "Webhooks sin fallos"
+
+msgid "Orders not closed for more than a week"
+msgstr "Pedidos sin cerrar más de una semana"
+
+msgid "Orders nobody finishes handling: customers waiting for an answer or a delivery, and sales and stock figures that do not add up."
+msgstr "Pedidos que nadie termina de gestionar: clientes esperando una respuesta o una entrega, y cifras de ventas y stock que no cuadran."
+
+msgid "Confirm with the team whether this is their normal way of working."
+msgstr "Confirmar con el equipo si es su forma normal de trabajar."
+
+msgid "Close the orders already resolved."
+msgstr "Cerrar los pedidos ya resueltos."
+
+msgid "Fix the step of the process that leaves them stuck."
+msgstr "Corregir el paso del proceso que los deja parados."
+
+msgid "No orders processing or on hold for more than 7 days."
+msgstr "Sin pedidos procesando o en espera de más de 7 días."
+
+msgid "No order open for more than 7 days"
+msgstr "Ningún pedido sin cerrar más de 7 días"
+
+msgid "Automatic processes failing ({num} in 30 days)"
+msgstr "Procesos automáticos que fallan ({num} en 30 días)"
+
+msgid "Automatic processes that do not finish: outdated stock, emails not sent or incomplete syncs."
+msgstr "Procesos automáticos que no terminan: stock desfasado, correos que no salen o sincronizaciones incompletas."
+
+msgid "Read the failure reason of each type of action."
+msgstr "Leer el motivo del fallo de cada tipo de acción."
+
+msgid "Fix the cause and run the pending actions again."
+msgstr "Corregir la causa y volver a lanzar las acciones pendientes."
+
+msgid "Failed actions over the next 30 days."
+msgstr "Acciones fallidas en los siguientes 30 días."
+
+msgid "Fewer than 10 failures a month"
+msgstr "Menos de 10 fallos al mes"
+
+msgid "Automatic processes running late ({num})"
+msgstr "Procesos automáticos atrasados ({num})"
+
+msgid "The task queue is not moving: store processes run late or not at all."
+msgstr "La cola de tareas no avanza: los procesos de la tienda se ejecutan tarde o no se ejecutan."
+
+msgid "Check that the server cron works."
+msgstr "Comprobar que el cron del servidor funciona."
+
+msgid "Unblock the queue and watch it for a week."
+msgstr "Desatascar la cola y vigilarla una semana."
+
+msgid "No actions more than 1 hour late."
+msgstr "Sin acciones con más de 1 hora de retraso."
+
+msgid "Fewer than 10 late actions"
+msgstr "Menos de 10 acciones atrasadas"
+
+msgid "Expired shopping sessions piling up ({num})"
+msgstr "Sesiones de compra caducadas acumuladas ({num})"
+
+msgid "A table that grows without control and slows down the cart."
+msgstr "Tabla que crece sin control y ralentiza el carrito."
+
+msgid "Clean up the expired sessions."
+msgstr "Limpiar las sesiones caducadas."
+
+msgid "Check that the automatic clean-up works."
+msgstr "Comprobar que la limpieza automática funciona."
+
+msgid "Expired sessions below 10,000."
+msgstr "Sesiones caducadas por debajo de 10.000."
+
+msgid "Fewer than 10,000"
+msgstr "Menos de 10.000"
+
+msgid "Not enough backups"
+msgstr "Copias de seguridad insuficientes"
+
+msgid "After a failure, an attack or a human mistake there is no reliable way to recover the site and its orders."
+msgstr "Ante un fallo, un ataque o un error humano no hay forma fiable de recuperar la web y sus pedidos."
+
+msgid "Daily automatic backup of files and database."
+msgstr "Copia diaria automática de archivos y base de datos."
+
+msgid "Store it outside the server."
+msgstr "Guardarla fuera del servidor."
+
+msgid "Log of daily backups at the external destination."
+msgstr "Registro de copias diarias en el destino externo."
+
+msgid "Daily backups outside the server"
+msgstr "Copias diarias fuera del servidor"
+
+msgid "Updates without a procedure"
+msgstr "Actualizaciones sin procedimiento"
+
+msgid "A plugin that updates itself can break forms or checkout without anyone checking."
+msgstr "Un plugin que se actualiza solo puede romper formularios o el pago sin que nadie lo revise."
+
+msgid "Turn off automatic updates for critical plugins."
+msgstr "Desactivar la actualización automática de los plugins críticos."
+
+msgid "Procedure: backup, test, update and check."
+msgstr "Procedimiento: copia, prueba, actualización y revisión."
+
+msgid "Procedure written down and applied at the next update."
+msgstr "Procedimiento documentado y aplicado en la siguiente actualización."
+
+msgid "Written update procedure"
+msgstr "Procedimiento de actualización documentado"
+
+msgid "Serious PHP errors in the last 7 days ({num})"
+msgstr "Errores graves de PHP en los últimos 7 días ({num})"
+
+msgid "Pages or processes that fail for some visitors without anyone seeing it."
+msgstr "Páginas o procesos que fallan para algunos visitantes sin que nadie lo vea."
+
+msgid "Find the plugin or template behind each error."
+msgstr "Identificar el plugin o la plantilla de cada error."
+
+msgid "Fix it or replace it."
+msgstr "Corregirlo o sustituirlo."
+
+msgid "Error log without fatal errors for 7 days."
+msgstr "Registro de errores sin fatales durante 7 días."
+
+msgid "No fatal errors"
+msgstr "Ningún error fatal"
+
+msgid "The scan record could not be created."
+msgstr "No se pudo crear el registro del escaneo."
+
+msgid "This scan is already closed."
+msgstr "Este escaneo ya está cerrado."
+
+msgid "General data"
+msgstr "Datos generales"
+
+msgid "Database"
+msgstr "Base de datos"
+
+msgid "PHP and settings"
+msgstr "PHP y configuración"
+
+msgid "Response times"
+msgstr "Tiempos de respuesta"
+
+msgid "Cache, HTTPS and exposure"
+msgstr "Caché, HTTPS y exposición"
+
+msgid "Plugins, updates and accounts"
+msgstr "Plugins, actualizaciones y cuentas"
+
+msgid "Files and permissions"
+msgstr "Archivos y permisos"
+
+msgid "Maintenance and logs"
+msgstr "Mantenimiento y registros"
+
+msgid "Plugins on WordPress.org (if turned on)"
+msgstr "Plugins en WordPress.org (si está activado)"
+
+msgid "Unknown step."
+msgstr "Paso desconocido."
+
+msgid "Could not be saved: %s"
+msgstr "No se pudieron guardar: %s"
+
+msgid "Inochi Pulso scan"
+msgstr "Escaneo de Inochi Pulso"
+
+msgid "Inochi Pulso cost per plugin"
+msgstr "Coste por plugin de Inochi Pulso"
+
+msgid "Inochi Pulso has not scanned this site yet"
+msgstr "Inochi Pulso todavía no ha escaneado este sitio"
+
+msgid "A scan shows what to fix first and how much each plugin costs. It is read-only and takes 1 to 3 minutes."
+msgstr "Un escaneo muestra qué arreglar primero y cuánto cuesta cada plugin. Es de solo lectura y tarda entre 1 y 3 minutos."
+
+msgid "Run a scan"
+msgstr "Lanzar un escaneo"
+
+msgid "Last scan: %1$s. Site health: %2$s / 100."
+msgstr "Último escaneo: %1$s. Salud del sitio: %2$s / 100."
+
+msgid "Open the report"
+msgstr "Abrir el informe"
+
+msgid "Inochi Pulso found %d urgent problem"
+msgid_plural "Inochi Pulso found %d urgent problems"
+msgstr[0] "Inochi Pulso ha encontrado %d problema urgente"
+msgstr[1] "Inochi Pulso ha encontrado %d problemas urgentes"
+
+msgid "The last Inochi Pulso scan is more than %d days old"
+msgstr "El último escaneo de Inochi Pulso tiene más de %d días"
+
+msgid "Run a new scan"
+msgstr "Lanzar un escaneo nuevo"
+
+msgid "Inochi Pulso found %d problem to stabilise"
+msgid_plural "Inochi Pulso found %d problems to stabilise"
+msgstr[0] "Inochi Pulso ha encontrado %d problema que estabilizar"
+msgstr[1] "Inochi Pulso ha encontrado %d problemas que estabilizar"
+
+msgid "Inochi Pulso found no urgent problems"
+msgstr "Inochi Pulso no ha encontrado problemas urgentes"
+
+msgid "No cost per plugin data yet"
+msgstr "Todavía no hay datos de coste por plugin"
+
+msgid "Run an Inochi Pulso scan to see the autoload, tables, cron events and scheduled actions of each plugin."
+msgstr "Lanza un escaneo de Inochi Pulso para ver el autoload, las tablas, los eventos de cron y las acciones programadas de cada plugin."
+
+msgid "autoload"
+msgstr "autoload"
+
+msgid "tables"
+msgstr "tablas"
+
+msgid "Highest cost in the last scan:"
+msgstr "Mayor coste en el último escaneo:"
+
+msgid "Inactive or deleted plugins still load %s on every page"
+msgstr "Plugins inactivos o borrados siguen cargando %s en cada página"
+
+msgid "See the cost per plugin"
+msgstr "Ver el coste por plugin"
+
+msgid "No significant autoload from inactive or deleted plugins"
+msgstr "Sin autoload relevante de plugins inactivos o borrados"
+
+msgid "[… and %d more line]"
+msgid_plural "[… and %d more lines]"
+msgstr[0] "[… y %d línea más]"
+msgstr[1] "[… y %d líneas más]"

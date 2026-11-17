@@ -1,6 +1,6 @@
 <?php
 /**
- * Rutas REST para el escaneo por pasos (solo administradores).
+ * REST routes for the step scan (administrators only).
  *
  * @package InochiPulso
  */
@@ -8,28 +8,28 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * API REST interna.
+ * Internal REST API.
  */
 class Inochi_Pulso_REST {
 
 	const NS = 'inochi-pulso/v1';
 
 	/**
-	 * Registra las rutas.
+	 * Registers the routes.
 	 */
 	public static function init() {
 		add_action( 'rest_api_init', array( __CLASS__, 'routes' ) );
 	}
 
 	/**
-	 * Solo administradores.
+	 * Administrators only.
 	 */
 	public static function can() {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Rutas.
+	 * Routes.
 	 */
 	public static function routes() {
 		register_rest_route(
@@ -56,7 +56,7 @@ class Inochi_Pulso_REST {
 					'step' => array(
 						'type'     => 'string',
 						'required' => true,
-						'enum'     => array_keys( Inochi_Pulso_Scanner::steps() ),
+						'enum'     => Inochi_Pulso_Scanner::step_keys(),
 					),
 				),
 			)
@@ -79,12 +79,12 @@ class Inochi_Pulso_REST {
 	}
 
 	/**
-	 * Nuevo escaneo.
+	 * New scan.
 	 */
 	public static function create() {
 		$id = Inochi_Pulso_DB::create_scan();
 		if ( ! $id ) {
-			return new WP_Error( 'inochi_pulso_db', 'No se pudo crear el registro de la auditoría.', array( 'status' => 500 ) );
+			return new WP_Error( 'inochi_pulso_db', __( 'The scan record could not be created.', 'inochi-pulso' ), array( 'status' => 500 ) );
 		}
 		return rest_ensure_response(
 			array(
@@ -95,31 +95,31 @@ class Inochi_Pulso_REST {
 	}
 
 	/**
-	 * Ejecuta un paso.
+	 * Runs a step.
 	 *
-	 * @param WP_REST_Request $request Petición.
+	 * @param WP_REST_Request $request Request.
 	 */
 	public static function step( WP_REST_Request $request ) {
 		$id   = (int) $request['id'];
 		$scan = Inochi_Pulso_DB::get_scan( $id );
 		if ( ! $scan ) {
-			return new WP_Error( 'inochi_pulso_not_found', 'Auditoría no encontrada.', array( 'status' => 404 ) );
+			return new WP_Error( 'inochi_pulso_not_found', __( 'Scan not found.', 'inochi-pulso' ), array( 'status' => 404 ) );
 		}
 		if ( 'running' !== $scan['status'] ) {
-			return new WP_Error( 'inochi_pulso_closed', 'Esta auditoría ya está cerrada.', array( 'status' => 409 ) );
+			return new WP_Error( 'inochi_pulso_closed', __( 'This scan is already closed.', 'inochi-pulso' ), array( 'status' => 409 ) );
 		}
 		return rest_ensure_response( Inochi_Pulso_Scanner::run_step( $id, (string) $request['step'] ) );
 	}
 
 	/**
-	 * Cierra el escaneo.
+	 * Closes the scan.
 	 *
-	 * @param WP_REST_Request $request Petición.
+	 * @param WP_REST_Request $request Request.
 	 */
 	public static function finish( WP_REST_Request $request ) {
 		$id = (int) $request['id'];
 		if ( ! Inochi_Pulso_DB::get_scan( $id ) ) {
-			return new WP_Error( 'inochi_pulso_not_found', 'Auditoría no encontrada.', array( 'status' => 404 ) );
+			return new WP_Error( 'inochi_pulso_not_found', __( 'Scan not found.', 'inochi-pulso' ), array( 'status' => 404 ) );
 		}
 		Inochi_Pulso_Scanner::finish( $id );
 		return rest_ensure_response(

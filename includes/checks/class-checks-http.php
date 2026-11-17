@@ -1,11 +1,11 @@
 <?php
 /**
- * Comprobaciones por HTTP contra el propio sitio (loopback):
- * REN-01 (TTFB), REN-05, SEG-07, SEG-08, SEG-09, SEG-12, SEG-13 y SEG-16.
+ * HTTP checks against the site itself (loopback):
+ * REN-01 (TTFB), REN-05, SEG-07, SEG-08, SEG-09, SEG-12, SEG-13 and SEG-16.
  *
- * Las peticiones salen del propio servidor: miden el tiempo del servidor sin la
- * red del visitante, y pueden no pasar por la CDN si el servidor resuelve su
- * dominio en local. Por eso solo se afirma un estado cuando la señal es clara.
+ * Requests leave from the server itself: they measure server time without the
+ * visitor's network, and they may skip the CDN if the server resolves its own
+ * domain locally. That is why a state is only stated when the signal is clear.
  *
  * @package InochiPulso
  */
@@ -13,14 +13,19 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Comprobaciones HTTP.
+ * HTTP checks.
  */
 class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 
-	const LOOPBACK_NOTE = 'Medido desde el propio servidor (loopback): sin la latencia de red del visitante.';
+	/**
+	 * Note added to the evidence of loopback measurements.
+	 */
+	private static function loopback_note() {
+		return __( 'Measured from the server itself (loopback): without the visitor’s network latency.', 'inochi-pulso' );
+	}
 
 	/**
-	 * Paso REN-01: tiempo hasta el primer byte en 5 URL.
+	 * REN-01 step: time to first byte on 5 URLs.
 	 */
 	public static function run_ttfb() {
 		Inochi_Pulso_Util::extend_time( 180 );
@@ -28,9 +33,9 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 		$rows   = array();
 		$is_woo = Inochi_Pulso_Util::has_woocommerce();
 		$errors = array();
-		foreach ( $urls as $label => $url ) {
+		foreach ( $urls as $key => $url ) {
 			$row = array(
-				'label'   => $label,
+				'label'   => self::url_label( $key ),
 				'path'    => self::path_of( $url ),
 				'visitor' => array(),
 				'origin'  => array(),
@@ -53,7 +58,7 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 			$rows[] = $row;
 		}
 
-		// Estado: mediana «origen» de carrito y finalizar compra (sin tienda: las 5).
+		// State: "origin" median of cart and checkout (without a store: all 5).
 		$pool      = array();
 		$redirects = array();
 		foreach ( $rows as $idx => $row ) {
@@ -77,40 +82,49 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 				}
 			}
 		}
+		$h     = array( __( 'page', 'inochi-pulso' ), 'HTTP', __( 'visitor', 'inochi-pulso' ), __( 'origin', 'inochi-pulso' ), __( 'cache', 'inochi-pulso' ) );
 		$table = array();
 		foreach ( $rows as $row ) {
 			$table[] = array(
-				'página'    => $row['label'] . ' ' . $row['path'],
-				'HTTP'      => $row['code'],
-				'visitante' => self::fmt( self::median( $row['visitor'] ) ),
-				'origen'    => self::fmt( self::median( $row['origin'] ) ),
-				'caché'     => $row['cache'] ? $row['cache'] : '-',
+				$h[0] => $row['label'] . ' ' . $row['path'],
+				$h[1] => $row['code'],
+				$h[2] => self::fmt( self::median( $row['visitor'] ) ),
+				$h[3] => self::fmt( self::median( $row['origin'] ) ),
+				$h[4] => $row['cache'] ? $row['cache'] : '-',
 			);
 		}
-		$ev = Inochi_Pulso_Util::text_table( $table, array( 'página', 'HTTP', 'visitante', 'origen', 'caché' ) ) . "\nMedianas en segundos de 3 peticiones. «Origen» añade ?inochi_pulso=aleatorio para saltar la caché.\n" . self::LOOPBACK_NOTE . ' Si queda cerca de un umbral, mide desde fuera con el comando de la guía.';
+		$ev = Inochi_Pulso_Util::text_table( $table, $h ) . "\n" . __( 'Medians in seconds of 3 requests. "Origin" adds ?inochi_pulso=random to skip the cache.', 'inochi-pulso' ) . "\n" . self::loopback_note() . ' ' . __( 'If it is close to a threshold, measure from outside too.', 'inochi-pulso' );
 		if ( $redirects ) {
-			$ev .= "\nNo cuentan para el estado por responder con una redirección (p. ej. finalizar compra con el carrito vacío): " . implode( ', ', $redirects ) . '.';
+			/* translators: %s: list of pages. */
+			$ev .= "\n" . sprintf( __( 'Not counted for the state because they answer with a redirect (for example, checkout with an empty cart): %s.', 'inochi-pulso' ), implode( ', ', $redirects ) );
 		}
 		if ( $errors ) {
-			$ev .= "\nErrores: " . implode( '; ', array_unique( $errors ) );
+			/* translators: %s: list of errors. */
+			$ev .= "\n" . sprintf( __( 'Errors: %s', 'inochi-pulso' ), implode( '; ', array_unique( $errors ) ) );
 		}
 
 		if ( ! $pool ) {
-			$finding = self::partial( 'REN-01', 'No se pudo medir desde el servidor', $ev );
+			$finding = self::partial( 'REN-01', __( 'Could not be measured from the server', 'inochi-pulso' ), $ev );
 		} else {
-			$avg     = array_sum( $pool ) / count( $pool );
-			$basis   = 'desde el servidor, sin caché, ' . ( $is_woo ? ( $redirects ? 'carrito' : 'carrito y finalizar compra' ) : 'URL sin redirección' );
+			$avg = array_sum( $pool ) / count( $pool );
+			if ( ! $is_woo ) {
+				$basis = __( 'from the server, without cache, URLs without redirect', 'inochi-pulso' );
+			} elseif ( $redirects ) {
+				$basis = __( 'from the server, without cache, cart', 'inochi-pulso' );
+			} else {
+				$basis = __( 'from the server, without cache, cart and checkout', 'inochi-pulso' );
+			}
 			$finding = self::auto( 'REN-01', sprintf( '%s s (%s)', Inochi_Pulso_Util::num( $avg, 2 ), $basis ), Inochi_Pulso_Util::grade( $avg, 0.6, 1.2 ), $ev );
 		}
 
 		return array(
 			'findings' => array( $finding ),
-			'payload'  => array( 'ttfb' => $rows ),
+			'payload'  => array(),
 		);
 	}
 
 	/**
-	 * Paso de cabeceras y exposición.
+	 * Headers and exposure step.
 	 */
 	public static function run_headers() {
 		Inochi_Pulso_Util::extend_time( 120 );
@@ -129,19 +143,35 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 				self::xmlrpc(),
 				self::waf( $again, $cdn ),
 			),
-			'payload'  => array(
-				'headers_home' => self::safe_headers( $again['headers'] ),
-			),
+			'payload'  => array(),
 		);
 	}
 
 	/**
-	 * Cinco URL representativas: etiqueta => URL.
+	 * Label of a sample URL.
+	 *
+	 * @param string $key Key.
+	 */
+	private static function url_label( $key ) {
+		$labels = array(
+			'home'     => __( 'Home', 'inochi-pulso' ),
+			'category' => __( 'Category', 'inochi-pulso' ),
+			'single'   => __( 'Product / post', 'inochi-pulso' ),
+			'cart'     => __( 'Cart', 'inochi-pulso' ),
+			'checkout' => __( 'Checkout', 'inochi-pulso' ),
+			'page1'    => __( 'Page', 'inochi-pulso' ),
+			'page2'    => __( 'Page', 'inochi-pulso' ),
+		);
+		return $labels[ $key ] ?? $key;
+	}
+
+	/**
+	 * Five representative URLs: key => URL.
 	 */
 	public static function sample_urls() {
-		$urls = array( 'Portada' => home_url( '/' ) );
+		$urls = array( 'home' => home_url( '/' ) );
 		if ( Inochi_Pulso_Util::has_woocommerce() ) {
-			$cat                        = get_terms(
+			$cat              = get_terms(
 				array(
 					'taxonomy'   => 'product_cat',
 					'hide_empty' => true,
@@ -150,9 +180,9 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 					'order'      => 'DESC',
 				)
 			);
-			$cat_url                    = ( ! is_wp_error( $cat ) && $cat ) ? get_term_link( $cat[0] ) : '';
-			$urls['Categoría']          = ( $cat_url && ! is_wp_error( $cat_url ) ) ? $cat_url : ( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' ) );
-			$prod                       = get_posts(
+			$cat_url          = ( ! is_wp_error( $cat ) && $cat ) ? get_term_link( $cat[0] ) : '';
+			$urls['category'] = ( $cat_url && ! is_wp_error( $cat_url ) ) ? $cat_url : ( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' ) );
+			$prod             = get_posts(
 				array(
 					'post_type'      => 'product',
 					'post_status'    => 'publish',
@@ -160,11 +190,11 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 					'fields'         => 'ids',
 				)
 			);
-			$urls['Producto / entrada'] = $prod ? get_permalink( $prod[0] ) : home_url( '/' );
-			$urls['Carrito']            = wc_get_cart_url();
-			$urls['Finalizar compra']   = wc_get_checkout_url();
+			$urls['single']   = $prod ? get_permalink( $prod[0] ) : home_url( '/' );
+			$urls['cart']     = wc_get_cart_url();
+			$urls['checkout'] = wc_get_checkout_url();
 		} else {
-			$cats                       = get_categories(
+			$cats             = get_categories(
 				array(
 					'hide_empty' => true,
 					'number'     => 1,
@@ -172,36 +202,38 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 					'order'      => 'DESC',
 				)
 			);
-			$urls['Categoría']          = $cats ? get_category_link( $cats[0] ) : home_url( '/' );
-			$post                       = get_posts(
+			$urls['category'] = $cats ? get_category_link( $cats[0] ) : home_url( '/' );
+			$post             = get_posts(
 				array(
 					'posts_per_page' => 1,
 					'fields'         => 'ids',
 				)
 			);
-			$urls['Producto / entrada'] = $post ? get_permalink( $post[0] ) : home_url( '/' );
-			$page                       = get_posts(
+			$urls['single']   = $post ? get_permalink( $post[0] ) : home_url( '/' );
+			$page             = get_posts(
 				array(
 					'post_type'      => 'page',
 					'posts_per_page' => 1,
 					'fields'         => 'ids',
 				)
 			);
-			$urls['Carrito']            = $page ? get_permalink( $page[0] ) : home_url( '/' );
-			$pages                      = get_posts(
+			$urls['page1']    = $page ? get_permalink( $page[0] ) : home_url( '/' );
+			$pages            = get_posts(
 				array(
 					'post_type'      => 'page',
 					'posts_per_page' => 2,
 					'fields'         => 'ids',
 				)
 			);
-			$urls['Finalizar compra']   = isset( $pages[1] ) ? get_permalink( $pages[1] ) : home_url( '/' );
+			$urls['page2']    = isset( $pages[1] ) ? get_permalink( $pages[1] ) : home_url( '/' );
 		}
 		return $urls;
 	}
 
 	/**
-	 * Ruta relativa de una URL.
+	 * Relative path of a URL.
+	 *
+	 * @param string $url URL.
 	 */
 	private static function path_of( $url ) {
 		$path  = (string) wp_parse_url( $url, PHP_URL_PATH );
@@ -210,7 +242,9 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 	}
 
 	/**
-	 * Mediana de valores no nulos.
+	 * Median of the numeric values.
+	 *
+	 * @param array $values Values.
 	 */
 	public static function median( array $values ) {
 		$values = array_values( array_filter( $values, 'is_numeric' ) );
@@ -224,14 +258,18 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 	}
 
 	/**
-	 * Segundos con 2 decimales o «-».
+	 * Seconds with 2 decimals or "-".
+	 *
+	 * @param float|null $v Value.
 	 */
 	private static function fmt( $v ) {
 		return null === $v ? '-' : Inochi_Pulso_Util::num( $v, 2 );
 	}
 
 	/**
-	 * Señal de caché en cabeceras: devuelve p. ej. «HIT (cf-cache-status)» o ''.
+	 * Cache signal in the headers, for example "HIT (cf-cache-status)", or ''.
+	 *
+	 * @param array $h Headers.
 	 */
 	private static function cache_signal( array $h ) {
 		foreach ( array( 'cf-cache-status', 'x-cache', 'x-litespeed-cache', 'x-proxy-cache', 'x-cache-status', 'x-nginx-cache', 'x-fastcgi-cache', 'x-sg-cache', 'x-kinsta-cache', 'x-cache-enabled' ) as $name ) {
@@ -250,22 +288,20 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 	}
 
 	/**
-	 * La respuesta pasó por una CDN o proxy reconocible.
+	 * The response went through a recognisable CDN or proxy.
+	 *
+	 * @param array $h Headers.
 	 */
 	private static function through_cdn( array $h ) {
 		return isset( $h['cf-ray'] ) || isset( $h['x-sucuri-id'] ) || isset( $h['x-served-by'] ) || isset( $h['x-amz-cf-id'] ) || isset( $h['x-fastly-request-id'] ) || isset( $h['x-akamai-transformed'] ) || ( isset( $h['server'] ) && preg_match( '/cloudflare|sucuri|bunny|fastly|akamai/i', $h['server'] ) );
 	}
 
 	/**
-	 * Cabeceras sin cookies ni identificadores, para la evidencia.
-	 */
-	private static function safe_headers( array $h ) {
-		unset( $h['set-cookie'], $h['cf-ray'], $h['x-request-id'], $h['report-to'], $h['nel'] );
-		return $h;
-	}
-
-	/**
-	 * REN-05: caché de página.
+	 * REN-05: page cache.
+	 *
+	 * @param array $first First response.
+	 * @param array $again Second response.
+	 * @param bool  $cdn   Through a CDN.
 	 */
 	private static function page_cache( array $first, array $again, $cdn ) {
 		$signal  = self::cache_signal( $again['headers'] );
@@ -286,42 +322,54 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 			}
 		}
 		$plugins = Inochi_Pulso_Util::active_matching( Inochi_Pulso_Util::known( 'cache' ) );
-		$ev      = 'Dos peticiones a la portada. Cabeceras de caché en la segunda: ' . ( $signal ? $signal : 'ninguna' ) . '. Marca de caché en el HTML: ' . ( $marker ? $marker : 'ninguna' ) . '. Plugins de caché activos: ' . ( $plugins ? implode( ', ', $plugins ) : 'ninguno' ) . '. Petición ' . ( $cdn ? 'a través de CDN' : 'sin señales de CDN' ) . ".\n" . self::LOOPBACK_NOTE;
+		$none    = __( 'none', 'inochi-pulso' );
+		$ev      = sprintf(
+			/* translators: 1: cache headers, 2: cache marker, 3: cache plugins, 4: CDN status. */
+			__( 'Two requests to the home page. Cache headers in the second one: %1$s. Cache marker in the HTML: %2$s. Active cache plugins: %3$s. Request %4$s.', 'inochi-pulso' ),
+			$signal ? $signal : $none,
+			$marker ? $marker : $none,
+			$plugins ? implode( ', ', $plugins ) : $none,
+			$cdn ? __( 'through a CDN', 'inochi-pulso' ) : __( 'without CDN signals', 'inochi-pulso' )
+		) . "\n" . self::loopback_note();
 		if ( 0 === strpos( $signal, 'HIT' ) || $marker ) {
-			return self::auto( 'REN-05', 'Portada servida desde caché' . ( $signal ? ': ' . $signal : ' (' . $marker . ')' ), 'OK', $ev );
+			return self::auto( 'REN-05', __( 'Home page served from cache', 'inochi-pulso' ) . ( $signal ? ': ' . $signal : ' (' . $marker . ')' ), 'OK', $ev );
 		}
 		if ( $cdn && ! $plugins ) {
-			return self::auto( 'REN-05', 'Sin caché de página: la CDN responde ' . ( $signal ? $signal : 'sin HIT' ), 'Fallo', $ev );
+			/* translators: %s: cache header value. */
+			return self::auto( 'REN-05', sprintf( __( 'No page cache: the CDN answers %s', 'inochi-pulso' ), $signal ? $signal : __( 'without HIT', 'inochi-pulso' ) ), 'Fallo', $ev );
 		}
-		$value = $plugins ? 'Plugin de caché activo sin señal de HIT' : 'Sin señales de caché de página desde el servidor';
-		return self::partial( 'REN-05', $value, $ev . ' Comprueba desde fuera con curl.' );
+		$value = $plugins ? __( 'Cache plugin active without a HIT signal', 'inochi-pulso' ) : __( 'No page cache signals from the server', 'inochi-pulso' );
+		return self::partial( 'REN-05', $value, $ev . ' ' . __( 'Check from outside the server, for example with curl -I.', 'inochi-pulso' ) );
 	}
 
 	/**
-	 * SEG-07: HTTPS, redirección, certificado y HSTS (el contenido mixto es manual).
+	 * SEG-07: HTTPS, redirect, certificate and HSTS (mixed content is not checked).
+	 *
+	 * @param array $again Home page response.
 	 */
 	private static function https( array $again ) {
 		$home  = home_url( '/' );
 		$https = 'https' === wp_parse_url( $home, PHP_URL_SCHEME );
 		$host  = (string) wp_parse_url( $home, PHP_URL_HOST );
-		$lines = array( 'URL del sitio: ' . ( $https ? 'HTTPS' : 'HTTP' ) . '.' );
+		/* translators: %s: HTTPS or HTTP. */
+		$lines = array( sprintf( __( 'Site URL: %s.', 'inochi-pulso' ), $https ? 'HTTPS' : 'HTTP' ) );
 		$fail  = array();
 		if ( ! $https ) {
-			$fail[] = 'el sitio no usa HTTPS';
+			$fail[] = __( 'the site does not use HTTPS', 'inochi-pulso' );
 		}
 
 		$redir       = Inochi_Pulso_Http_Probe::request(
 			set_url_scheme( $home, 'http' ),
 			array(
 				'method'   => 'HEAD',
-				'optional' => true, // Que http:// esté cerrado no significa que el sitio no responda.
+				'optional' => true, // A closed http:// does not mean the site does not answer.
 			)
 		);
 		$loc         = $redir['headers']['location'] ?? '';
 		$ok_redirect = in_array( $redir['code'], array( 301, 302, 307, 308 ), true ) && 0 === stripos( $loc, 'https://' );
-		$lines[]     = 'http:// → código ' . $redir['code'] . ( $loc ? ' → ' . $loc : '' ) . ( $redir['error'] ? ' (' . $redir['error'] . ')' : '' ) . '.';
+		$lines[]     = 'http:// → HTTP ' . $redir['code'] . ( $loc ? ' → ' . $loc : '' ) . ( $redir['error'] ? ' (' . $redir['error'] . ')' : '' ) . '.';
 		if ( $https && 200 === $redir['code'] ) {
-			$fail[] = 'http:// responde 200 sin redirigir';
+			$fail[] = __( 'http:// answers 200 without redirecting', 'inochi-pulso' );
 		}
 
 		$days = null;
@@ -343,36 +391,45 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 				$cert   = $params['options']['ssl']['peer_certificate'] ?? null;
 				$parsed = $cert ? openssl_x509_parse( $cert ) : false;
 				if ( $parsed && isset( $parsed['validTo_time_t'] ) ) {
-					$days    = (int) floor( ( $parsed['validTo_time_t'] - time() ) / DAY_IN_SECONDS );
-					$lines[] = 'Certificado válido hasta ' . gmdate( 'Y-m-d', $parsed['validTo_time_t'] ) . " ({$days} días)" . ( isset( $parsed['issuer']['O'] ) ? ', emitido por ' . $parsed['issuer']['O'] : '' ) . '.';
+					$days = (int) floor( ( $parsed['validTo_time_t'] - time() ) / DAY_IN_SECONDS );
+					/* translators: 1: date, 2: days left. */
+					$cert_line = sprintf( __( 'Certificate valid until %1$s (%2$d days)', 'inochi-pulso' ), gmdate( 'Y-m-d', $parsed['validTo_time_t'] ), $days );
+					/* translators: %s: certificate issuer. */
+					$lines[] = $cert_line . ( isset( $parsed['issuer']['O'] ) ? ', ' . sprintf( __( 'issued by %s', 'inochi-pulso' ), $parsed['issuer']['O'] ) : '' ) . '.';
 				}
 				fclose( $sock ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 			} else {
-				$lines[] = 'No se pudo leer el certificado: ' . $errstr;
+				/* translators: %s: error. */
+				$lines[] = sprintf( __( 'Could not read the certificate: %s', 'inochi-pulso' ), $errstr );
 			}
 		}
 		if ( null !== $days && $days < 0 ) {
-			$fail[] = 'certificado caducado';
+			$fail[] = __( 'expired certificate', 'inochi-pulso' );
 		}
 		$hsts    = $again['headers']['strict-transport-security'] ?? '';
-		$lines[] = 'HSTS: ' . ( $hsts ? $hsts : 'no' ) . '.';
-		$lines[] = 'Contenido mixto: revisar a mano en la consola del navegador (portada y finalizar compra).';
+		$lines[] = 'HSTS: ' . ( $hsts ? $hsts : __( 'no', 'inochi-pulso' ) ) . '.';
+		$lines[] = __( 'Mixed content is not checked: look at the browser console on the home page and the checkout.', 'inochi-pulso' );
 
-		$value  = $https ? 'HTTPS' : 'Sin HTTPS';
-		$value .= $ok_redirect ? ' · redirige' : ' · sin redirección confirmada';
-		$value .= null !== $days ? ' · certificado ' . $days . ' días' : '';
-		$value .= $hsts ? ' · HSTS' : ' · sin HSTS';
+		$value  = $https ? 'HTTPS' : __( 'No HTTPS', 'inochi-pulso' );
+		$value .= ' · ' . ( $ok_redirect ? __( 'redirects', 'inochi-pulso' ) : __( 'redirect not confirmed', 'inochi-pulso' ) );
+		/* translators: %d: days until the certificate expires. */
+		$value .= null !== $days ? ' · ' . sprintf( __( 'certificate %d days', 'inochi-pulso' ), $days ) : '';
+		$value .= ' · ' . ( $hsts ? 'HSTS' : __( 'no HSTS', 'inochi-pulso' ) );
 		if ( $fail ) {
-			return self::auto( 'SEG-07', $value, 'Fallo', 'Fallo: ' . implode( ', ', $fail ) . ".\n" . implode( "\n", $lines ) );
+			/* translators: %s: list of problems. */
+			return self::auto( 'SEG-07', $value, 'Fallo', sprintf( __( 'Fail: %s.', 'inochi-pulso' ), implode( ', ', $fail ) ) . "\n" . implode( "\n", $lines ) );
 		}
 		if ( null !== $days && $days <= 15 ) {
-			$lines[] = 'El certificado caduca en 15 días o menos: confirma que se renueva solo.';
+			$lines[] = __( 'The certificate expires in 15 days or less: make sure it renews automatically.', 'inochi-pulso' );
 		}
 		return self::partial( 'SEG-07', $value, implode( "\n", $lines ) );
 	}
 
 	/**
-	 * SEG-08: cabeceras de seguridad.
+	 * SEG-08: security headers.
+	 *
+	 * @param array $again Home page response.
+	 * @param bool  $cdn   Through a CDN.
 	 */
 	private static function security_headers( array $again, $cdn ) {
 		$h       = $again['headers'];
@@ -386,25 +443,27 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 		$state   = 3 === $n ? 'OK' : ( 0 === $n ? 'Fallo' : 'Aviso' );
 		$lines   = array();
 		foreach ( $present as $k => $v ) {
-			$lines[] = $k . ': ' . ( $v ? 'sí' : 'no' );
+			$lines[] = $k . ': ' . ( $v ? __( 'yes', 'inochi-pulso' ) : __( 'no', 'inochi-pulso' ) );
 		}
 		foreach ( array( 'content-security-policy', 'permissions-policy', 'strict-transport-security' ) as $extra ) {
-			$lines[] = $extra . ': ' . ( isset( $h[ $extra ] ) ? 'sí' : 'no' );
+			$lines[] = $extra . ': ' . ( isset( $h[ $extra ] ) ? __( 'yes', 'inochi-pulso' ) : __( 'no', 'inochi-pulso' ) );
 		}
 		$ev = implode( "\n", $lines );
+		/* translators: %d: number of headers present. */
+		$value = sprintf( __( '%d of 3 basic headers', 'inochi-pulso' ), $n );
 		if ( ! $cdn && $n < 3 ) {
-			$ev .= "\nLa petición no pasó por una CDN: si el sitio usa una que añade cabeceras, comprueba desde fuera.";
-			return self::partial( 'SEG-08', sprintf( '%d de 3 cabeceras básicas', $n ), $ev );
+			$ev .= "\n" . __( 'The request did not go through a CDN: if the site uses one that adds headers, check from outside.', 'inochi-pulso' );
+			return self::partial( 'SEG-08', $value, $ev );
 		}
-		return self::auto( 'SEG-08', sprintf( '%d de 3 cabeceras básicas', $n ), $state, $ev );
+		return self::auto( 'SEG-08', $value, $state, $ev );
 	}
 
 	/**
-	 * SEG-09: depuración visible y debug.log descargable.
+	 * SEG-09: visible debugging and downloadable debug.log.
 	 */
 	private static function debug_exposure() {
 		$debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
-		// WP_DEBUG_DISPLAY vale true por defecto; null deja la decisión al php.ini del servidor.
+		// WP_DEBUG_DISPLAY is true by default; null leaves the decision to the server's php.ini.
 		$display = $debug && defined( 'WP_DEBUG_DISPLAY' ) && WP_DEBUG_DISPLAY;
 		$log     = defined( 'WP_DEBUG_LOG' ) ? WP_DEBUG_LOG : false;
 		$path    = '';
@@ -423,47 +482,58 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 			$code   = $res['code'];
 			$public = 200 === $code;
 		}
-		// display_errors del php.ini: decide cuando WP_DEBUG está apagado o WP_DEBUG_DISPLAY es null.
+		// php.ini display_errors decides when WP_DEBUG is off or WP_DEBUG_DISPLAY is null.
 		$ini_display = strtolower( (string) get_cfg_var( 'display_errors' ) );
 		$ini_on      = in_array( $ini_display, array( '1', 'on', 'true', 'stdout', 'stderr' ), true );
 		$depends_ini = ! $debug || ( defined( 'WP_DEBUG_DISPLAY' ) && null === WP_DEBUG_DISPLAY );
-		$lines       = array(
+		$undef       = __( 'not defined', 'inochi-pulso' );
+		$log_desc    = $undef;
+		if ( defined( 'WP_DEBUG_LOG' ) ) {
+			/* translators: %s: file name. */
+			$log_desc = is_string( WP_DEBUG_LOG ) ? sprintf( __( 'custom path (%s)', 'inochi-pulso' ), basename( WP_DEBUG_LOG ) ) : wp_json_encode( WP_DEBUG_LOG );
+		}
+		$lines = array(
 			'WP_DEBUG = ' . ( $debug ? 'true' : 'false' ),
-			'WP_DEBUG_DISPLAY = ' . ( defined( 'WP_DEBUG_DISPLAY' ) ? var_export( WP_DEBUG_DISPLAY, true ) : 'no definido' ) . ( defined( 'WP_DEBUG_DISPLAY' ) && null === WP_DEBUG_DISPLAY ? ' (decide display_errors del servidor: revisar)' : '' ), // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
-			'WP_DEBUG_LOG = ' . ( defined( 'WP_DEBUG_LOG' ) ? ( is_string( WP_DEBUG_LOG ) ? 'ruta propia (' . basename( WP_DEBUG_LOG ) . ')' : var_export( WP_DEBUG_LOG, true ) ) : 'no definido' ) . ( $norm ? ' · archivo ' . ( file_exists( $path ) ? 'existe' : 'no existe' ) : '' ), // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
-			'display_errors en php.ini = ' . ( '' === $ini_display ? 'no definido' : $ini_display ),
+			'WP_DEBUG_DISPLAY = ' . ( defined( 'WP_DEBUG_DISPLAY' ) ? wp_json_encode( WP_DEBUG_DISPLAY ) : $undef ) . ( defined( 'WP_DEBUG_DISPLAY' ) && null === WP_DEBUG_DISPLAY ? ' (' . __( 'the server’s display_errors decides', 'inochi-pulso' ) . ')' : '' ),
+			'WP_DEBUG_LOG = ' . $log_desc . ( $norm ? ' · ' . ( file_exists( $path ) ? __( 'file exists', 'inochi-pulso' ) : __( 'file does not exist', 'inochi-pulso' ) ) : '' ),
+			'php.ini display_errors = ' . ( '' === $ini_display ? $undef : $ini_display ),
 		);
 		if ( $code ) {
-			$lines[] = 'Petición al debug.log desde la web → HTTP ' . $code . '.';
+			/* translators: %d: HTTP status code. */
+			$lines[] = sprintf( __( 'Request to debug.log from the web → HTTP %d.', 'inochi-pulso' ), $code );
 		}
-		$fails = array();
-		if ( $display ) {
-			$fails[] = 'los errores se muestran en pantalla';
+		if ( $display && $public ) {
+			$value = __( 'Errors shown on screen and debug.log downloadable from the web', 'inochi-pulso' );
+		} elseif ( $display ) {
+			$value = __( 'Errors shown on screen', 'inochi-pulso' );
+		} elseif ( $public ) {
+			$value = __( 'debug.log downloadable from the web', 'inochi-pulso' );
+		} else {
+			$value = '';
 		}
-		if ( $public ) {
-			$fails[] = 'debug.log descargable desde la web';
-		}
-		if ( $fails ) {
-			return self::auto( 'SEG-09', ucfirst( implode( ' y ', $fails ) ), 'Fallo', implode( "\n", $lines ) );
+		if ( '' !== $value ) {
+			return self::auto( 'SEG-09', $value, 'Fallo', implode( "\n", $lines ) );
 		}
 		if ( $depends_ini && $ini_on ) {
-			return self::partial( 'SEG-09', 'Errores posiblemente visibles (display_errors activo en el servidor)', implode( "\n", $lines ) . "\nWordPress deja la decisión al servidor y su php.ini muestra errores: compruébalo provocando una página con aviso o en la configuración PHP de Plesk." );
+			return self::partial( 'SEG-09', __( 'Errors possibly visible (display_errors on in the server)', 'inochi-pulso' ), implode( "\n", $lines ) . "\n" . __( 'WordPress leaves the decision to the server and its php.ini shows errors: check the PHP settings in the hosting panel.', 'inochi-pulso' ) );
 		}
 		if ( $norm && 0 !== strpos( $norm, $abs ) ) {
-			$lines[] = 'El debug.log está fuera de la raíz web: no se puede descargar.';
+			$lines[] = __( 'debug.log is outside the web root: it cannot be downloaded.', 'inochi-pulso' );
 		}
-		return self::auto( 'SEG-09', 'Depuración no expuesta', 'OK', implode( "\n", $lines ) );
+		return self::auto( 'SEG-09', __( 'Debugging not exposed', 'inochi-pulso' ), 'OK', implode( "\n", $lines ) );
 	}
 
 	/**
-	 * La petición no obtuvo una respuesta útil (sin conexión, tiempo agotado o error 5xx).
+	 * The request got no useful answer (no connection, timeout or 5xx error).
+	 *
+	 * @param array $res Response.
 	 */
 	private static function failed( array $res ) {
 		return 0 === $res['code'] || $res['code'] >= 500;
 	}
 
 	/**
-	 * SEG-12: enumeración de usuarios (solo se cuenta, no se guardan nombres).
+	 * SEG-12: user enumeration (only counted; names are not stored).
 	 */
 	private static function user_enumeration() {
 		$rest  = Inochi_Pulso_Http_Probe::request( rest_url( 'wp/v2/users' ), array( 'body_limit' => 65536 ) );
@@ -482,47 +552,53 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 		$author    = Inochi_Pulso_Http_Probe::request( add_query_arg( 'author', 1, home_url( '/' ) ), array( 'method' => 'HEAD' ) );
 		$loc       = $author['headers']['location'] ?? '';
 		$by_author = in_array( $author['code'], array( 301, 302 ), true ) && false !== strpos( $loc, '/author/' );
-		$ev        = sprintf( "REST /wp/v2/users sin sesión → HTTP %d, %d usuarios visibles.\n?author=1 → HTTP %d%s.\nNo se guardan nombres de usuario.", $rest['code'], $users, $author['code'], $by_author ? ', redirige a un archivo de autor (expone el nombre)' : '' );
-		$broken    = self::failed( $rest ) || self::failed( $author );
+		/* translators: 1: HTTP status code, 2: number of visible users. */
+		$ev     = sprintf( __( 'REST /wp/v2/users without a session → HTTP %1$d, %2$d users visible.', 'inochi-pulso' ), $rest['code'], $users ) . "\n";
+		$ev    .= '?author=1 → HTTP ' . $author['code'] . ( $by_author ? ', ' . __( 'redirects to an author archive (exposes the name)', 'inochi-pulso' ) : '' ) . ".\n";
+		$ev    .= __( 'Usernames are not stored.', 'inochi-pulso' );
+		$broken = self::failed( $rest ) || self::failed( $author );
 		if ( $broken && ! $users && ! $by_author ) {
-			return self::partial( 'SEG-12', 'No se pudo comprobar desde el servidor', $ev . "\nEl propio sitio no respondió bien a la petición: comprueba desde fuera." );
+			return self::partial( 'SEG-12', __( 'Could not be checked from the server', 'inochi-pulso' ), $ev . "\n" . __( 'The site did not answer the request properly: check from outside.', 'inochi-pulso' ) );
 		}
-		if ( $users > 0 || $by_author ) {
-			$ways = array();
-			if ( $users > 0 ) {
-				$ways[] = 'API REST';
-			}
-			if ( $by_author ) {
-				$ways[] = '?author=';
-			}
-			return self::auto( 'SEG-12', 'Nombres expuestos por ' . implode( ' y ', $ways ), 'Aviso', $ev );
+		if ( $users > 0 && $by_author ) {
+			return self::auto( 'SEG-12', __( 'Names exposed by the REST API and ?author=', 'inochi-pulso' ), 'Aviso', $ev );
 		}
-		return self::auto( 'SEG-12', 'Sin enumeración de usuarios', 'OK', $ev );
+		if ( $users > 0 ) {
+			return self::auto( 'SEG-12', __( 'Names exposed by the REST API', 'inochi-pulso' ), 'Aviso', $ev );
+		}
+		if ( $by_author ) {
+			return self::auto( 'SEG-12', __( 'Names exposed by ?author=', 'inochi-pulso' ), 'Aviso', $ev );
+		}
+		return self::auto( 'SEG-12', __( 'No user enumeration', 'inochi-pulso' ), 'OK', $ev );
 	}
 
 	/**
 	 * SEG-13: XML-RPC.
 	 */
 	private static function xmlrpc() {
-		// GET: un XML-RPC abierto responde 405 con su mensaje propio; no se envía nada por POST.
+		// GET: an open XML-RPC answers 405 with its own message; nothing is sent by POST.
 		$res  = Inochi_Pulso_Http_Probe::request( site_url( '/xmlrpc.php' ), array( 'body_limit' => 2048 ) );
 		$jp   = Inochi_Pulso_Util::active_matching( array( 'jetpack' ) );
 		$open = false !== stripos( $res['body'], 'XML-RPC server accepts POST requests only' );
-		$ev   = 'GET /xmlrpc.php → HTTP ' . $res['code'] . ( $open ? ' con la respuesta de XML-RPC activo' : '' ) . '. Jetpack ' . ( $jp ? 'activo (necesita XML-RPC)' : 'no activo' ) . '.';
+		$ev   = 'GET /xmlrpc.php → HTTP ' . $res['code'] . ( $open ? ' ' . __( 'with the answer of an active XML-RPC', 'inochi-pulso' ) : '' ) . '. Jetpack ' . ( $jp ? __( 'active (needs XML-RPC)', 'inochi-pulso' ) : __( 'not active', 'inochi-pulso' ) ) . '.';
 		if ( self::failed( $res ) ) {
-			return self::partial( 'SEG-13', 'No se pudo comprobar desde el servidor', $ev . ' Comprueba desde fuera.' );
+			return self::partial( 'SEG-13', __( 'Could not be checked from the server', 'inochi-pulso' ), $ev . ' ' . __( 'Check from outside.', 'inochi-pulso' ) );
 		}
 		if ( ! $open ) {
-			return self::auto( 'SEG-13', 'XML-RPC bloqueado (HTTP ' . $res['code'] . ')', 'OK', $ev );
+			/* translators: %d: HTTP status code. */
+			return self::auto( 'SEG-13', sprintf( __( 'XML-RPC blocked (HTTP %d)', 'inochi-pulso' ), $res['code'] ), 'OK', $ev );
 		}
 		if ( $jp ) {
-			return self::partial( 'SEG-13', 'XML-RPC abierto (lo usa Jetpack)', $ev . ' Comprueba que está protegido.' );
+			return self::partial( 'SEG-13', __( 'XML-RPC open (used by Jetpack)', 'inochi-pulso' ), $ev . ' ' . __( 'Check that it is protected.', 'inochi-pulso' ) );
 		}
-		return self::auto( 'SEG-13', 'XML-RPC abierto sin uso detectado', 'Aviso', $ev );
+		return self::auto( 'SEG-13', __( 'XML-RPC open with no use detected', 'inochi-pulso' ), 'Aviso', $ev );
 	}
 
 	/**
-	 * SEG-16: WAF y protección del acceso.
+	 * SEG-16: firewall and login protection.
+	 *
+	 * @param array $again Home page response.
+	 * @param bool  $cdn   Through a CDN.
 	 */
 	private static function waf( array $again, $cdn ) {
 		$h   = $again['headers'];
@@ -533,7 +609,7 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 		if ( isset( $h['x-sucuri-id'] ) || ( isset( $h['server'] ) && false !== stripos( $h['server'], 'sucuri' ) ) ) {
 			$waf[] = 'Sucuri';
 		}
-		$fw_plugins = Inochi_Pulso_Util::active_matching( array( 'wordfence', 'ninjafirewall', 'all-in-one-wp-security-and-firewall', 'shield-security', 'wp-cerber', 'secupress', 'sucuri-scanner', 'better-wp-security', 'solid-security' ) );
+		$fw_plugins = Inochi_Pulso_Util::active_matching( Inochi_Pulso_Util::known( 'firewall' ) );
 		$waf        = array_merge( $waf, $fw_plugins );
 
 		$login      = Inochi_Pulso_Http_Probe::request( wp_login_url(), array( 'method' => 'HEAD' ) );
@@ -543,11 +619,15 @@ class Inochi_Pulso_Checks_Http extends Inochi_Pulso_Checks_Base {
 		if ( $access ) {
 			$login_prot[] = 'Cloudflare Access';
 		}
-		$ev    = 'WAF: ' . ( $waf ? implode( ', ', $waf ) : 'no detectado' ) . ".\nProtección del acceso: " . ( $login_prot ? implode( ', ', $login_prot ) : 'no detectada' ) . ".\nwp-login.php → HTTP " . $login['code'] . ( $loc ? ' → ' . wp_parse_url( $loc, PHP_URL_HOST ) : '' ) . ".\n" . self::LOOPBACK_NOTE;
-		$value = 'WAF: ' . ( $waf ? implode( ', ', array_unique( $waf ) ) : 'no detectado' ) . ' · acceso: ' . ( $login_prot ? implode( ', ', array_unique( $login_prot ) ) : 'sin protección detectada' );
+		$waf_txt   = $waf ? implode( ', ', array_unique( $waf ) ) : __( 'not detected', 'inochi-pulso' );
+		$login_txt = $login_prot ? implode( ', ', array_unique( $login_prot ) ) : __( 'no protection detected', 'inochi-pulso' );
+		/* translators: 1: firewall, 2: login protection. */
+		$ev = sprintf( __( 'Firewall: %1$s. Login protection: %2$s.', 'inochi-pulso' ), $waf_txt, $login_txt ) . "\nwp-login.php → HTTP " . $login['code'] . ( $loc ? ' → ' . wp_parse_url( $loc, PHP_URL_HOST ) : '' ) . ".\n" . self::loopback_note();
+		/* translators: 1: firewall, 2: login protection. */
+		$value = sprintf( __( 'Firewall: %1$s · login: %2$s', 'inochi-pulso' ), $waf_txt, $login_txt );
 		if ( $waf && $login_prot ) {
 			return self::auto( 'SEG-16', $value, 'OK', $ev );
 		}
-		return self::partial( 'SEG-16', $value, $ev . ' Una CDN o reglas del servidor pueden proteger sin dejar señal aquí: confírmalo.' );
+		return self::partial( 'SEG-16', $value, $ev . ' ' . __( 'A CDN or server rules can protect the site without leaving a signal here.', 'inochi-pulso' ) );
 	}
 }

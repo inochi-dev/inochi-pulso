@@ -1,49 +1,60 @@
 <?php
 /**
- * WOO-01 a WOO-10.
+ * WOO-01 to WOO-09.
  *
  * @package InochiPulso
  */
 
 defined( 'ABSPATH' ) || exit;
 
+// Read-only scan of WooCommerce's own tables: direct SELECT queries, read once per scan.
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
 /**
- * Comprobaciones de WooCommerce (solo lectura).
+ * WooCommerce checks (read-only).
  */
 class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 
 	const CODES = array( 'WOO-01', 'WOO-02', 'WOO-03', 'WOO-04', 'WOO-05', 'WOO-06', 'WOO-07', 'WOO-08', 'WOO-09' );
 
 	/**
-	 * Ejecuta el paso.
+	 * Text variants chosen by the checks (code => key).
+	 *
+	 * @var array
+	 */
+	private static $variants = array();
+
+	/**
+	 * Runs the step.
 	 */
 	public static function run() {
 		if ( ! Inochi_Pulso_Util::has_woocommerce() ) {
 			$findings = array();
 			foreach ( self::CODES as $code ) {
-				$findings[] = self::auto( $code, 'Sin WooCommerce', 'N.A.', 'WooCommerce no está activo.' );
+				$findings[] = self::auto( $code, __( 'No WooCommerce', 'inochi-pulso' ), 'N.A.', __( 'WooCommerce is not active.', 'inochi-pulso' ) );
 			}
 			return array(
 				'findings' => $findings,
 				'payload'  => array(),
 			);
 		}
-		$findings = array();
+		$findings       = array();
+		self::$variants = array();
 		foreach ( array( 'version_templates', 'hpos', 'pages', 'gateways', 'webhooks', 'stuck_orders', 'failed_actions', 'late_actions', 'sessions' ) as $m ) {
 			try {
 				$findings[] = self::$m();
 			} catch ( Throwable $e ) {
-				$findings[] = self::partial( self::CODES[ count( $findings ) ], 'Error al comprobar', Inochi_Pulso_Util::redact( $e->getMessage() ) );
+				$findings[] = self::partial( self::CODES[ count( $findings ) ], __( 'Error while checking', 'inochi-pulso' ), Inochi_Pulso_Util::redact( $e->getMessage() ) );
 			}
 		}
 		return array(
 			'findings' => $findings,
-			'payload'  => array(),
+			'payload'  => array( 'variants' => self::$variants ),
 		);
 	}
 
 	/**
-	 * Tabla de Action Scheduler.
+	 * Action Scheduler table.
 	 */
 	private static function as_table() {
 		global $wpdb;
@@ -51,7 +62,9 @@ class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 	}
 
 	/**
-	 * ¿Existe la tabla?
+	 * Does the table exist?
+	 *
+	 * @param string $table Table.
 	 */
 	private static function table_exists( $table ) {
 		global $wpdb;
@@ -59,7 +72,7 @@ class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 	}
 
 	/**
-	 * WOO-01: versión y plantillas sobrescritas.
+	 * WOO-01: version and overridden templates.
 	 */
 	private static function version_templates() {
 		$version = defined( 'WC_VERSION' ) ? WC_VERSION : '?';
@@ -77,26 +90,29 @@ class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 			$behind = (int) explode( '.', $new )[0] - (int) explode( '.', $version )[0];
 		}
 
-		// Sobrescrituras del tema, leídas de los archivos (sin el informe de estado de
-		// WooCommerce, que consulta WordPress.org y guarda un transient).
+		// Theme overrides, read from the files (not from the WooCommerce status report,
+		// which contacts WordPress.org and stores a transient).
 		$outdated = array();
 		$total    = 0;
 		foreach ( self::template_overrides() as $o ) {
 			++$total;
 			if ( '' === $o['version'] ) {
-				$outdated[] = $o['file'] . ' (sin versión)';
+				$outdated[] = $o['file'] . ' (' . __( 'no version', 'inochi-pulso' ) . ')';
 			} elseif ( '' !== $o['core'] && version_compare( $o['version'], $o['core'], '<' ) ) {
 				$outdated[] = $o['file'] . ' (' . $o['version'] . ' < ' . $o['core'] . ')';
 			}
 		}
 		$state = $behind >= 2 ? 'Fallo' : ( $outdated ? 'Aviso' : 'OK' );
-		$value = 'WooCommerce ' . $version . ( $new ? ' (disponible ' . $new . ')' : '' ) . ' · ' . count( $outdated ) . ' de ' . $total . ' plantillas sobrescritas obsoletas';
-		$ev    = $value . ( $outdated ? ":\n" . implode( "\n", $outdated ) : '.' ) . ( $new ? '' : "\nVersión disponible según la última comprobación de WordPress; sin dato si no hay actualización pendiente." );
+		/* translators: %s: version. */
+		$value = 'WooCommerce ' . $version . ( $new ? ' (' . sprintf( __( '%s available', 'inochi-pulso' ), $new ) . ')' : '' );
+		/* translators: 1: outdated templates, 2: overridden templates. */
+		$value .= ' · ' . sprintf( __( '%1$d of %2$d overridden templates outdated', 'inochi-pulso' ), count( $outdated ), $total );
+		$ev     = $value . ( $outdated ? ":\n" . implode( "\n", $outdated ) : '.' ) . ( $new ? '' : "\n" . __( 'Available version according to the last WordPress update check; no data if there is no pending update.', 'inochi-pulso' ) );
 		return self::auto( 'WOO-01', $value, $state, $ev );
 	}
 
 	/**
-	 * Plantillas de WooCommerce sobrescritas por el tema activo o su padre.
+	 * WooCommerce templates overridden by the active theme or its parent.
 	 *
 	 * @return array<int, array{file:string, version:string, core:string}>
 	 */
@@ -139,7 +155,9 @@ class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 	}
 
 	/**
-	 * Versión declarada en la cabecera de una plantilla (@version x.y.z).
+	 * Version declared in a template header (@version x.y.z).
+	 *
+	 * @param string $path File.
 	 */
 	private static function file_version( $path ) {
 		$fh = @fopen( $path, 'rb' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged,WordPress.WP.AlternativeFunctions.file_system_operations_fopen
@@ -170,44 +188,52 @@ class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 			}
 		}
 		if ( $on && ! $sync ) {
-			// HPOS es la fuente de verdad y la tabla antigua no se mantiene: los «pendientes» son normales.
-			$value = 'HPOS activo · sincronización desactivada';
-			$ev    = $value . ( null !== $pending ? '. WooCommerce cuenta ' . $pending . ' pedidos distintos en la tabla antigua, que con la sincronización desactivada no se usa: no es un problema.' : '.' );
+			// HPOS is the source of truth and the old table is not kept: "pending" orders are normal.
+			$value = __( 'HPOS active · sync turned off', 'inochi-pulso' );
+			/* translators: %d: number of orders. */
+			$ev = $value . ( null !== $pending ? '. ' . sprintf( __( 'WooCommerce counts %d different orders in the old table, which is not used with sync turned off: it is not a problem.', 'inochi-pulso' ), $pending ) : '.' );
 			return self::auto( 'WOO-02', $value, 'OK', $ev );
 		}
-		$value = 'HPOS ' . ( $on ? 'activo' : 'desactivado' ) . ' · sincronización ' . ( $sync ? 'activa' : 'inactiva' ) . ( null !== $pending ? ' · ' . $pending . ' pendientes' : '' );
-		$state = ( $on && ! $pending ) ? 'OK' : 'Aviso';
+		$value  = 'HPOS ' . ( $on ? __( 'active', 'inochi-pulso' ) : __( 'turned off', 'inochi-pulso' ) );
+		$value .= ' · ' . ( $sync ? __( 'sync active', 'inochi-pulso' ) : __( 'sync inactive', 'inochi-pulso' ) );
+		/* translators: %d: number of orders pending sync. */
+		$value .= null !== $pending ? ' · ' . sprintf( __( '%d pending', 'inochi-pulso' ), $pending ) : '';
+		$state  = ( $on && ! $pending ) ? 'OK' : 'Aviso';
+		if ( $on && $pending ) {
+			self::$variants['WOO-02'] = 'pending_sync';
+		}
 		return self::auto( 'WOO-02', $value, $state, $value . '.' );
 	}
 
 	/**
-	 * WOO-03: páginas de WooCommerce.
+	 * WOO-03: WooCommerce pages.
 	 */
 	private static function pages() {
 		$pages   = array(
-			'shop'      => 'Tienda',
-			'cart'      => 'Carrito',
-			'checkout'  => 'Finalizar compra',
-			'myaccount' => 'Mi cuenta',
+			'shop'      => __( 'Shop', 'inochi-pulso' ),
+			'cart'      => __( 'Cart', 'inochi-pulso' ),
+			'checkout'  => __( 'Checkout', 'inochi-pulso' ),
+			'myaccount' => __( 'My account', 'inochi-pulso' ),
 		);
 		$missing = array();
 		$lines   = array();
 		foreach ( $pages as $key => $label ) {
 			$id      = wc_get_page_id( $key );
 			$status  = $id > 0 ? get_post_status( $id ) : false;
-			$lines[] = $label . ': ' . ( $id > 0 ? 'ID ' . $id . ' (' . ( $status ? $status : 'no existe' ) . ')' : 'sin asignar' );
+			$lines[] = $label . ': ' . ( $id > 0 ? 'ID ' . $id . ' (' . ( $status ? $status : __( 'does not exist', 'inochi-pulso' ) ) . ')' : __( 'not assigned', 'inochi-pulso' ) );
 			if ( 'publish' !== $status ) {
 				$missing[] = $label;
 			}
 		}
 		if ( $missing ) {
-			return self::auto( 'WOO-03', 'Falta o no está publicada: ' . implode( ', ', $missing ), 'Fallo', implode( "\n", $lines ) );
+			/* translators: %s: list of pages. */
+			return self::auto( 'WOO-03', sprintf( __( 'Missing or not published: %s', 'inochi-pulso' ), implode( ', ', $missing ) ), 'Fallo', implode( "\n", $lines ) );
 		}
-		return self::auto( 'WOO-03', 'Las 4 páginas asignadas y publicadas', 'OK', implode( "\n", $lines ) );
+		return self::auto( 'WOO-03', __( 'The 4 pages assigned and published', 'inochi-pulso' ), 'OK', implode( "\n", $lines ) );
 	}
 
 	/**
-	 * WOO-04: pasarelas activas y modo pruebas (detección por ajustes habituales).
+	 * WOO-04: active gateways and test mode (detected from the usual settings).
 	 */
 	private static function gateways() {
 		$active = array();
@@ -225,25 +251,28 @@ class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 				}
 			}
 		}
-		$value = $active ? 'Activas: ' . implode( ', ', $active ) : 'Ninguna pasarela activa';
-		$ev    = $value . '.' . ( $test ? "\nEn modo pruebas o sandbox: " . implode( ', ', $test ) . '.' : "\nNo se detecta modo pruebas en los ajustes habituales: confírmalo entrando en cada pasarela (WooCommerce → Ajustes → Pagos)." );
+		/* translators: %s: list of gateways. */
+		$value = $active ? sprintf( __( 'Active: %s', 'inochi-pulso' ), implode( ', ', $active ) ) : __( 'No active gateway', 'inochi-pulso' );
+		/* translators: %s: list of gateways. */
+		$ev = $value . ".\n" . ( $test ? sprintf( __( 'In test or sandbox mode: %s.', 'inochi-pulso' ), implode( ', ', $test ) ) : __( 'No test mode found in the usual settings: confirm it in each gateway (WooCommerce → Settings → Payments).', 'inochi-pulso' ) );
 		if ( $test ) {
-			return self::auto( 'WOO-04', $value . ' · en pruebas: ' . implode( ', ', $test ), 'Fallo', $ev );
+			/* translators: %s: list of gateways. */
+			return self::auto( 'WOO-04', $value . ' · ' . sprintf( __( 'in test mode: %s', 'inochi-pulso' ), implode( ', ', $test ) ), 'Fallo', $ev );
 		}
 		return self::partial( 'WOO-04', $value, $ev );
 	}
 
 	/**
-	 * WOO-05: webhooks con fallos (solo el dominio de destino).
+	 * WOO-05: failing webhooks (only the destination domain is kept).
 	 */
 	private static function webhooks() {
 		global $wpdb;
 		$table = $wpdb->prefix . 'wc_webhooks';
 		if ( ! self::table_exists( $table ) ) {
-			return self::auto( 'WOO-05', 'Sin webhooks', 'OK', 'No existe la tabla de webhooks.' );
+			return self::auto( 'WOO-05', __( 'No webhooks', 'inochi-pulso' ), 'OK', __( 'The webhooks table does not exist.', 'inochi-pulso' ) );
 		}
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla interna.
-		$rows     = $wpdb->get_results( "SELECT webhook_id, name, status, failure_count, delivery_url FROM {$table}", ARRAY_A );
+		$rows     = $wpdb->get_results( $wpdb->prepare( 'SELECT webhook_id, name, status, failure_count, delivery_url FROM %i', $table ), ARRAY_A );
+		$h        = array( 'id', __( 'name', 'inochi-pulso' ), __( 'status', 'inochi-pulso' ), __( 'failures', 'inochi-pulso' ), __( 'destination', 'inochi-pulso' ) );
 		$disabled = 0;
 		$failing  = 0;
 		$list     = array();
@@ -255,31 +284,31 @@ class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 				++$failing;
 			}
 			$list[] = array(
-				'id'      => $r['webhook_id'],
-				'nombre'  => $r['name'],
-				'estado'  => $r['status'],
-				'fallos'  => $fails,
-				'destino' => (string) wp_parse_url( $r['delivery_url'], PHP_URL_HOST ),
+				$h[0] => $r['webhook_id'],
+				$h[1] => $r['name'],
+				$h[2] => $r['status'],
+				$h[3] => $fails,
+				$h[4] => (string) wp_parse_url( $r['delivery_url'], PHP_URL_HOST ),
 			);
 		}
 		$state = $disabled ? 'Fallo' : ( $failing ? 'Aviso' : 'OK' );
-		$value = sprintf( '%d webhooks · %d desactivados por fallos · %d con fallos', count( $list ), $disabled, $failing );
-		$ev    = $list ? Inochi_Pulso_Util::text_table( $list, array( 'id', 'nombre', 'estado', 'fallos', 'destino' ) ) . "\nSolo se guarda el dominio de destino." : 'Sin webhooks.';
+		/* translators: 1: webhooks, 2: disabled by failures, 3: with failures. */
+		$value = sprintf( __( '%1$d webhooks · %2$d disabled by failures · %3$d with failures', 'inochi-pulso' ), count( $list ), $disabled, $failing );
+		$ev    = $list ? Inochi_Pulso_Util::text_table( $list, $h ) . "\n" . __( 'Only the destination domain is kept.', 'inochi-pulso' ) : __( 'No webhooks.', 'inochi-pulso' );
 		return self::auto( 'WOO-05', $value, $state, $ev );
 	}
 
 	/**
-	 * WOO-06: pedidos atascados más de 7 días.
+	 * WOO-06: orders stuck for more than 7 days.
 	 */
 	private static function stuck_orders() {
 		global $wpdb;
 		$since = gmdate( 'Y-m-d H:i:s', time() - 7 * DAY_IN_SECONDS );
 		if ( Inochi_Pulso_Checks_General::hpos_enabled() ) {
 			$table = $wpdb->prefix . 'wc_orders';
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla interna.
-			$rows = $wpdb->get_results( $wpdb->prepare( "SELECT status AS s, COUNT(*) AS n FROM {$table} WHERE type = 'shop_order' AND status IN ('wc-pending','wc-on-hold','wc-processing') AND date_created_gmt < %s GROUP BY status", $since ), ARRAY_A );
+			$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT status AS s, COUNT(*) AS n FROM %i WHERE type = 'shop_order' AND status IN ('wc-pending','wc-on-hold','wc-processing') AND date_created_gmt < %s GROUP BY status", $table, $since ), ARRAY_A );
 		} else {
-			$rows = $wpdb->get_results( $wpdb->prepare( "SELECT post_status AS s, COUNT(*) AS n FROM {$wpdb->posts} WHERE post_type = 'shop_order' AND post_status IN ('wc-pending','wc-on-hold','wc-processing') AND post_date_gmt < %s GROUP BY post_status", $since ), ARRAY_A );
+			$rows = $wpdb->get_results( $wpdb->prepare( "SELECT post_status AS s, COUNT(*) AS n FROM %i WHERE post_type = 'shop_order' AND post_status IN ('wc-pending','wc-on-hold','wc-processing') AND post_date_gmt < %s GROUP BY post_status", $wpdb->posts, $since ), ARRAY_A );
 		}
 		$by = array(
 			'wc-pending'    => 0,
@@ -291,41 +320,42 @@ class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 		}
 		$stuck = $by['wc-processing'] + $by['wc-on-hold'];
 		$state = 0 === $stuck ? 'OK' : ( $stuck <= 10 ? 'Aviso' : 'Fallo' );
-		$value = sprintf( '%d procesando y %d en espera > 7 días · %d pendientes de pago antiguos', $by['wc-processing'], $by['wc-on-hold'], $by['wc-pending'] );
-		$ev    = $value . ".\nLos «pendientes de pago» antiguos son carritos abandonados: no puntúan. Confirma con el cliente si los «procesando» antiguos son normales en su negocio.";
+		/* translators: 1: processing, 2: on hold, 3: pending payment. */
+		$value = sprintf( __( '%1$d processing and %2$d on hold > 7 days · %3$d old pending payment', 'inochi-pulso' ), $by['wc-processing'], $by['wc-on-hold'], $by['wc-pending'] );
+		$ev    = $value . ".\n" . __( 'Old "pending payment" orders are abandoned carts: they do not score. Check with the team whether old "processing" orders are normal in this business.', 'inochi-pulso' );
 		return self::auto( 'WOO-06', $value, $state, $ev );
 	}
 
 	/**
-	 * WOO-07: acciones programadas fallidas en 30 días.
+	 * WOO-07: scheduled actions failed in 30 days.
 	 */
 	private static function failed_actions() {
 		global $wpdb;
 		$table = self::as_table();
 		if ( ! self::table_exists( $table ) ) {
-			return self::partial( 'WOO-07', 'Sin tabla de Action Scheduler', 'No existe la tabla actionscheduler_actions.' );
+			return self::partial( 'WOO-07', __( 'No Action Scheduler table', 'inochi-pulso' ), __( 'The actionscheduler_actions table does not exist.', 'inochi-pulso' ) );
 		}
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla interna.
-		$rows = $wpdb->get_results(
+		$rows     = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT hook, COUNT(*) AS n, MAX(last_attempt_gmt) AS last FROM {$table} WHERE status = 'failed' AND last_attempt_gmt > %s GROUP BY hook ORDER BY n DESC LIMIT 15",
+				"SELECT hook, COUNT(*) AS n, MAX(last_attempt_gmt) AS last FROM %i WHERE status = 'failed' AND last_attempt_gmt > %s GROUP BY hook ORDER BY n DESC LIMIT 15",
+				$table,
 				gmdate( 'Y-m-d H:i:s', time() - 30 * DAY_IN_SECONDS )
 			),
 			ARRAY_A
 		);
-		// phpcs:enable
 		$since    = gmdate( 'Y-m-d H:i:s', time() - 30 * DAY_IN_SECONDS );
-		$total    = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE status = 'failed' AND last_attempt_gmt > %s", $since ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla interna.
+		$total    = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM %i WHERE status = 'failed' AND last_attempt_gmt > %s", $table, $since ) );
 		$critical = array();
+		$h        = array( 'hook', __( 'failed', 'inochi-pulso' ), __( 'last', 'inochi-pulso' ) );
 		$list     = array();
 		foreach ( (array) $rows as $r ) {
 			if ( preg_match( '/stock|inventor|sync|erp|payment|pago|refund|ship|envio|envío|subscription/i', $r['hook'] ) ) {
 				$critical[] = $r['hook'];
 			}
 			$list[] = array(
-				'hook'     => $r['hook'],
-				'fallidas' => $r['n'],
-				'última'   => $r['last'],
+				$h[0] => $r['hook'],
+				$h[1] => $r['n'],
+				$h[2] => $r['last'],
 			);
 		}
 		if ( $total > 100 || $critical ) {
@@ -335,54 +365,56 @@ class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 		} else {
 			$state = 'OK';
 		}
-		$value = sprintf( '%s fallidas en 30 días', Inochi_Pulso_Util::num( $total ) ) . ( $critical ? ' · afectan a: ' . implode( ', ', array_slice( $critical, 0, 3 ) ) : '' );
-		$ev    = $list ? Inochi_Pulso_Util::text_table( $list, array( 'hook', 'fallidas', 'última' ) ) . "\nEl motivo de cada fallo: WooCommerce → Estado → Acciones programadas → Fallidas (columna Registro)." : 'Sin acciones fallidas en 30 días.';
+		/* translators: %s: number of failed actions. */
+		$value = sprintf( __( '%s failed in 30 days', 'inochi-pulso' ), Inochi_Pulso_Util::num( $total ) );
+		/* translators: %s: list of hooks. */
+		$value .= $critical ? ' · ' . sprintf( __( 'affecting: %s', 'inochi-pulso' ), implode( ', ', array_slice( $critical, 0, 3 ) ) ) : '';
+		$ev     = $list ? Inochi_Pulso_Util::text_table( $list, $h ) . "\n" . __( 'The reason for each failure: Tools → Scheduled Actions → Failed (Log column).', 'inochi-pulso' ) : __( 'No failed actions in 30 days.', 'inochi-pulso' );
 		return self::auto( 'WOO-07', $value, $state, $ev );
 	}
 
 	/**
-	 * WOO-08: acciones pendientes con más de 1 h de retraso.
+	 * WOO-08: pending actions more than 1 h late.
 	 */
 	private static function late_actions() {
 		global $wpdb;
 		$table = self::as_table();
 		if ( ! self::table_exists( $table ) ) {
-			return self::partial( 'WOO-08', 'Sin tabla de Action Scheduler', 'No existe la tabla actionscheduler_actions.' );
+			return self::partial( 'WOO-08', __( 'No Action Scheduler table', 'inochi-pulso' ), __( 'The actionscheduler_actions table does not exist.', 'inochi-pulso' ) );
 		}
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla interna.
-		$rows = $wpdb->get_results(
+		$rows  = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT hook, COUNT(*) AS n FROM {$table} WHERE status = 'pending' AND scheduled_date_gmt < %s GROUP BY hook ORDER BY n DESC LIMIT 15",
+				"SELECT hook, COUNT(*) AS n FROM %i WHERE status = 'pending' AND scheduled_date_gmt < %s GROUP BY hook ORDER BY n DESC LIMIT 15",
+				$table,
 				gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS )
 			),
 			ARRAY_A
 		);
-		// phpcs:enable
-		$total = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE status = 'pending' AND scheduled_date_gmt < %s", gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ) ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla interna.
+		$total = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM %i WHERE status = 'pending' AND scheduled_date_gmt < %s", $table, gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ) ) );
+		$h     = array( 'hook', __( 'late', 'inochi-pulso' ) );
 		$list  = array();
 		foreach ( (array) $rows as $r ) {
-
 			$list[] = array(
-				'hook'      => $r['hook'],
-				'atrasadas' => $r['n'],
+				$h[0] => $r['hook'],
+				$h[1] => $r['n'],
 			);
 		}
 		$state = Inochi_Pulso_Util::grade( $total, 10, 100 );
-		$ev    = $list ? Inochi_Pulso_Util::text_table( $list, array( 'hook', 'atrasadas' ) ) : 'Sin acciones atrasadas.';
-		return self::auto( 'WOO-08', Inochi_Pulso_Util::num( $total ) . ' atrasadas > 1 h', $state, $ev );
+		$ev    = $list ? Inochi_Pulso_Util::text_table( $list, $h ) : __( 'No late actions.', 'inochi-pulso' );
+		/* translators: %s: number of late actions. */
+		return self::auto( 'WOO-08', sprintf( __( '%s late > 1 h', 'inochi-pulso' ), Inochi_Pulso_Util::num( $total ) ), $state, $ev );
 	}
 
 	/**
-	 * WOO-09: sesiones caducadas.
+	 * WOO-09: expired sessions.
 	 */
 	private static function sessions() {
 		global $wpdb;
 		$table = $wpdb->prefix . 'woocommerce_sessions';
 		if ( ! self::table_exists( $table ) ) {
-			return self::auto( 'WOO-09', 'Sin tabla de sesiones', 'OK', 'No existe la tabla woocommerce_sessions.' );
+			return self::auto( 'WOO-09', __( 'No sessions table', 'inochi-pulso' ), 'OK', __( 'The woocommerce_sessions table does not exist.', 'inochi-pulso' ) );
 		}
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tabla interna.
-		$expired = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE session_expiry < %d", time() ) );
+		$expired = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE session_expiry < %d', $table, time() ) );
 		$bytes   = (float) $wpdb->get_var( $wpdb->prepare( 'SELECT (data_length + index_length) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = %s', $table ) );
 		if ( $expired > 100000 || $bytes > 200 * 1048576 ) {
 			$state = 'Fallo';
@@ -391,7 +423,8 @@ class Inochi_Pulso_Checks_WooCommerce extends Inochi_Pulso_Checks_Base {
 		} else {
 			$state = 'OK';
 		}
-		$value = sprintf( '%s caducadas · tabla %s', Inochi_Pulso_Util::num( $expired ), Inochi_Pulso_Util::bytes( $bytes ) );
+		/* translators: 1: expired sessions, 2: table size. */
+		$value = sprintf( __( '%1$s expired · table %2$s', 'inochi-pulso' ), Inochi_Pulso_Util::num( $expired ), Inochi_Pulso_Util::bytes( $bytes ) );
 		return self::auto( 'WOO-09', $value, $state, $value . '.' );
 	}
 }

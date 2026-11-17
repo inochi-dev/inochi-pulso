@@ -1,12 +1,11 @@
 <?php
 /**
- * Base de los grupos de comprobaciones.
+ * Base of the check groups.
  *
- * Cada paso devuelve:
- * - findings: lista de resultados (code, value, state, source, evidence).
- *   state vacío = Pulso no puede decidir el estado (se completa a mano).
- *   source: 'auto' (dato y estado) o 'partial' (dato sin estado definitivo).
- * - payload: datos para el informe (sitio, tiempos, autoload, plugins).
+ * Each step returns:
+ * - findings: list of results (code, value, state, source, evidence).
+ *   An empty state means Pulso cannot decide it: it is shown as "No data" and does not score.
+ * - payload: data for the report (cost per plugin, plugins, tables…).
  *
  * @package InochiPulso
  */
@@ -14,12 +13,17 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Utilidades de resultado.
+ * Result helpers.
  */
 abstract class Inochi_Pulso_Checks_Base {
 
 	/**
-	 * Resultado con estado decidido por Pulso.
+	 * Result with a state decided by Pulso.
+	 *
+	 * @param string $code     Code.
+	 * @param string $value    Measured value.
+	 * @param string $state    State key.
+	 * @param string $evidence Evidence.
 	 */
 	protected static function auto( $code, $value, $state, $evidence = '' ) {
 		return array(
@@ -32,8 +36,12 @@ abstract class Inochi_Pulso_Checks_Base {
 	}
 
 	/**
-	 * Resultado con dato pero estado pendiente de la parte manual.
-	 * Si se pasa $state, es un estado que ya se sabe con certeza (p. ej. un Fallo evidente).
+	 * Result with data but without a certain state ("No data"), unless one is given.
+	 *
+	 * @param string $code     Code.
+	 * @param string $value    Measured value.
+	 * @param string $evidence Evidence.
+	 * @param string $state    State known for sure (for example, an obvious Fail).
 	 */
 	protected static function partial( $code, $value, $evidence = '', $state = '' ) {
 		return array(

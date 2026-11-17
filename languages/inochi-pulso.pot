@@ -1,0 +1,3031 @@
+# Copyright (C) 2026 Inochi
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Inochi Pulso 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/inochi-dev/inochi-pulso/issues\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-11-17T11:12:19+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: inochi-pulso\n"
+
+#. Plugin Name of the plugin
+#: inochi-pulso.php
+msgid "Inochi Pulso"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: inochi-pulso.php
+msgid "https://inochi.dev/"
+msgstr ""
+
+#. Description of the plugin
+#: inochi-pulso.php
+msgid "Find which plugin is slowing your site: autoload, tables, cron and WooCommerce issues per plugin, in one read-only scan."
+msgstr ""
+
+#. Author of the plugin
+#: inochi-pulso.php
+msgid "Inochi"
+msgstr ""
+
+#. translators: 1: plugin or group name, 2: size, 3: number of options.
+#: includes/checks/class-checks-cost.php:787
+#, php-format
+msgid "%1$s: %2$s in %3$d option"
+msgid_plural "%1$s: %2$s in %3$d options"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: size in KB.
+#: includes/checks/class-checks-cost.php:792
+#, php-format
+msgid "%s KB from inactive or deleted plugins"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:793
+msgid "Every autoloaded option, attributed by searching its name in the installed code. Details in the cost per plugin table."
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:793
+msgid "None."
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:795
+msgid "The code search stopped at the time or size limit: options without a match are listed as unattributed, not as leftovers."
+msgstr ""
+
+#. translators: 1: events, 2: late events, 3: orphaned events, 4: WP-Cron status.
+#: includes/checks/class-checks-cost.php:827
+#, php-format
+msgid "%1$d events · %2$d late > 1 h · %3$d orphaned · WP-Cron %4$s"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:831
+msgid "disabled (system cron)"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:831
+#: includes/checks/class-checks-runtime.php:97
+#: includes/checks/class-checks-woocommerce.php:197
+msgid "active"
+msgstr ""
+
+#. translators: 1: hook, 2: hours.
+#: includes/checks/class-checks-cost.php:836
+#, php-format
+msgid "Late: %1$s (%2$s h)"
+msgstr ""
+
+#. translators: %s: hook.
+#: includes/checks/class-checks-cost.php:840
+#, php-format
+msgid "Orphaned (only an inactive or deleted plugin uses it): %s"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:843
+msgid "DISABLE_WP_CRON is true: check that the server has a task that calls wp-cron.php."
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:845
+msgid "A hook counts as orphaned only when no callback is registered and no active code uses its name."
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:857
+msgid "Leftovers (no installed code uses them)"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:859
+msgid "Unattributed"
+msgstr ""
+
+#. translators: %s: theme name.
+#: includes/checks/class-checks-cost.php:862
+#, php-format
+msgid "Theme: %s"
+msgstr ""
+
+#. translators: %s: file or folder in mu-plugins.
+#: includes/checks/class-checks-cost.php:865
+#, php-format
+msgid "Must-use: %s"
+msgstr ""
+
+#. translators: %s: library name.
+#: includes/checks/class-checks-cost.php:868
+#, php-format
+msgid "%s (shared library)"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:880
+#: includes/checks/class-checks-runtime.php:61
+msgid "Active"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:881
+msgid "Inactive"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:882
+msgid "Deleted"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:883
+msgid "Core"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:884
+msgid "Shared"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:885
+msgid "No code"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:886
+msgid "Unclear"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:898
+msgid "registered callback"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:899
+msgid "name in the code"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:900
+msgid "name built from a prefix in the code"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:901
+msgid "WordPress naming rule"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:902
+msgid "registered widget"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:903
+msgid "action group named like the plugin"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:904
+msgid "Action Scheduler table, shared by several plugins"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:905
+msgid "not found in the installed code"
+msgstr ""
+
+#: includes/checks/class-checks-cost.php:906
+msgid "search stopped at the limit"
+msgstr ""
+
+#. translators: 1: size in MB, 2: number of options.
+#: includes/checks/class-checks-database.php:53
+#, php-format
+msgid "%1$s MB (%2$s options)"
+msgstr ""
+
+#. translators: 1: bytes, 2: number of options.
+#: includes/checks/class-checks-database.php:56
+#, php-format
+msgid "%1$s bytes, %2$s options."
+msgstr ""
+
+#: includes/checks/class-checks-database.php:80
+msgid "No access to information_schema"
+msgstr ""
+
+#: includes/checks/class-checks-database.php:80
+msgid "The information_schema query returned nothing (permissions of the database user)."
+msgstr ""
+
+#: includes/checks/class-checks-database.php:114
+msgid "table"
+msgstr ""
+
+#: includes/checks/class-checks-database.php:114
+msgid "rows"
+msgstr ""
+
+#. translators: 1: database size, 2: largest table, 3: its size.
+#: includes/checks/class-checks-database.php:124
+#, php-format
+msgid "Database %1$s · largest: %2$s (%3$s)"
+msgstr ""
+
+#. translators: %s: table name.
+#: includes/checks/class-checks-database.php:127
+#, php-format
+msgid "to review: %s"
+msgstr ""
+
+#. translators: %s: table prefix.
+#: includes/checks/class-checks-database.php:130
+#, php-format
+msgid "Tables with the %s prefix (15 largest; content tables do not score; the 30 %% rule only applies above 200 MB):"
+msgstr ""
+
+#. translators: 1: options table, 2: number.
+#: includes/checks/class-checks-database.php:149
+#, php-format
+msgid "Transients with a timeout before now in %1$s: %2$s."
+msgstr ""
+
+#: includes/checks/class-checks-database.php:151
+msgid "There is a persistent object cache: new transients are not stored in the database."
+msgstr ""
+
+#. translators: %s: number of expired transients.
+#: includes/checks/class-checks-database.php:154
+#, php-format
+msgid "%s expired"
+msgstr ""
+
+#: includes/checks/class-checks-database.php:174
+msgid "revisions turned off"
+msgstr ""
+
+#. translators: %d: revisions limit.
+#: includes/checks/class-checks-database.php:177
+#, php-format
+msgid "limit %d"
+msgstr ""
+
+#: includes/checks/class-checks-database.php:179
+msgid "no limit"
+msgstr ""
+
+#. translators: 1: number of revisions, 2: limit description.
+#: includes/checks/class-checks-database.php:182
+#, php-format
+msgid "%1$s revisions · %2$s"
+msgstr ""
+
+#: includes/checks/class-checks-files.php:50
+msgid "Windows server"
+msgstr ""
+
+#: includes/checks/class-checks-files.php:50
+msgid "Unix permissions do not apply here."
+msgstr ""
+
+#: includes/checks/class-checks-files.php:54
+msgid "not found"
+msgstr ""
+
+#: includes/checks/class-checks-files.php:67
+msgid "Permission walk stopped at the time limit."
+msgstr ""
+
+#: includes/checks/class-checks-files.php:75
+msgid "thumbnails of an elFinder-like file manager: find out which plugin created it"
+msgstr ""
+
+#: includes/checks/class-checks-files.php:76
+msgid "folder"
+msgstr ""
+
+#: includes/checks/class-checks-files.php:76
+msgid "file"
+msgstr ""
+
+#: includes/checks/class-checks-files.php:80
+msgid "The whole file tree could not be walked."
+msgstr ""
+
+#: includes/checks/class-checks-files.php:82
+msgid "World-writable (up to 3 levels, paths from the web root):"
+msgstr ""
+
+#: includes/checks/class-checks-files.php:82
+msgid "none."
+msgstr ""
+
+#. translators: 1: wp-config.php permissions, 2: number of paths.
+#: includes/checks/class-checks-files.php:92
+#, php-format
+msgid "wp-config.php %1$s · %2$d world-writable paths"
+msgstr ""
+
+#: includes/checks/class-checks-files.php:129
+msgid "runnable from the web (not requested, so it is not run)"
+msgstr ""
+
+#. translators: 1: number of files, 2: list.
+#: includes/checks/class-checks-files.php:152
+#, php-format
+msgid "%1$d file downloadable from the web: %2$s"
+msgid_plural "%1$d files downloadable from the web: %2$s"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: 1: number of scripts, 2: list.
+#: includes/checks/class-checks-files.php:156
+#, php-format
+msgid "%1$d leftover scripts on the site: %2$s"
+msgstr ""
+
+#. translators: 1: number of scripts, 2: list.
+#: includes/checks/class-checks-files.php:156
+msgid "An installer, Adminer or phpinfo in the root is usually reachable: delete it."
+msgstr ""
+
+#. translators: %d: number of files.
+#: includes/checks/class-checks-files.php:160
+#, php-format
+msgid "%d leftover files, reachability not checked"
+msgstr ""
+
+#. translators: %d: number of files.
+#: includes/checks/class-checks-files.php:160
+msgid "The site did not answer: check from outside."
+msgstr ""
+
+#. translators: %d: number of files.
+#: includes/checks/class-checks-files.php:164
+#, php-format
+msgid "%d leftover files, not reachable"
+msgstr ""
+
+#: includes/checks/class-checks-files.php:166
+#: includes/class-knowledge.php:247
+msgid "No leftover files"
+msgstr ""
+
+#: includes/checks/class-checks-files.php:166
+msgid "Checked the root, its first-level folders and wp-content."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:24
+msgid "Measured from the server itself (loopback): without the visitor’s network latency."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:85
+msgid "page"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:85
+msgid "visitor"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:85
+msgid "origin"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:85
+msgid "cache"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:96
+msgid "Medians in seconds of 3 requests. \"Origin\" adds ?inochi_pulso=random to skip the cache."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:96
+msgid "If it is close to a threshold, measure from outside too."
+msgstr ""
+
+#. translators: %s: list of pages.
+#: includes/checks/class-checks-http.php:99
+#, php-format
+msgid "Not counted for the state because they answer with a redirect (for example, checkout with an empty cart): %s."
+msgstr ""
+
+#. translators: %s: list of errors.
+#: includes/checks/class-checks-http.php:103
+#, php-format
+msgid "Errors: %s"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:107
+msgid "Could not be measured from the server"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:111
+msgid "from the server, without cache, URLs without redirect"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:113
+msgid "from the server, without cache, cart"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:115
+msgid "from the server, without cache, cart and checkout"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:157
+msgid "Home"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:158
+msgid "Category"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:159
+msgid "Product / post"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:160
+#: includes/checks/class-checks-woocommerce.php:214
+msgid "Cart"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:161
+#: includes/checks/class-checks-woocommerce.php:215
+msgid "Checkout"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:162
+#: includes/checks/class-checks-http.php:163
+msgid "Page"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:325
+msgid "none"
+msgstr ""
+
+#. translators: 1: cache headers, 2: cache marker, 3: cache plugins, 4: CDN status.
+#: includes/checks/class-checks-http.php:328
+#, php-format
+msgid "Two requests to the home page. Cache headers in the second one: %1$s. Cache marker in the HTML: %2$s. Active cache plugins: %3$s. Request %4$s."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:332
+msgid "through a CDN"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:332
+msgid "without CDN signals"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:335
+msgid "Home page served from cache"
+msgstr ""
+
+#. translators: %s: cache header value.
+#: includes/checks/class-checks-http.php:339
+#, php-format
+msgid "No page cache: the CDN answers %s"
+msgstr ""
+
+#. translators: %s: cache header value.
+#: includes/checks/class-checks-http.php:339
+msgid "without HIT"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:341
+msgid "Cache plugin active without a HIT signal"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:341
+msgid "No page cache signals from the server"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:342
+msgid "Check from outside the server, for example with curl -I."
+msgstr ""
+
+#. translators: %s: HTTPS or HTTP.
+#: includes/checks/class-checks-http.php:355
+#, php-format
+msgid "Site URL: %s."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:358
+msgid "the site does not use HTTPS"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:372
+msgid "http:// answers 200 without redirecting"
+msgstr ""
+
+#. translators: 1: date, 2: days left.
+#: includes/checks/class-checks-http.php:396
+#, php-format
+msgid "Certificate valid until %1$s (%2$d days)"
+msgstr ""
+
+#. translators: %s: certificate issuer.
+#: includes/checks/class-checks-http.php:398
+#, php-format
+msgid "issued by %s"
+msgstr ""
+
+#. translators: %s: error.
+#: includes/checks/class-checks-http.php:403
+#, php-format
+msgid "Could not read the certificate: %s"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:407
+msgid "expired certificate"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:410
+#: includes/checks/class-checks-http.php:446
+#: includes/checks/class-checks-http.php:449
+msgid "no"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:411
+msgid "Mixed content is not checked: look at the browser console on the home page and the checkout."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:413
+msgid "No HTTPS"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:414
+msgid "redirects"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:414
+msgid "redirect not confirmed"
+msgstr ""
+
+#. translators: %d: days until the certificate expires.
+#: includes/checks/class-checks-http.php:416
+#, php-format
+msgid "certificate %d days"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:417
+msgid "no HSTS"
+msgstr ""
+
+#. translators: %s: list of problems.
+#: includes/checks/class-checks-http.php:420
+#, php-format
+msgid "Fail: %s."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:423
+msgid "The certificate expires in 15 days or less: make sure it renews automatically."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:446
+#: includes/checks/class-checks-http.php:449
+msgid "yes"
+msgstr ""
+
+#. translators: %d: number of headers present.
+#: includes/checks/class-checks-http.php:453
+#, php-format
+msgid "%d of 3 basic headers"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:455
+msgid "The request did not go through a CDN: if the site uses one that adds headers, check from outside."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:489
+msgid "not defined"
+msgstr ""
+
+#. translators: %s: file name.
+#: includes/checks/class-checks-http.php:493
+#, php-format
+msgid "custom path (%s)"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:497
+msgid "the server’s display_errors decides"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:498
+msgid "file exists"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:498
+msgid "file does not exist"
+msgstr ""
+
+#. translators: %d: HTTP status code.
+#: includes/checks/class-checks-http.php:503
+#, php-format
+msgid "Request to debug.log from the web → HTTP %d."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:506
+msgid "Errors shown on screen and debug.log downloadable from the web"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:508
+msgid "Errors shown on screen"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:510
+msgid "debug.log downloadable from the web"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:518
+msgid "Errors possibly visible (display_errors on in the server)"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:518
+msgid "WordPress leaves the decision to the server and its php.ini shows errors: check the PHP settings in the hosting panel."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:521
+msgid "debug.log is outside the web root: it cannot be downloaded."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:523
+msgid "Debugging not exposed"
+msgstr ""
+
+#. translators: 1: HTTP status code, 2: number of visible users.
+#: includes/checks/class-checks-http.php:556
+#, php-format
+msgid "REST /wp/v2/users without a session → HTTP %1$d, %2$d users visible."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:557
+msgid "redirects to an author archive (exposes the name)"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:558
+msgid "Usernames are not stored."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:561
+#: includes/checks/class-checks-http.php:585
+msgid "Could not be checked from the server"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:561
+msgid "The site did not answer the request properly: check from outside."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:564
+msgid "Names exposed by the REST API and ?author="
+msgstr ""
+
+#: includes/checks/class-checks-http.php:567
+msgid "Names exposed by the REST API"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:570
+msgid "Names exposed by ?author="
+msgstr ""
+
+#: includes/checks/class-checks-http.php:572
+msgid "No user enumeration"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:583
+msgid "with the answer of an active XML-RPC"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:583
+msgid "active (needs XML-RPC)"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:583
+msgid "not active"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:585
+msgid "Check from outside."
+msgstr ""
+
+#. translators: %d: HTTP status code.
+#: includes/checks/class-checks-http.php:589
+#, php-format
+msgid "XML-RPC blocked (HTTP %d)"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:592
+msgid "XML-RPC open (used by Jetpack)"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:592
+msgid "Check that it is protected."
+msgstr ""
+
+#: includes/checks/class-checks-http.php:594
+msgid "XML-RPC open with no use detected"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:622
+#: includes/checks/class-checks-security.php:177
+msgid "not detected"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:623
+msgid "no protection detected"
+msgstr ""
+
+#. translators: 1: firewall, 2: login protection.
+#: includes/checks/class-checks-http.php:625
+#, php-format
+msgid "Firewall: %1$s. Login protection: %2$s."
+msgstr ""
+
+#. translators: 1: firewall, 2: login protection.
+#: includes/checks/class-checks-http.php:627
+#, php-format
+msgid "Firewall: %1$s · login: %2$s"
+msgstr ""
+
+#: includes/checks/class-checks-http.php:631
+msgid "A CDN or server rules can protect the site without leaving a signal here."
+msgstr ""
+
+#. translators: %s: list of plugins.
+#: includes/checks/class-checks-maintenance.php:37
+#, php-format
+msgid "Backup plugin active: %s"
+msgstr ""
+
+#. translators: %s: list of plugins.
+#: includes/checks/class-checks-maintenance.php:37
+msgid "No backup plugin active"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:38
+msgid "Backups made by the hosting cannot be seen from WordPress: check them too, with their frequency and destination."
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:54
+msgid "minor versions only (default)"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:58
+msgid "all versions"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:60
+#: includes/checks/class-checks-maintenance.php:70
+#: includes/checks/class-checks-woocommerce.php:197
+msgid "turned off"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:62
+msgid "minor versions only"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:64
+msgid "development versions"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:66
+msgid "non-standard setting"
+msgstr ""
+
+#. translators: 1: plugins with auto-updates, 2: core setting, 3: plugins with a pending update.
+#: includes/checks/class-checks-maintenance.php:75
+#, php-format
+msgid "%1$d active plugins with automatic updates · core: %2$s · %3$d plugins with a pending update"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:76
+msgid "Whether there is an update procedure (backup, test, check) cannot be seen from here."
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:113
+msgid "PHP error_log"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:114
+msgid "WordPress debug.log"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:115
+msgid "hosting log"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:146
+msgid "No access to error logs"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:146
+msgid "There are no logs WordPress can read. Look at the logs in the hosting panel."
+msgstr ""
+
+#. translators: 1: log, 2: file name, 3: fatal errors, 4: warnings.
+#: includes/checks/class-checks-maintenance.php:180
+#, php-format
+msgid "%1$s (%2$s): %3$d fatal errors and %4$d warnings in 7 days."
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:188
+msgid "Most repeated fatal errors:"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:188
+msgid "The last 5 MB of each log are read; server paths are not copied."
+msgstr ""
+
+#. translators: 1: fatal errors, 2: warnings.
+#: includes/checks/class-checks-maintenance.php:197
+#, php-format
+msgid "%1$d fatal errors and %2$d warnings in 7 days"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:200
+msgid "debug.log only"
+msgstr ""
+
+#: includes/checks/class-checks-maintenance.php:200
+msgid "Only debug.log could be read: check the server log in the hosting panel too."
+msgstr ""
+
+#. translators: %s: drop-in status.
+#: includes/checks/class-checks-runtime.php:60
+#, php-format
+msgid "wp_using_ext_object_cache() = true; object-cache.php drop-in %s."
+msgstr ""
+
+#. translators: %s: drop-in status.
+#: includes/checks/class-checks-runtime.php:60
+msgid "present"
+msgstr ""
+
+#. translators: %s: drop-in status.
+#: includes/checks/class-checks-runtime.php:60
+msgid "missing"
+msgstr ""
+
+#. translators: 1: products, 2: orders per day.
+#: includes/checks/class-checks-runtime.php:70
+#, php-format
+msgid "Store with %1$s products and %2$s orders a day (30-day average)."
+msgstr ""
+
+#: includes/checks/class-checks-runtime.php:72
+msgid "there is an object-cache.php file but it is not active."
+msgstr ""
+
+#: includes/checks/class-checks-runtime.php:72
+msgid "no object-cache.php drop-in."
+msgstr ""
+
+#: includes/checks/class-checks-runtime.php:73
+msgid "No persistent object cache"
+msgstr ""
+
+#: includes/checks/class-checks-runtime.php:97
+msgid "inactive"
+msgstr ""
+
+#. translators: 1: memory_limit, 2: OPcache status.
+#: includes/checks/class-checks-runtime.php:99
+#, php-format
+msgid "memory_limit %1$s · OPcache %2$s"
+msgstr ""
+
+#: includes/checks/class-checks-runtime.php:107
+msgid "Values of the PHP that serves the site (not of the command line)."
+msgstr ""
+
+#. translators: 1: active plugins, 2: installed plugins, 3: must-use plugins.
+#: includes/checks/class-checks-runtime.php:119
+#, php-format
+msgid "%1$d active of %2$d installed · %3$d must-use"
+msgstr ""
+
+#: includes/checks/class-checks-runtime.php:120
+msgid "Thresholds: up to 40 OK · 41–60 Warning · more than 60 Fail."
+msgstr ""
+
+#: includes/checks/class-checks-runtime.php:131
+msgid "Branch without a date in Pulso: check php.net/supported-versions."
+msgstr ""
+
+#. translators: 1: PHP branch, 2: date.
+#: includes/checks/class-checks-runtime.php:143
+#, php-format
+msgid "End of security support for PHP %1$s: %2$s (php.net/supported-versions)."
+msgstr ""
+
+#: includes/checks/class-checks-runtime.php:145
+msgid "Warning if it ends in less than 12 months."
+msgstr ""
+
+#: includes/checks/class-checks-runtime.php:155
+#: includes/class-knowledge.php:212
+msgid "Editor turned off"
+msgstr ""
+
+#: includes/checks/class-checks-runtime.php:155
+msgid "File editor active"
+msgstr ""
+
+#: includes/checks/class-checks-security.php:80
+msgid "major"
+msgstr ""
+
+#. translators: 1: plugin, 2: version, 3: new version.
+#: includes/checks/class-checks-security.php:110
+#, php-format
+msgid "Plugin %1$s %2$s → %3$s"
+msgstr ""
+
+#. translators: 1: theme, 2: version, 3: new version.
+#: includes/checks/class-checks-security.php:121
+#, php-format
+msgid "Theme %1$s %2$s → %3$s"
+msgstr ""
+
+#: includes/checks/class-checks-security.php:124
+msgid "never"
+msgstr ""
+
+#. translators: %s: date of the last update check.
+#: includes/checks/class-checks-security.php:126
+#, php-format
+msgid "According to the last WordPress update check (%s):"
+msgstr ""
+
+#. translators: %s: date of the last update check.
+#: includes/checks/class-checks-security.php:126
+msgid "No pending updates."
+msgstr ""
+
+#. translators: %d: number of pending updates.
+#: includes/checks/class-checks-security.php:129
+#, php-format
+msgid "%d pending update"
+msgid_plural "%d pending updates"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of pending updates.
+#: includes/checks/class-checks-security.php:129
+msgid "some major"
+msgstr ""
+
+#: includes/checks/class-checks-security.php:131
+#: includes/class-knowledge.php:163
+msgid "Everything up to date"
+msgstr ""
+
+#: includes/checks/class-checks-security.php:134
+msgid "old data"
+msgstr ""
+
+#: includes/checks/class-checks-security.php:134
+msgid "The last check is more than 7 days old or does not exist: open Dashboard → Updates and scan again."
+msgstr ""
+
+#: includes/checks/class-checks-security.php:148
+msgid "No WordPress.org data"
+msgstr ""
+
+#: includes/checks/class-checks-security.php:148
+msgid "WordPress has not checked for updates yet: it is not possible to know which plugins come from WordPress.org."
+msgstr ""
+
+#: includes/checks/class-checks-security.php:151
+msgid "All plugins come from WordPress.org"
+msgstr ""
+
+#: includes/checks/class-checks-security.php:151
+msgid "All of them are in the WordPress.org update data."
+msgstr ""
+
+#. translators: 1: number of plugins, 2: list.
+#: includes/checks/class-checks-security.php:154
+#, php-format
+msgid "%1$d plugins from outside WordPress.org: %2$s"
+msgstr ""
+
+#: includes/checks/class-checks-security.php:155
+msgid "Not in the WordPress.org data (premium, custom or closed):"
+msgstr ""
+
+#: includes/checks/class-checks-security.php:155
+msgid "For each one, check where it comes from and that it has a licence and updates."
+msgstr ""
+
+#. translators: 1: number of administrators, 2: "admin" account status, 3: 2FA plugins.
+#: includes/checks/class-checks-security.php:174
+#, php-format
+msgid "%1$d administrators · %2$s · 2FA plugin: %3$s"
+msgstr ""
+
+#: includes/checks/class-checks-security.php:176
+msgid "the \"admin\" account exists"
+msgstr ""
+
+#: includes/checks/class-checks-security.php:176
+msgid "no \"admin\" account"
+msgstr ""
+
+#: includes/checks/class-checks-security.php:179
+msgid "No names are stored. Two-factor authentication can also be outside WordPress (for example, at the CDN)."
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:34
+msgid "No WooCommerce"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:34
+msgid "WooCommerce is not active."
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:47
+msgid "Error while checking"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:100
+msgid "no version"
+msgstr ""
+
+#. translators: %s: version.
+#: includes/checks/class-checks-woocommerce.php:107
+#, php-format
+msgid "%s available"
+msgstr ""
+
+#. translators: 1: outdated templates, 2: overridden templates.
+#: includes/checks/class-checks-woocommerce.php:109
+#, php-format
+msgid "%1$d of %2$d overridden templates outdated"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:110
+msgid "Available version according to the last WordPress update check; no data if there is no pending update."
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:192
+msgid "HPOS active · sync turned off"
+msgstr ""
+
+#. translators: %d: number of orders.
+#: includes/checks/class-checks-woocommerce.php:194
+#, php-format
+msgid "WooCommerce counts %d different orders in the old table, which is not used with sync turned off: it is not a problem."
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:198
+msgid "sync active"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:198
+msgid "sync inactive"
+msgstr ""
+
+#. translators: %d: number of orders pending sync.
+#: includes/checks/class-checks-woocommerce.php:200
+#, php-format
+msgid "%d pending"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:213
+msgid "Shop"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:216
+msgid "My account"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:223
+msgid "does not exist"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:223
+msgid "not assigned"
+msgstr ""
+
+#. translators: %s: list of pages.
+#: includes/checks/class-checks-woocommerce.php:230
+#, php-format
+msgid "Missing or not published: %s"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:232
+#: includes/class-knowledge.php:283
+msgid "The 4 pages assigned and published"
+msgstr ""
+
+#. translators: %s: list of gateways.
+#: includes/checks/class-checks-woocommerce.php:255
+#, php-format
+msgid "Active: %s"
+msgstr ""
+
+#. translators: %s: list of gateways.
+#: includes/checks/class-checks-woocommerce.php:255
+msgid "No active gateway"
+msgstr ""
+
+#. translators: %s: list of gateways.
+#: includes/checks/class-checks-woocommerce.php:257
+#, php-format
+msgid "In test or sandbox mode: %s."
+msgstr ""
+
+#. translators: %s: list of gateways.
+#: includes/checks/class-checks-woocommerce.php:257
+msgid "No test mode found in the usual settings: confirm it in each gateway (WooCommerce → Settings → Payments)."
+msgstr ""
+
+#. translators: %s: list of gateways.
+#: includes/checks/class-checks-woocommerce.php:260
+#, php-format
+msgid "in test mode: %s"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:272
+msgid "No webhooks"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:272
+msgid "The webhooks table does not exist."
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:275
+msgid "name"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:275
+msgid "status"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:275
+msgid "failures"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:275
+msgid "destination"
+msgstr ""
+
+#. translators: 1: webhooks, 2: disabled by failures, 3: with failures.
+#: includes/checks/class-checks-woocommerce.php:296
+#, php-format
+msgid "%1$d webhooks · %2$d disabled by failures · %3$d with failures"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:297
+msgid "Only the destination domain is kept."
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:297
+msgid "No webhooks."
+msgstr ""
+
+#. translators: 1: processing, 2: on hold, 3: pending payment.
+#: includes/checks/class-checks-woocommerce.php:324
+#, php-format
+msgid "%1$d processing and %2$d on hold > 7 days · %3$d old pending payment"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:325
+msgid "Old \"pending payment\" orders are abandoned carts: they do not score. Check with the team whether old \"processing\" orders are normal in this business."
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:336
+#: includes/checks/class-checks-woocommerce.php:383
+msgid "No Action Scheduler table"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:336
+#: includes/checks/class-checks-woocommerce.php:383
+msgid "The actionscheduler_actions table does not exist."
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:349
+msgid "failed"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:349
+msgid "last"
+msgstr ""
+
+#. translators: %s: number of failed actions.
+#: includes/checks/class-checks-woocommerce.php:369
+#, php-format
+msgid "%s failed in 30 days"
+msgstr ""
+
+#. translators: %s: list of hooks.
+#: includes/checks/class-checks-woocommerce.php:371
+#, php-format
+msgid "affecting: %s"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:372
+msgid "The reason for each failure: Tools → Scheduled Actions → Failed (Log column)."
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:372
+msgid "No failed actions in 30 days."
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:394
+msgid "late"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:403
+msgid "No late actions."
+msgstr ""
+
+#. translators: %s: number of late actions.
+#: includes/checks/class-checks-woocommerce.php:405
+#, php-format
+msgid "%s late > 1 h"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:415
+msgid "No sessions table"
+msgstr ""
+
+#: includes/checks/class-checks-woocommerce.php:415
+msgid "The woocommerce_sessions table does not exist."
+msgstr ""
+
+#. translators: 1: expired sessions, 2: table size.
+#: includes/checks/class-checks-woocommerce.php:427
+#, php-format
+msgid "%1$s expired · table %2$s"
+msgstr ""
+
+#: includes/checks/class-checks-wporg.php:31
+msgid "WordPress.org lookup turned off"
+msgstr ""
+
+#: includes/checks/class-checks-wporg.php:31
+msgid "To know whether any plugin is closed or has not been updated for more than 2 years, turn on \"Check plugins on WordPress.org\" in Settings and scan again. Until then this check does not score."
+msgstr ""
+
+#. translators: 1: plugins checked, 2: plugins left.
+#: includes/checks/class-checks-wporg.php:59
+#, php-format
+msgid "%1$d plugins checked, %2$d left…"
+msgstr ""
+
+#. translators: %s: plugin slug.
+#: includes/checks/class-checks-wporg.php:146
+#, php-format
+msgid "Closed: %s"
+msgstr ""
+
+#. translators: %s: plugin slug and date.
+#: includes/checks/class-checks-wporg.php:150
+#, php-format
+msgid "Not updated for more than 2 years: %s"
+msgstr ""
+
+#. translators: 1: plugins checked, 2: errors.
+#: includes/checks/class-checks-wporg.php:153
+#, php-format
+msgid "Checked on the WordPress.org plugins API: %1$d (with errors: %2$d)."
+msgstr ""
+
+#. translators: 1: closed plugins, 2: plugins not updated.
+#: includes/checks/class-checks-wporg.php:166
+#, php-format
+msgid "%1$d closed and %2$d not updated for more than 2 years"
+msgstr ""
+
+#: includes/checks/class-checks-wporg.php:168
+msgid "WordPress.org did not answer for every plugin"
+msgstr ""
+
+#: includes/checks/class-checks-wporg.php:170
+msgid "None closed or abandoned"
+msgstr ""
+
+#: includes/class-admin.php:42
+msgid "Open"
+msgstr ""
+
+#: includes/class-admin.php:83
+msgid "Starting the scan…"
+msgstr ""
+
+#. translators: 1: step number, 2: total steps, 3: step name.
+#: includes/class-admin.php:85
+#, php-format
+msgid "Step %1$d of %2$d: %3$s"
+msgstr ""
+
+#: includes/class-admin.php:86
+msgid "Error in this step (the scan goes on):"
+msgstr ""
+
+#: includes/class-admin.php:87
+msgid "Writing the report…"
+msgstr ""
+
+#: includes/class-admin.php:88
+msgid "The scan could not continue:"
+msgstr ""
+
+#: includes/class-admin.php:89
+msgid "The scan is still running. If you leave, it will stop."
+msgstr ""
+
+#: includes/class-admin.php:100
+msgid "You are not allowed to use Inochi Pulso."
+msgstr ""
+
+#: includes/class-admin.php:149
+#: includes/class-admin.php:339
+#: includes/class-rest.php:106
+#: includes/class-rest.php:122
+msgid "Scan not found."
+msgstr ""
+
+#: includes/class-admin.php:188
+msgid "Scan deleted."
+msgstr ""
+
+#: includes/class-admin.php:198
+msgid "Settings saved."
+msgstr ""
+
+#: includes/class-admin.php:247
+msgid "Scans"
+msgstr ""
+
+#: includes/class-admin.php:248
+msgid "Settings"
+msgstr ""
+
+#: includes/class-admin.php:279
+msgid "New scan"
+msgstr ""
+
+#: includes/class-admin.php:280
+msgid "Pulso reads this site without changing anything and tells you what to fix first, and how much each plugin costs. It takes 1 to 3 minutes: keep this tab open while it runs."
+msgstr ""
+
+#: includes/class-admin.php:281
+msgid "It makes about 40 requests to this same site (home page, cart, leftover files…) to measure times and see what is reachable from outside. They can show up in the server statistics or the firewall log."
+msgstr ""
+
+#: includes/class-admin.php:284
+msgid "WordPress.org lookup: on (the folder name of each installed plugin is sent to api.wordpress.org)."
+msgstr ""
+
+#: includes/class-admin.php:286
+msgid "WordPress.org lookup: off. Pulso does not contact any external service."
+msgstr ""
+
+#: includes/class-admin.php:287
+msgid "Turn it on in Settings to detect closed or abandoned plugins."
+msgstr ""
+
+#: includes/class-admin.php:290
+msgid "Start scan"
+msgstr ""
+
+#: includes/class-admin.php:307
+msgid "No scans yet."
+msgstr ""
+
+#: includes/class-admin.php:310
+msgid "Scans of this site"
+msgstr ""
+
+#: includes/class-admin.php:311
+msgid "Date (UTC)"
+msgstr ""
+
+#: includes/class-admin.php:311
+msgid "Health"
+msgstr ""
+
+#: includes/class-admin.php:311
+#: includes/class-catalog.php:134
+#: includes/class-export.php:372
+msgctxt "check state"
+msgid "Fail"
+msgstr ""
+
+#: includes/class-admin.php:311
+#: includes/class-catalog.php:133
+#: includes/class-export.php:372
+msgctxt "check state"
+msgid "Warning"
+msgstr ""
+
+#: includes/class-admin.php:320
+msgid "unfinished"
+msgstr ""
+
+#: includes/class-admin.php:324
+msgid "View"
+msgstr ""
+
+#: includes/class-admin.php:337
+msgid "← Scans"
+msgstr ""
+
+#. translators: 1: scan number, 2: date.
+#: includes/class-admin.php:347
+#, php-format
+msgid "Scan #%1$d · %2$s UTC"
+msgstr ""
+
+#: includes/class-admin.php:349
+msgid "This scan did not finish: some checks are missing. Run a new scan and keep the tab open until the end."
+msgstr ""
+
+#. translators: 1: step key, 2: error.
+#: includes/class-admin.php:353
+#, php-format
+msgid "Step \"%1$s\" failed: %2$s"
+msgstr ""
+
+#: includes/class-admin.php:355
+msgid "site health"
+msgstr ""
+
+#: includes/class-admin.php:357
+msgid "What could not be checked shows as \"No data\" and does not count in the score: Pulso does not make up results."
+msgstr ""
+
+#: includes/class-admin.php:359
+msgid "Printable report"
+msgstr ""
+
+#: includes/class-admin.php:365
+#: includes/class-export.php:282
+#: includes/class-export.php:345
+#: includes/class-scanner.php:22
+msgid "Cost per plugin"
+msgstr ""
+
+#. translators: %s: priority (Urgent, Stabilisation, Improvement).
+#: includes/class-admin.php:373
+#: includes/class-export.php:353
+#, php-format
+msgid "Priority: %s"
+msgstr ""
+
+#: includes/class-admin.php:379
+#: includes/class-export.php:359
+msgid "All checks"
+msgstr ""
+
+#: includes/class-admin.php:382
+msgid "Want an engineer to review it?"
+msgstr ""
+
+#: includes/class-admin.php:382
+msgid "Inochi audit"
+msgstr ""
+
+#: includes/class-admin.php:383
+msgid "Delete this scan? This cannot be undone."
+msgstr ""
+
+#: includes/class-admin.php:387
+msgid "Delete this scan"
+msgstr ""
+
+#: includes/class-admin.php:401
+msgid "External services"
+msgstr ""
+
+#: includes/class-admin.php:402
+msgid "By default Pulso does not contact any external service: the whole scan runs on this server."
+msgstr ""
+
+#: includes/class-admin.php:403
+msgid "Check plugins on WordPress.org"
+msgstr ""
+
+#: includes/class-admin.php:405
+msgid "To detect plugins that are closed or have not been updated for more than 2 years, Pulso sends the WordPress.org plugins API (api.wordpress.org) the folder name (slug) of each installed plugin, premium and custom ones included. Nothing else is sent."
+msgstr ""
+
+#: includes/class-admin.php:406
+msgid "WordPress.org privacy policy"
+msgstr ""
+
+#. translators: %s: date.
+#: includes/class-admin.php:410
+#, php-format
+msgid "Turned on on %s UTC."
+msgstr ""
+
+#: includes/class-admin.php:412
+msgid "Save settings"
+msgstr ""
+
+#: includes/class-catalog.php:59
+msgid "Server response time (TTFB)"
+msgstr ""
+
+#: includes/class-catalog.php:60
+msgid "Page cache"
+msgstr ""
+
+#: includes/class-catalog.php:61
+msgid "Persistent object cache"
+msgstr ""
+
+#: includes/class-catalog.php:62
+msgid "Total autoload size"
+msgstr ""
+
+#: includes/class-catalog.php:63
+msgid "Autoload from inactive or deleted plugins"
+msgstr ""
+
+#: includes/class-catalog.php:64
+msgid "Largest tables (logs, sessions, leftovers)"
+msgstr ""
+
+#: includes/class-catalog.php:65
+msgid "Expired transients"
+msgstr ""
+
+#: includes/class-catalog.php:66
+msgid "Post revisions"
+msgstr ""
+
+#: includes/class-catalog.php:67
+msgid "Cron: late and orphaned events"
+msgstr ""
+
+#: includes/class-catalog.php:68
+msgid "PHP settings (memory_limit, OPcache)"
+msgstr ""
+
+#: includes/class-catalog.php:69
+msgid "Number of active plugins"
+msgstr ""
+
+#: includes/class-catalog.php:70
+msgid "Pending updates"
+msgstr ""
+
+#: includes/class-catalog.php:71
+msgid "Plugins abandoned or closed on WordPress.org"
+msgstr ""
+
+#: includes/class-catalog.php:72
+msgid "Plugins from outside WordPress.org"
+msgstr ""
+
+#: includes/class-catalog.php:73
+msgid "Supported PHP version"
+msgstr ""
+
+#: includes/class-catalog.php:74
+msgid "HTTPS (redirect, certificate, HSTS)"
+msgstr ""
+
+#: includes/class-catalog.php:75
+msgid "Security headers"
+msgstr ""
+
+#: includes/class-catalog.php:76
+msgid "Exposed debugging (errors on screen, debug.log)"
+msgstr ""
+
+#: includes/class-catalog.php:77
+msgid "Dashboard file editor"
+msgstr ""
+
+#: includes/class-catalog.php:78
+msgid "Administrator accounts"
+msgstr ""
+
+#: includes/class-catalog.php:79
+msgid "User enumeration"
+msgstr ""
+
+#: includes/class-catalog.php:80
+msgid "XML-RPC"
+msgstr ""
+
+#: includes/class-catalog.php:81
+msgid "File permissions"
+msgstr ""
+
+#: includes/class-catalog.php:82
+msgid "Leftover files reachable from the web (.sql, .zip, info.php)"
+msgstr ""
+
+#: includes/class-catalog.php:83
+msgid "Login protection and firewall"
+msgstr ""
+
+#: includes/class-catalog.php:84
+msgid "WooCommerce version and overridden templates"
+msgstr ""
+
+#: includes/class-catalog.php:85
+msgid "HPOS and order sync"
+msgstr ""
+
+#: includes/class-catalog.php:86
+msgid "WooCommerce pages assigned"
+msgstr ""
+
+#: includes/class-catalog.php:87
+msgid "Payment gateways"
+msgstr ""
+
+#: includes/class-catalog.php:88
+msgid "Failing webhooks"
+msgstr ""
+
+#: includes/class-catalog.php:89
+msgid "Stuck orders (processing or on hold > 7 days)"
+msgstr ""
+
+#: includes/class-catalog.php:90
+msgid "Failed scheduled actions (30 days)"
+msgstr ""
+
+#: includes/class-catalog.php:91
+msgid "Scheduled actions late > 1 h"
+msgstr ""
+
+#: includes/class-catalog.php:92
+msgid "Expired sessions"
+msgstr ""
+
+#: includes/class-catalog.php:93
+msgid "Backup system"
+msgstr ""
+
+#: includes/class-catalog.php:94
+msgid "Automatic updates"
+msgstr ""
+
+#: includes/class-catalog.php:95
+msgid "Recurring PHP errors (7 days)"
+msgstr ""
+
+#: includes/class-catalog.php:132
+msgctxt "check state"
+msgid "OK"
+msgstr ""
+
+#: includes/class-catalog.php:135
+msgctxt "check state"
+msgid "N/A"
+msgstr ""
+
+#: includes/class-catalog.php:136
+#: includes/class-export.php:372
+msgctxt "check state"
+msgid "No data"
+msgstr ""
+
+#: includes/class-catalog.php:148
+#: includes/class-site-health.php:78
+msgid "Performance"
+msgstr ""
+
+#: includes/class-catalog.php:149
+msgid "Security"
+msgstr ""
+
+#: includes/class-catalog.php:150
+#: includes/class-scanner.php:28
+msgid "WooCommerce"
+msgstr ""
+
+#: includes/class-catalog.php:151
+msgid "Maintenance"
+msgstr ""
+
+#: includes/class-catalog.php:163
+msgid "Critical"
+msgstr ""
+
+#: includes/class-catalog.php:164
+msgid "High"
+msgstr ""
+
+#: includes/class-catalog.php:165
+msgid "Medium"
+msgstr ""
+
+#: includes/class-catalog.php:166
+msgid "Low"
+msgstr ""
+
+#: includes/class-catalog.php:178
+msgid "Urgent"
+msgstr ""
+
+#: includes/class-catalog.php:179
+msgid "Stabilisation"
+msgstr ""
+
+#: includes/class-catalog.php:180
+msgid "Improvement"
+msgstr ""
+
+#. translators: %s: number of options.
+#: includes/class-export.php:124
+#, php-format
+msgid "%s option"
+msgid_plural "%s options"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of tables.
+#: includes/class-export.php:129
+#, php-format
+msgid "%s table"
+msgid_plural "%s tables"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of orphaned events.
+#: includes/class-export.php:134
+#, php-format
+msgid "%s orphaned"
+msgstr ""
+
+#. translators: %s: number of late hooks.
+#: includes/class-export.php:138
+#, php-format
+msgid "%s late"
+msgstr ""
+
+#. translators: 1: failed actions, 2: late actions.
+#: includes/class-export.php:143
+#, php-format
+msgid "%1$s failed · %2$s late"
+msgstr ""
+
+#. translators: 1: option name, 2: size, 3: how it was attributed.
+#: includes/class-export.php:163
+#, php-format
+msgid "Option %1$s · %2$s · %3$s"
+msgstr ""
+
+#. translators: 1: table name, 2: size, 3: rows, 4: how it was attributed.
+#: includes/class-export.php:167
+#, php-format
+msgid "Table %1$s · %2$s · %3$s rows · %4$s"
+msgstr ""
+
+#: includes/class-export.php:172
+msgid "orphaned"
+msgstr ""
+
+#. translators: %s: hours.
+#: includes/class-export.php:176
+#, php-format
+msgid "%s h late"
+msgstr ""
+
+#. translators: 1: hook, 2: number of events, 3: flags, 4: how it was attributed.
+#: includes/class-export.php:179
+#, php-format
+msgid "Cron %1$s · %2$s events%3$s · %4$s"
+msgstr ""
+
+#. translators: 1: hook, 2: group, 3: failed, 4: late, 5: how it was attributed.
+#: includes/class-export.php:183
+#, php-format
+msgid "Action %1$s (group: %2$s) · %3$s failed · %4$s late · %5$s"
+msgstr ""
+
+#: includes/class-export.php:194
+msgid "Each item is attributed by its registered callback or by searching its name in the installed code. When several plugins could own it, it goes to \"Unattributed\": Pulso does not guess. Core content tables (posts, users, orders…) are not counted."
+msgstr ""
+
+#: includes/class-export.php:196
+msgid "The code search stopped at its time or size limit: items without a match are in \"Unattributed\"."
+msgstr ""
+
+#: includes/class-export.php:283
+#: includes/class-export.php:395
+msgid "Plugin"
+msgstr ""
+
+#: includes/class-export.php:283
+#: includes/class-export.php:395
+msgid "Status"
+msgstr ""
+
+#: includes/class-export.php:283
+msgid "Autoload (KB)"
+msgstr ""
+
+#: includes/class-export.php:283
+msgid "Autoloaded options"
+msgstr ""
+
+#: includes/class-export.php:283
+msgid "Own tables (MB)"
+msgstr ""
+
+#: includes/class-export.php:283
+msgid "Tables"
+msgstr ""
+
+#: includes/class-export.php:283
+#: includes/class-export.php:395
+msgid "Cron events"
+msgstr ""
+
+#: includes/class-export.php:283
+msgid "Orphaned events"
+msgstr ""
+
+#: includes/class-export.php:283
+msgid "Failed actions (30 days)"
+msgstr ""
+
+#: includes/class-export.php:283
+msgid "Late actions (> 1 h)"
+msgstr ""
+
+#: includes/class-export.php:289
+#: includes/class-export.php:447
+msgid "Code"
+msgstr ""
+
+#: includes/class-export.php:289
+#: includes/class-export.php:372
+msgid "Area"
+msgstr ""
+
+#: includes/class-export.php:289
+#: includes/class-export.php:447
+msgid "Check"
+msgstr ""
+
+#: includes/class-export.php:289
+msgid "Severity"
+msgstr ""
+
+#: includes/class-export.php:289
+#: includes/class-export.php:447
+msgid "State"
+msgstr ""
+
+#: includes/class-export.php:289
+msgid "Priority"
+msgstr ""
+
+#: includes/class-export.php:289
+#: includes/class-export.php:447
+msgid "Measured value"
+msgstr ""
+
+#: includes/class-export.php:289
+#: includes/class-export.php:454
+msgid "Evidence"
+msgstr ""
+
+#: includes/class-export.php:336
+msgid "Print or save as PDF"
+msgstr ""
+
+#: includes/class-export.php:337
+msgid "Inochi Pulso report"
+msgstr ""
+
+#: includes/class-export.php:340
+msgid "Site health"
+msgstr ""
+
+#: includes/class-export.php:343
+msgid "What could not be checked shows as \"No data\" and does not count in the score."
+msgstr ""
+
+#: includes/class-export.php:372
+msgid "Score"
+msgstr ""
+
+#: includes/class-export.php:392
+msgid "No data: the cost per plugin step did not finish."
+msgstr ""
+
+#: includes/class-export.php:395
+msgid "Autoload"
+msgstr ""
+
+#: includes/class-export.php:395
+msgid "Own tables"
+msgstr ""
+
+#: includes/class-export.php:397
+msgid "Scheduled actions"
+msgstr ""
+
+#: includes/class-export.php:427
+msgid "Today:"
+msgstr ""
+
+#: includes/class-export.php:429
+msgid "Target:"
+msgstr ""
+
+#: includes/class-export.php:431
+msgid "What to do:"
+msgstr ""
+
+#: includes/class-export.php:435
+msgid "How to check it:"
+msgstr ""
+
+#: includes/class-http-probe.php:66
+msgid "Method not allowed: Pulso only makes GET and HEAD requests."
+msgstr ""
+
+#: includes/class-http-probe.php:69
+msgid "URL outside the site: not requested."
+msgstr ""
+
+#. translators: %s: error.
+#: includes/class-http-probe.php:73
+#, php-format
+msgid "No answer from the site itself: %s"
+msgstr ""
+
+#: includes/class-http-probe.php:78
+msgid "Step time is over."
+msgstr ""
+
+#: includes/class-knowledge.php:75
+msgid "The server takes {num} to start responding"
+msgstr ""
+
+#: includes/class-knowledge.php:76
+msgid "Every page, cart and checkout included, starts loading late. Visitors wait looking at a blank screen, and Google takes it into account."
+msgstr ""
+
+#: includes/class-knowledge.php:77
+msgid "Measure how much of the time is PHP, database or network on the same 5 pages."
+msgstr ""
+
+#: includes/class-knowledge.php:77
+msgid "Fix what weighs most (queries, autoload, slow plugins, cache)."
+msgstr ""
+
+#: includes/class-knowledge.php:77
+msgid "Check whether the hosting has enough resources for the real traffic."
+msgstr ""
+
+#: includes/class-knowledge.php:78
+msgid "Response time of the same 5 pages before and after."
+msgstr ""
+
+#: includes/class-knowledge.php:79
+msgid "Under 0.6 s"
+msgstr ""
+
+#: includes/class-knowledge.php:82
+msgid "No page cache: every visit builds the page from scratch"
+msgstr ""
+
+#: includes/class-knowledge.php:83
+msgid "The server repeats the same work on every visit: slower pages, load peaks and a worse position in Google."
+msgstr ""
+
+#: includes/class-knowledge.php:84
+msgid "Turn on page caching (plugin or server), excluding cart, checkout and my account."
+msgstr ""
+
+#: includes/class-knowledge.php:84
+msgid "Set up purging when content or stock changes."
+msgstr ""
+
+#: includes/class-knowledge.php:85
+msgid "Cache header showing HIT and home page response time before and after."
+msgstr ""
+
+#: includes/class-knowledge.php:86
+msgid "Pages served from cache (HIT)"
+msgstr ""
+
+#: includes/class-knowledge.php:89
+msgid "No object cache: the database repeats the same queries"
+msgstr ""
+
+#: includes/class-knowledge.php:90
+msgid "More queries per page and more time in cart and checkout, which page caching cannot serve."
+msgstr ""
+
+#: includes/class-knowledge.php:91
+msgid "Turn on Redis or Memcached in the hosting."
+msgstr ""
+
+#: includes/class-knowledge.php:91
+msgid "Install the object cache connector and check that the cart still works."
+msgstr ""
+
+#: includes/class-knowledge.php:92
+msgid "Queries per page and cart response time before and after."
+msgstr ""
+
+#: includes/class-knowledge.php:93
+msgid "Object cache active"
+msgstr ""
+
+#: includes/class-knowledge.php:96
+msgid "{num} of data that WordPress loads on every visit"
+msgstr ""
+
+#: includes/class-knowledge.php:97
+msgid "Every page, cart and checkout included, takes longer to serve. WordPress warns from 0.8 MB."
+msgstr ""
+
+#: includes/class-knowledge.php:98
+msgid "Back up the database before touching anything."
+msgstr ""
+
+#: includes/class-knowledge.php:98
+msgid "Look at the cost per plugin table to see which plugin loads the most."
+msgstr ""
+
+#: includes/class-knowledge.php:98
+msgid "Delete the options of plugins that are no longer installed."
+msgstr ""
+
+#: includes/class-knowledge.php:98
+msgid "Stop autoloading options that only the dashboard uses."
+msgstr ""
+
+#: includes/class-knowledge.php:99
+msgid "Autoload size and response time on the same 5 pages."
+msgstr ""
+
+#: includes/class-knowledge.php:100
+msgid "Under 0.8 MB"
+msgstr ""
+
+#: includes/class-knowledge.php:103
+msgid "{num} of data from inactive or deleted plugins loaded on every visit"
+msgstr ""
+
+#: includes/class-knowledge.php:104
+msgid "Data from plugins that are no longer used is still loaded on every page."
+msgstr ""
+
+#: includes/class-knowledge.php:105
+msgid "Confirm that the owner plugin is no longer needed (see the cost per plugin table)."
+msgstr ""
+
+#: includes/class-knowledge.php:105
+msgid "Back up the database and delete those options."
+msgstr ""
+
+#: includes/class-knowledge.php:106
+msgid "Autoload from inactive or deleted plugins close to 0 on the next scan."
+msgstr ""
+
+#: includes/class-knowledge.php:107
+msgid "Under 100 KB"
+msgstr ""
+
+#: includes/class-knowledge.php:110
+msgid "Log tables or leftovers that bloat the database"
+msgstr ""
+
+#: includes/class-knowledge.php:111
+msgid "Slower and heavier backups, longer restores and slower queries."
+msgstr ""
+
+#: includes/class-knowledge.php:112
+msgid "Find the plugin of each large table in the cost per plugin table."
+msgstr ""
+
+#: includes/class-knowledge.php:112
+msgid "Empty old logs and drop tables of uninstalled plugins, with a backup first."
+msgstr ""
+
+#: includes/class-knowledge.php:112
+msgid "Limit log retention from now on."
+msgstr ""
+
+#: includes/class-knowledge.php:113
+msgid "Size of the database and of the backup before and after."
+msgstr ""
+
+#: includes/class-knowledge.php:114
+msgid "No log table above 100 MB"
+msgstr ""
+
+#: includes/class-knowledge.php:117
+msgid "Expired temporary data in the database ({num})"
+msgstr ""
+
+#: includes/class-knowledge.php:118
+msgid "It takes space and slows down the options table, which is read on every visit."
+msgstr ""
+
+#: includes/class-knowledge.php:119
+msgid "Delete the expired transients."
+msgstr ""
+
+#: includes/class-knowledge.php:119
+msgid "Check that the clean-up cron runs."
+msgstr ""
+
+#: includes/class-knowledge.php:120
+msgid "Number of expired transients on the next scan."
+msgstr ""
+
+#: includes/class-knowledge.php:121
+msgid "Under 500"
+msgstr ""
+
+#: includes/class-knowledge.php:124
+msgid "Unlimited content revisions ({num})"
+msgstr ""
+
+#: includes/class-knowledge.php:125
+msgid "A bigger database than needed: slower backups and heavier queries."
+msgstr ""
+
+#: includes/class-knowledge.php:126
+msgid "Limit revisions (for example, to 10 per post)."
+msgstr ""
+
+#: includes/class-knowledge.php:126
+msgid "Delete old revisions, with a backup first."
+msgstr ""
+
+#: includes/class-knowledge.php:127
+msgid "Number of revisions and database size."
+msgstr ""
+
+#: includes/class-knowledge.php:128
+msgid "Limited revisions"
+msgstr ""
+
+#: includes/class-knowledge.php:131
+msgid "Late or ownerless scheduled tasks"
+msgstr ""
+
+#: includes/class-knowledge.php:134
+msgid "Scheduled tasks from plugins that are no longer active"
+msgstr ""
+
+#: includes/class-knowledge.php:135
+msgid "WordPress keeps trying to run tasks that no longer do anything: useless work on every run and noise that hides the real problems."
+msgstr ""
+
+#: includes/class-knowledge.php:136
+msgid "Delete the orphaned tasks, with a backup first."
+msgstr ""
+
+#: includes/class-knowledge.php:136
+#: includes/class-knowledge.php:140
+msgid "Replace WP-Cron with a server task every 5 minutes."
+msgstr ""
+
+#: includes/class-knowledge.php:139
+msgid "Automatic tasks that do not run on time: emails, backups, clean-ups or syncs delayed without anyone noticing."
+msgstr ""
+
+#: includes/class-knowledge.php:140
+msgid "Delete the tasks of uninstalled plugins."
+msgstr ""
+
+#: includes/class-knowledge.php:141
+msgid "No events more than 1 hour late on the next scan."
+msgstr ""
+
+#: includes/class-knowledge.php:142
+msgid "No late or orphaned tasks, with a real server cron"
+msgstr ""
+
+#: includes/class-knowledge.php:145
+msgid "PHP settings below the recommended values"
+msgstr ""
+
+#: includes/class-knowledge.php:146
+msgid "Memory errors in heavy processes (imports, large orders) and slower PHP without OPcache."
+msgstr ""
+
+#: includes/class-knowledge.php:147
+msgid "Raise memory_limit to 256M or more."
+msgstr ""
+
+#: includes/class-knowledge.php:147
+msgid "Turn on OPcache in the hosting."
+msgstr ""
+
+#: includes/class-knowledge.php:148
+msgid "Values in Site Health → Info → Server."
+msgstr ""
+
+#: includes/class-knowledge.php:149
+msgid "256 MB or more and OPcache active"
+msgstr ""
+
+#: includes/class-knowledge.php:152
+msgid "Too many active plugins ({num}): many parts to maintain"
+msgstr ""
+
+#: includes/class-knowledge.php:153
+msgid "Every plugin adds code, queries and risk. Above 40 it is hard to know what each one does and which one fails."
+msgstr ""
+
+#: includes/class-knowledge.php:154
+msgid "List what each plugin is for."
+msgstr ""
+
+#: includes/class-knowledge.php:154
+msgid "Remove the ones that are not used or duplicate features."
+msgstr ""
+
+#: includes/class-knowledge.php:155
+msgid "Number of active plugins and response time."
+msgstr ""
+
+#: includes/class-knowledge.php:156
+msgid "40 or fewer, each with a clear purpose"
+msgstr ""
+
+#: includes/class-knowledge.php:159
+msgid "Pending updates in core, plugins or theme ({num})"
+msgstr ""
+
+#: includes/class-knowledge.php:160
+msgid "Old versions pile up known bugs and vulnerabilities. The longer you wait, the riskier it is to update everything at once."
+msgstr ""
+
+#: includes/class-knowledge.php:161
+msgid "Full backup and a test on a staging site."
+msgstr ""
+
+#: includes/class-knowledge.php:161
+msgid "Update minor versions first and then major ones, one at a time."
+msgstr ""
+
+#: includes/class-knowledge.php:161
+msgid "Check forms, cart and checkout after each update."
+msgstr ""
+
+#: includes/class-knowledge.php:162
+msgid "Dashboard → Updates with nothing pending."
+msgstr ""
+
+#: includes/class-knowledge.php:166
+msgid "Plugins abandoned or removed from WordPress.org"
+msgstr ""
+
+#: includes/class-knowledge.php:167
+msgid "Nobody fixes their bugs. If a vulnerability appears there will be no patch, and they tend to stop working with new WordPress versions."
+msgstr ""
+
+#: includes/class-knowledge.php:168
+msgid "Find a maintained alternative for each one."
+msgstr ""
+
+#: includes/class-knowledge.php:168
+msgid "Replace them on a staging site and migrate their data."
+msgstr ""
+
+#: includes/class-knowledge.php:169
+msgid "No plugin closed or without updates for more than 2 years."
+msgstr ""
+
+#: includes/class-knowledge.php:170
+msgid "No closed or abandoned plugins"
+msgstr ""
+
+#: includes/class-knowledge.php:173
+msgid "Premium or custom plugins without guaranteed updates"
+msgstr ""
+
+#: includes/class-knowledge.php:174
+msgid "Without an active licence, security patches do not arrive. A plugin of doubtful origin can bring malicious code."
+msgstr ""
+
+#: includes/class-knowledge.php:175
+msgid "Renew the licences of the premium plugins in use."
+msgstr ""
+
+#: includes/class-knowledge.php:175
+msgid "Replace any copy of doubtful origin with the official one."
+msgstr ""
+
+#: includes/class-knowledge.php:176
+msgid "Active licence and current version for each premium plugin."
+msgstr ""
+
+#: includes/class-knowledge.php:177
+msgid "All with an active licence and updates"
+msgstr ""
+
+#: includes/class-knowledge.php:180
+msgid "The PHP version is losing or has lost security support"
+msgstr ""
+
+#: includes/class-knowledge.php:181
+msgid "PHP security bugs are no longer fixed. New plugins stop being compatible."
+msgstr ""
+
+#: includes/class-knowledge.php:182
+msgid "Test the site with a current PHP version on a staging site."
+msgstr ""
+
+#: includes/class-knowledge.php:182
+msgid "Change the version in the hosting panel and check the error log."
+msgstr ""
+
+#: includes/class-knowledge.php:183
+msgid "A PHP version with security support and no new errors in the log."
+msgstr ""
+
+#: includes/class-knowledge.php:184
+msgid "PHP 8.3 or later"
+msgstr ""
+
+#: includes/class-knowledge.php:187
+msgid "Problems with the secure connection (HTTPS)"
+msgstr ""
+
+#: includes/class-knowledge.php:188
+msgid "\"Not secure\" warnings in the browser, exposed forms and payments, and lost trust."
+msgstr ""
+
+#: includes/class-knowledge.php:189
+msgid "Force HTTPS on the whole site."
+msgstr ""
+
+#: includes/class-knowledge.php:189
+msgid "Fix the resources loaded over http."
+msgstr ""
+
+#: includes/class-knowledge.php:189
+msgid "Turn on HSTS once everything works over HTTPS."
+msgstr ""
+
+#: includes/class-knowledge.php:190
+msgid "Redirect, certificate and a browser console without warnings."
+msgstr ""
+
+#: includes/class-knowledge.php:191
+msgid "Full HTTPS, with HSTS and no mixed content"
+msgstr ""
+
+#: includes/class-knowledge.php:194
+msgid "Basic security headers are missing"
+msgstr ""
+
+#: includes/class-knowledge.php:195
+msgid "The site is more exposed to attacks that embed it in other sites or abuse the visitor’s browser."
+msgstr ""
+
+#: includes/class-knowledge.php:196
+msgid "Add X-Content-Type-Options, X-Frame-Options and Referrer-Policy in the server or the CDN."
+msgstr ""
+
+#: includes/class-knowledge.php:197
+msgid "Headers present in the home page response."
+msgstr ""
+
+#: includes/class-knowledge.php:198
+msgid "The 3 basic headers"
+msgstr ""
+
+#: includes/class-knowledge.php:201
+msgid "Error information exposed to the public"
+msgstr ""
+
+#: includes/class-knowledge.php:202
+msgid "Errors show paths, versions and internal data that make an attack easier. The log can include customer data."
+msgstr ""
+
+#: includes/class-knowledge.php:203
+msgid "Turn off error display in production."
+msgstr ""
+
+#: includes/class-knowledge.php:203
+msgid "Move the log out of the public folder or block access to it."
+msgstr ""
+
+#: includes/class-knowledge.php:204
+msgid "No errors on screen and debug.log not downloadable."
+msgstr ""
+
+#: includes/class-knowledge.php:205
+msgid "Errors hidden and log unreachable"
+msgstr ""
+
+#: includes/class-knowledge.php:208
+msgid "The dashboard can edit the site’s code"
+msgstr ""
+
+#: includes/class-knowledge.php:209
+msgid "Anyone who gets into an administrator account can inject code in seconds without server access."
+msgstr ""
+
+#: includes/class-knowledge.php:210
+msgid "Add DISALLOW_FILE_EDIT to wp-config.php."
+msgstr ""
+
+#: includes/class-knowledge.php:211
+msgid "The file editor no longer appears in the dashboard."
+msgstr ""
+
+#: includes/class-knowledge.php:215
+msgid "Administrator accounts without enough protection"
+msgstr ""
+
+#: includes/class-knowledge.php:216
+msgid "A stolen password gives full control of the site. Accounts without a known owner are doors nobody watches."
+msgstr ""
+
+#: includes/class-knowledge.php:217
+msgid "Delete or downgrade the accounts that are not used."
+msgstr ""
+
+#: includes/class-knowledge.php:217
+msgid "Turn on two-factor authentication for every administrator."
+msgstr ""
+
+#: includes/class-knowledge.php:217
+msgid "Rename or delete the \"admin\" account."
+msgstr ""
+
+#: includes/class-knowledge.php:218
+msgid "Number of administrators and two-factor authentication active for all."
+msgstr ""
+
+#: includes/class-knowledge.php:219
+msgid "At most 3 administrators, all with an owner and two-factor authentication"
+msgstr ""
+
+#: includes/class-knowledge.php:222
+msgid "The site publishes its usernames"
+msgstr ""
+
+#: includes/class-knowledge.php:223
+msgid "It helps brute-force attacks: the attacker already has half of the credentials."
+msgstr ""
+
+#: includes/class-knowledge.php:224
+msgid "Limit the REST API user list to logged-in users."
+msgstr ""
+
+#: includes/class-knowledge.php:224
+msgid "Block the ?author= redirect."
+msgstr ""
+
+#: includes/class-knowledge.php:225
+msgid "Neither request returns names."
+msgstr ""
+
+#: includes/class-knowledge.php:226
+msgid "No public username"
+msgstr ""
+
+#: includes/class-knowledge.php:229
+msgid "XML-RPC open but not used"
+msgstr ""
+
+#: includes/class-knowledge.php:230
+msgid "It is a common way in for mass brute-force attacks and server overload."
+msgstr ""
+
+#: includes/class-knowledge.php:231
+msgid "Block xmlrpc.php in the server or the CDN if nothing needs it."
+msgstr ""
+
+#: includes/class-knowledge.php:232
+msgid "xmlrpc.php answers 403."
+msgstr ""
+
+#: includes/class-knowledge.php:233
+msgid "XML-RPC blocked or protected"
+msgstr ""
+
+#: includes/class-knowledge.php:236
+msgid "File permissions too open"
+msgstr ""
+
+#: includes/class-knowledge.php:237
+msgid "Other users of the server or a compromised process can read passwords or change files."
+msgstr ""
+
+#: includes/class-knowledge.php:238
+msgid "wp-config.php to 600 or 640."
+msgstr ""
+
+#: includes/class-knowledge.php:238
+msgid "Folders to 755 and files to 644."
+msgstr ""
+
+#: includes/class-knowledge.php:239
+msgid "No world-writable files."
+msgstr ""
+
+#: includes/class-knowledge.php:240
+msgid "wp-config.php at 600 or 640 and nothing world-writable"
+msgstr ""
+
+#: includes/class-knowledge.php:243
+msgid "Leftover files reachable from the web"
+msgstr ""
+
+#: includes/class-knowledge.php:244
+msgid "A downloadable database dump exposes all customer data and passwords. A forgotten installer lets anyone take over the site."
+msgstr ""
+
+#: includes/class-knowledge.php:245
+msgid "Delete the leftover files today."
+msgstr ""
+
+#: includes/class-knowledge.php:245
+msgid "Check the access logs in case someone downloaded them."
+msgstr ""
+
+#: includes/class-knowledge.php:246
+msgid "The files no longer exist or answer from the web."
+msgstr ""
+
+#: includes/class-knowledge.php:250
+msgid "No web firewall or login attempt limit"
+msgstr ""
+
+#: includes/class-knowledge.php:251
+msgid "The site gets automatic attacks and password guessing without any filter."
+msgstr ""
+
+#: includes/class-knowledge.php:252
+msgid "Put the site behind a web application firewall."
+msgstr ""
+
+#: includes/class-knowledge.php:252
+msgid "Limit login attempts and protect /wp-admin."
+msgstr ""
+
+#: includes/class-knowledge.php:253
+msgid "Firewall headers present and blocking after several failed attempts."
+msgstr ""
+
+#: includes/class-knowledge.php:254
+msgid "Firewall and login attempt limit"
+msgstr ""
+
+#: includes/class-knowledge.php:257
+msgid "Outdated WooCommerce or templates"
+msgstr ""
+
+#: includes/class-knowledge.php:258
+msgid "Old theme templates can break cart or checkout after an update, or keep bugs that are already fixed."
+msgstr ""
+
+#: includes/class-knowledge.php:259
+msgid "Update the theme’s overridden templates to the current version."
+msgstr ""
+
+#: includes/class-knowledge.php:259
+msgid "Update WooCommerce on a staging site and test the purchase process."
+msgstr ""
+
+#: includes/class-knowledge.php:260
+msgid "System status without outdated templates."
+msgstr ""
+
+#: includes/class-knowledge.php:261
+msgid "WooCommerce and templates up to date"
+msgstr ""
+
+#: includes/class-knowledge.php:264
+msgid "Orders do not use WooCommerce’s modern storage (HPOS)"
+msgstr ""
+
+#: includes/class-knowledge.php:267
+msgid "Orders pending sync in WooCommerce"
+msgstr ""
+
+#: includes/class-knowledge.php:268
+msgid "The two copies of the orders do not match: if you had to go back to the old storage, orders would be missing."
+msgstr ""
+
+#: includes/class-knowledge.php:269
+msgid "Let the sync finish, or turn it off if it is no longer needed."
+msgstr ""
+
+#: includes/class-knowledge.php:270
+msgid "No orders pending sync."
+msgstr ""
+
+#: includes/class-knowledge.php:273
+msgid "Order queries get slower as the store grows, and future compatibility is lower."
+msgstr ""
+
+#: includes/class-knowledge.php:274
+msgid "Check plugin compatibility."
+msgstr ""
+
+#: includes/class-knowledge.php:274
+msgid "Turn on sync, migrate and switch to HPOS."
+msgstr ""
+
+#: includes/class-knowledge.php:275
+msgid "HPOS active and no orders pending sync."
+msgstr ""
+
+#: includes/class-knowledge.php:276
+msgid "HPOS active and no orders pending"
+msgstr ""
+
+#: includes/class-knowledge.php:279
+msgid "A basic store page is missing"
+msgstr ""
+
+#: includes/class-knowledge.php:280
+msgid "A cart, checkout or account page that fails stops people from buying."
+msgstr ""
+
+#: includes/class-knowledge.php:281
+msgid "Assign and publish the right page in the WooCommerce settings."
+msgstr ""
+
+#: includes/class-knowledge.php:282
+msgid "The 4 pages assigned and a full test order."
+msgstr ""
+
+#: includes/class-knowledge.php:286
+msgid "Payment gateway misconfigured"
+msgstr ""
+
+#: includes/class-knowledge.php:287
+msgid "Orders marked as paid without being charged, or active gateways nobody uses that widen the risk."
+msgstr ""
+
+#: includes/class-knowledge.php:288
+msgid "Switch to live mode or turn off the gateways in test mode."
+msgstr ""
+
+#: includes/class-knowledge.php:288
+msgid "Turn off the gateways that are not used."
+msgstr ""
+
+#: includes/class-knowledge.php:289
+msgid "A real test order with a charge and a refund."
+msgstr ""
+
+#: includes/class-knowledge.php:290
+msgid "Only gateways in use, in live mode"
+msgstr ""
+
+#: includes/class-knowledge.php:293
+msgid "Automatic notifications to other systems are failing"
+msgstr ""
+
+#: includes/class-knowledge.php:294
+msgid "Orders that do not reach the ERP, the warehouse or invoicing without anyone noticing."
+msgstr ""
+
+#: includes/class-knowledge.php:295
+msgid "Check the destination of each failing webhook."
+msgstr ""
+
+#: includes/class-knowledge.php:295
+msgid "Turn it back on and resend the orders that did not arrive."
+msgstr ""
+
+#: includes/class-knowledge.php:296
+msgid "Webhooks active and without failures for a week."
+msgstr ""
+
+#: includes/class-knowledge.php:297
+msgid "Webhooks without failures"
+msgstr ""
+
+#: includes/class-knowledge.php:300
+msgid "Orders not closed for more than a week"
+msgstr ""
+
+#: includes/class-knowledge.php:301
+msgid "Orders nobody finishes handling: customers waiting for an answer or a delivery, and sales and stock figures that do not add up."
+msgstr ""
+
+#: includes/class-knowledge.php:302
+msgid "Confirm with the team whether this is their normal way of working."
+msgstr ""
+
+#: includes/class-knowledge.php:302
+msgid "Close the orders already resolved."
+msgstr ""
+
+#: includes/class-knowledge.php:302
+msgid "Fix the step of the process that leaves them stuck."
+msgstr ""
+
+#: includes/class-knowledge.php:303
+msgid "No orders processing or on hold for more than 7 days."
+msgstr ""
+
+#: includes/class-knowledge.php:304
+msgid "No order open for more than 7 days"
+msgstr ""
+
+#: includes/class-knowledge.php:307
+msgid "Automatic processes failing ({num} in 30 days)"
+msgstr ""
+
+#: includes/class-knowledge.php:308
+msgid "Automatic processes that do not finish: outdated stock, emails not sent or incomplete syncs."
+msgstr ""
+
+#: includes/class-knowledge.php:309
+msgid "Read the failure reason of each type of action."
+msgstr ""
+
+#: includes/class-knowledge.php:309
+msgid "Fix the cause and run the pending actions again."
+msgstr ""
+
+#: includes/class-knowledge.php:310
+msgid "Failed actions over the next 30 days."
+msgstr ""
+
+#: includes/class-knowledge.php:311
+msgid "Fewer than 10 failures a month"
+msgstr ""
+
+#: includes/class-knowledge.php:314
+msgid "Automatic processes running late ({num})"
+msgstr ""
+
+#: includes/class-knowledge.php:315
+msgid "The task queue is not moving: store processes run late or not at all."
+msgstr ""
+
+#: includes/class-knowledge.php:316
+msgid "Check that the server cron works."
+msgstr ""
+
+#: includes/class-knowledge.php:316
+msgid "Unblock the queue and watch it for a week."
+msgstr ""
+
+#: includes/class-knowledge.php:317
+msgid "No actions more than 1 hour late."
+msgstr ""
+
+#: includes/class-knowledge.php:318
+msgid "Fewer than 10 late actions"
+msgstr ""
+
+#: includes/class-knowledge.php:321
+msgid "Expired shopping sessions piling up ({num})"
+msgstr ""
+
+#: includes/class-knowledge.php:322
+msgid "A table that grows without control and slows down the cart."
+msgstr ""
+
+#: includes/class-knowledge.php:323
+msgid "Clean up the expired sessions."
+msgstr ""
+
+#: includes/class-knowledge.php:323
+msgid "Check that the automatic clean-up works."
+msgstr ""
+
+#: includes/class-knowledge.php:324
+msgid "Expired sessions below 10,000."
+msgstr ""
+
+#: includes/class-knowledge.php:325
+msgid "Fewer than 10,000"
+msgstr ""
+
+#: includes/class-knowledge.php:328
+msgid "Not enough backups"
+msgstr ""
+
+#: includes/class-knowledge.php:329
+msgid "After a failure, an attack or a human mistake there is no reliable way to recover the site and its orders."
+msgstr ""
+
+#: includes/class-knowledge.php:330
+msgid "Daily automatic backup of files and database."
+msgstr ""
+
+#: includes/class-knowledge.php:330
+msgid "Store it outside the server."
+msgstr ""
+
+#: includes/class-knowledge.php:331
+msgid "Log of daily backups at the external destination."
+msgstr ""
+
+#: includes/class-knowledge.php:332
+msgid "Daily backups outside the server"
+msgstr ""
+
+#: includes/class-knowledge.php:335
+msgid "Updates without a procedure"
+msgstr ""
+
+#: includes/class-knowledge.php:336
+msgid "A plugin that updates itself can break forms or checkout without anyone checking."
+msgstr ""
+
+#: includes/class-knowledge.php:337
+msgid "Turn off automatic updates for critical plugins."
+msgstr ""
+
+#: includes/class-knowledge.php:337
+msgid "Procedure: backup, test, update and check."
+msgstr ""
+
+#: includes/class-knowledge.php:338
+msgid "Procedure written down and applied at the next update."
+msgstr ""
+
+#: includes/class-knowledge.php:339
+msgid "Written update procedure"
+msgstr ""
+
+#: includes/class-knowledge.php:342
+msgid "Serious PHP errors in the last 7 days ({num})"
+msgstr ""
+
+#: includes/class-knowledge.php:343
+msgid "Pages or processes that fail for some visitors without anyone seeing it."
+msgstr ""
+
+#: includes/class-knowledge.php:344
+msgid "Find the plugin or template behind each error."
+msgstr ""
+
+#: includes/class-knowledge.php:344
+msgid "Fix it or replace it."
+msgstr ""
+
+#: includes/class-knowledge.php:345
+msgid "Error log without fatal errors for 7 days."
+msgstr ""
+
+#: includes/class-knowledge.php:346
+msgid "No fatal errors"
+msgstr ""
+
+#: includes/class-rest.php:87
+msgid "The scan record could not be created."
+msgstr ""
+
+#: includes/class-rest.php:109
+msgid "This scan is already closed."
+msgstr ""
+
+#: includes/class-scanner.php:20
+msgid "General data"
+msgstr ""
+
+#: includes/class-scanner.php:21
+msgid "Database"
+msgstr ""
+
+#: includes/class-scanner.php:23
+msgid "PHP and settings"
+msgstr ""
+
+#: includes/class-scanner.php:24
+msgid "Response times"
+msgstr ""
+
+#: includes/class-scanner.php:25
+msgid "Cache, HTTPS and exposure"
+msgstr ""
+
+#: includes/class-scanner.php:26
+msgid "Plugins, updates and accounts"
+msgstr ""
+
+#: includes/class-scanner.php:27
+msgid "Files and permissions"
+msgstr ""
+
+#: includes/class-scanner.php:29
+msgid "Maintenance and logs"
+msgstr ""
+
+#: includes/class-scanner.php:30
+msgid "Plugins on WordPress.org (if turned on)"
+msgstr ""
+
+#: includes/class-scanner.php:67
+msgid "Unknown step."
+msgstr ""
+
+#. translators: %s: list of check codes.
+#: includes/class-scanner.php:93
+#, php-format
+msgid "Could not be saved: %s"
+msgstr ""
+
+#: includes/class-site-health.php:33
+msgid "Inochi Pulso scan"
+msgstr ""
+
+#: includes/class-site-health.php:37
+msgid "Inochi Pulso cost per plugin"
+msgstr ""
+
+#: includes/class-site-health.php:103
+msgid "Inochi Pulso has not scanned this site yet"
+msgstr ""
+
+#: includes/class-site-health.php:103
+msgid "A scan shows what to fix first and how much each plugin costs. It is read-only and takes 1 to 3 minutes."
+msgstr ""
+
+#: includes/class-site-health.php:103
+#: includes/class-site-health.php:134
+msgid "Run a scan"
+msgstr ""
+
+#. translators: 1: date, 2: health score.
+#: includes/class-site-health.php:109
+#, php-format
+msgid "Last scan: %1$s. Site health: %2$s / 100."
+msgstr ""
+
+#: includes/class-site-health.php:110
+msgid "Open the report"
+msgstr ""
+
+#. translators: %d: number of urgent findings.
+#: includes/class-site-health.php:113
+#, php-format
+msgid "Inochi Pulso found %d urgent problem"
+msgid_plural "Inochi Pulso found %d urgent problems"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: days.
+#: includes/class-site-health.php:118
+#, php-format
+msgid "The last Inochi Pulso scan is more than %d days old"
+msgstr ""
+
+#. translators: %d: days.
+#: includes/class-site-health.php:118
+msgid "Run a new scan"
+msgstr ""
+
+#. translators: %d: number of findings.
+#: includes/class-site-health.php:122
+#, php-format
+msgid "Inochi Pulso found %d problem to stabilise"
+msgid_plural "Inochi Pulso found %d problems to stabilise"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-site-health.php:125
+msgid "Inochi Pulso found no urgent problems"
+msgstr ""
+
+#: includes/class-site-health.php:134
+msgid "No cost per plugin data yet"
+msgstr ""
+
+#: includes/class-site-health.php:134
+msgid "Run an Inochi Pulso scan to see the autoload, tables, cron events and scheduled actions of each plugin."
+msgstr ""
+
+#: includes/class-site-health.php:139
+msgid "autoload"
+msgstr ""
+
+#: includes/class-site-health.php:139
+msgid "tables"
+msgstr ""
+
+#: includes/class-site-health.php:146
+msgid "Highest cost in the last scan:"
+msgstr ""
+
+#. translators: %s: size.
+#: includes/class-site-health.php:149
+#, php-format
+msgid "Inactive or deleted plugins still load %s on every page"
+msgstr ""
+
+#. translators: %s: size.
+#: includes/class-site-health.php:149
+#: includes/class-site-health.php:151
+msgid "See the cost per plugin"
+msgstr ""
+
+#: includes/class-site-health.php:151
+msgid "No significant autoload from inactive or deleted plugins"
+msgstr ""
+
+#. translators: %d: number of lines left out.
+#: includes/class-util.php:109
+#, php-format
+msgid "[… and %d more line]"
+msgid_plural "[… and %d more lines]"
+msgstr[0] ""
+msgstr[1] ""

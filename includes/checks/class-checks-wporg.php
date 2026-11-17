@@ -1,10 +1,10 @@
 <?php
 /**
- * SEG-03: plugins cerrados o sin actualizar en WordPress.org.
+ * SEG-03: plugins closed or not updated on WordPress.org.
  *
- * Única llamada externa del plugin. Solo se ejecuta si el administrador lo ha
- * aceptado en Ajustes (desactivado por defecto). Envía a api.wordpress.org el
- * slug (nombre de carpeta) de cada plugin instalado y nada más.
+ * The only external call of the plugin. It only runs if an administrator has
+ * accepted it in Settings (off by default). It sends api.wordpress.org the slug
+ * (folder name) of each installed plugin and nothing else.
  *
  * @package InochiPulso
  */
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Consulta a la API de plugins de WordPress.org.
+ * WordPress.org plugins API lookup.
  */
 class Inochi_Pulso_Checks_WPOrg extends Inochi_Pulso_Checks_Base {
 
@@ -20,25 +20,15 @@ class Inochi_Pulso_Checks_WPOrg extends Inochi_Pulso_Checks_Base {
 	const STEP_SECONDS = 15;
 
 	/**
-	 * URL de la API (filtrable solo en pruebas).
-	 */
-	private static function endpoint() {
-		if ( defined( 'INOCHI_PULSO_TESTING' ) && INOCHI_PULSO_TESTING ) {
-			return (string) apply_filters( 'inochi_pulso_wporg_endpoint', self::API );
-		}
-		return self::API;
-	}
-
-	/**
-	 * Paso del escaneo. Puede pedir más tramos («again») si hay muchos plugins.
+	 * Scan step. It can ask for more rounds ("again") when there are many plugins.
 	 *
-	 * @param array $scan_payload Datos ya recogidos (necesita «plugins» del paso de seguridad).
+	 * @param array $scan_payload Data already gathered (needs "plugins" from the security step).
 	 */
 	public static function run( $scan_payload = array() ) {
 		if ( ! Inochi_Pulso_Settings::wporg_allowed() ) {
 			return array(
 				'findings' => array(
-					self::auto( 'SEG-03', 'Consulta a WordPress.org desactivada', Inochi_Pulso_Catalog::NO_DATA, 'Para saber si algún plugin está cerrado o lleva más de 2 años sin actualizarse, activa «Consultar plugins en WordPress.org» en Ajustes y repite el escaneo. Hasta entonces esta comprobación no cuenta en la puntuación.' ),
+					self::auto( 'SEG-03', __( 'WordPress.org lookup turned off', 'inochi-pulso' ), Inochi_Pulso_Catalog::NO_DATA, __( 'To know whether any plugin is closed or has not been updated for more than 2 years, turn on "Check plugins on WordPress.org" in Settings and scan again. Until then this check does not score.', 'inochi-pulso' ) ),
 				),
 				'payload'  => array(),
 			);
@@ -65,14 +55,15 @@ class Inochi_Pulso_Checks_WPOrg extends Inochi_Pulso_Checks_Base {
 				'findings' => array(),
 				'payload'  => array( 'wporg_cache' => $cache ),
 				'again'    => true,
-				'note'     => sprintf( 'Consultados %d plugins, quedan %d…', count( $cache ), $pending ),
+				/* translators: 1: plugins checked, 2: plugins left. */
+				'note'     => sprintf( __( '%1$d plugins checked, %2$d left…', 'inochi-pulso' ), count( $cache ), $pending ),
 			);
 		}
 		return self::summarise( $plugins, $cache );
 	}
 
 	/**
-	 * Estado de un plugin en WordPress.org.
+	 * Status of a plugin on WordPress.org.
 	 *
 	 * @param string $slug Slug.
 	 */
@@ -85,7 +76,7 @@ class Inochi_Pulso_Checks_WPOrg extends Inochi_Pulso_Checks_Base {
 					'fields' => array_fill_keys( array( 'sections', 'description', 'reviews', 'banners', 'icons', 'screenshots', 'versions', 'contributors', 'tags', 'ratings', 'donate_link', 'compatibility' ), 0 ),
 				),
 			),
-			self::endpoint()
+			self::API
 		);
 		$res = wp_safe_remote_get(
 			$url,
@@ -119,10 +110,10 @@ class Inochi_Pulso_Checks_WPOrg extends Inochi_Pulso_Checks_Base {
 	}
 
 	/**
-	 * Resultado final de SEG-03 y datos por plugin.
+	 * Final SEG-03 result and data per plugin.
 	 *
-	 * @param array $plugins Plugins del escaneo.
-	 * @param array $cache   slug => estado en WordPress.org.
+	 * @param array $plugins Plugins of the scan.
+	 * @param array $cache   slug => status on WordPress.org.
 	 */
 	private static function summarise( array $plugins, array $cache ) {
 		$closed = array();
@@ -133,11 +124,10 @@ class Inochi_Pulso_Checks_WPOrg extends Inochi_Pulso_Checks_Base {
 			$slug = sanitize_key( $p['slug'] ?? '' );
 			$info = $cache[ $slug ] ?? array( 'status' => 'error' );
 			if ( 'closed' === $info['status'] ) {
-				$p['origin'] = 'Cerrado en WordPress.org';
-				$p['note']   = 'Cerrado' . ( $info['date'] ? ' el ' . $info['date'] : '' ) . ( $info['reason'] ? ': ' . $info['reason'] : '' );
-				$closed[]    = $slug;
+				$p['wporg'] = 'closed';
+				$closed[]   = $slug;
 			} elseif ( 'ok' === $info['status'] ) {
-				$p['origin']       = 'WordPress.org';
+				$p['wporg']        = 'ok';
 				$ts                = strtotime( (string) $info['last_updated'] );
 				$p['last_updated'] = $ts ? gmdate( 'Y-m-d', $ts ) : '';
 				$p['tested']       = $info['tested'];
@@ -152,23 +142,33 @@ class Inochi_Pulso_Checks_WPOrg extends Inochi_Pulso_Checks_Base {
 
 		$lines = array();
 		foreach ( $closed as $s ) {
-			$lines[] = 'Cerrado: ' . $s . ( empty( $cache[ $s ]['reason'] ) ? '' : ' — ' . $cache[ $s ]['reason'] );
+			/* translators: %s: plugin slug. */
+			$lines[] = sprintf( __( 'Closed: %s', 'inochi-pulso' ), $s ) . ( empty( $cache[ $s ]['date'] ) ? '' : ' (' . $cache[ $s ]['date'] . ')' ) . ( empty( $cache[ $s ]['reason'] ) ? '' : ' — ' . $cache[ $s ]['reason'] );
 		}
 		foreach ( $old as $s ) {
-			$lines[] = 'Sin actualizar en más de 2 años: ' . $s;
+			/* translators: %s: plugin slug and date. */
+			$lines[] = sprintf( __( 'Not updated for more than 2 years: %s', 'inochi-pulso' ), $s );
 		}
-		$lines[] = sprintf( 'Consultados en la API de plugins de WordPress.org: %d (con error: %d).', count( $cache ), $errors );
+		/* translators: 1: plugins checked, 2: errors. */
+		$lines[] = sprintf( __( 'Checked on the WordPress.org plugins API: %1$d (with errors: %2$d).', 'inochi-pulso' ), count( $cache ), $errors );
 
 		if ( $closed ) {
 			$state = 'Fallo';
 		} elseif ( $old ) {
 			$state = 'Aviso';
 		} elseif ( $errors ) {
-			$state = Inochi_Pulso_Catalog::NO_DATA; // Sin respuesta completa no se puede afirmar un OK.
+			$state = Inochi_Pulso_Catalog::NO_DATA; // Without a full answer an OK cannot be stated.
 		} else {
 			$state = 'OK';
 		}
-		$value = $closed || $old ? sprintf( '%d cerrados y %d sin actualizar en más de 2 años', count( $closed ), count( $old ) ) : ( $errors ? 'WordPress.org no respondió para todos los plugins' : 'Ninguno cerrado ni abandonado' );
+		if ( $closed || $old ) {
+			/* translators: 1: closed plugins, 2: plugins not updated. */
+			$value = sprintf( __( '%1$d closed and %2$d not updated for more than 2 years', 'inochi-pulso' ), count( $closed ), count( $old ) );
+		} elseif ( $errors ) {
+			$value = __( 'WordPress.org did not answer for every plugin', 'inochi-pulso' );
+		} else {
+			$value = __( 'None closed or abandoned', 'inochi-pulso' );
+		}
 
 		return array(
 			'findings' => array( self::auto( 'SEG-03', $value, $state, implode( "\n", $lines ) ) ),

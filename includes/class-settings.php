@@ -1,6 +1,6 @@
 <?php
 /**
- * Ajustes de Pulso: solo el consentimiento para consultar WordPress.org.
+ * Pulso settings: only the consent to contact WordPress.org.
  *
  * @package InochiPulso
  */
@@ -8,14 +8,14 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Ajustes de Pulso.
+ * Pulso settings.
  */
 class Inochi_Pulso_Settings {
 
 	const OPTION = 'inochi_pulso_settings';
 
 	/**
-	 * Valores por defecto. La consulta a WordPress.org está desactivada hasta que el administrador la acepte.
+	 * Defaults. The WordPress.org lookup is off until an administrator accepts it.
 	 */
 	private static function defaults() {
 		return array(
@@ -25,7 +25,7 @@ class Inochi_Pulso_Settings {
 	}
 
 	/**
-	 * Todos los ajustes.
+	 * All settings.
 	 */
 	public static function all() {
 		$saved = get_option( self::OPTION, array() );
@@ -33,9 +33,9 @@ class Inochi_Pulso_Settings {
 	}
 
 	/**
-	 * Un ajuste.
+	 * One setting.
 	 *
-	 * @param string $key Clave.
+	 * @param string $key Key.
 	 */
 	public static function get( $key ) {
 		$all = self::all();
@@ -43,16 +43,16 @@ class Inochi_Pulso_Settings {
 	}
 
 	/**
-	 * ¿El administrador ha aceptado consultar WordPress.org?
+	 * Has an administrator accepted the WordPress.org lookup?
 	 */
 	public static function wporg_allowed() {
 		return true === self::get( 'wporg_consent' );
 	}
 
 	/**
-	 * Guarda los ajustes desde el formulario (ya verificados el nonce y el permiso).
+	 * Saves the settings from the form (nonce and capability already checked).
 	 *
-	 * @param array $input Datos del formulario (sin barras).
+	 * @param array $input Form data (unslashed).
 	 */
 	public static function save( array $input ) {
 		$current = self::all();
